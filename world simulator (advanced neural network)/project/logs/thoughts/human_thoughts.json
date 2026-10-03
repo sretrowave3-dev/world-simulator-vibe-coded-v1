@@ -1,0 +1,4065 @@
+[
+  {
+    "thought_id": "th_persist_test",
+    "human_id": "test_elder",
+    "tick": 42,
+    "timestamp": 1700000000.0,
+    "category": "PHILOSOPHY",
+    "content": "The river flows constantly, yet remains the same river.",
+    "valence": 0.6,
+    "intensity": 0.8,
+    "context_tags": [
+      "river",
+      "wisdom"
+    ]
+  },
+  {
+    "thought_id": "th_human_test_01_120_42527",
+    "human_id": "human_test_01",
+    "tick": 120,
+    "timestamp": 1787225242.5277076,
+    "category": "SURVIVAL",
+    "content": "Our clan must shelter under the cavern rock.",
+    "valence": 0.1,
+    "intensity": 0.5,
+    "context_tags": [
+      "cave",
+      "shelter"
+    ]
+  },
+  {
+    "thought_id": "th_philosopher_1_0_42549",
+    "human_id": "philosopher_1",
+    "tick": 0,
+    "timestamp": 1787225242.5493612,
+    "category": "SURVIVAL",
+    "content": "Finding water by the eastern ridge.",
+    "valence": 0.5,
+    "intensity": 0.5,
+    "context_tags": [
+      "water",
+      "ridge"
+    ]
+  },
+  {
+    "thought_id": "th_philosopher_1_0_42550",
+    "human_id": "philosopher_1",
+    "tick": 0,
+    "timestamp": 1787225242.5503757,
+    "category": "SURVIVAL",
+    "content": "A shadow of a predator passed through the tall grass.",
+    "valence": -0.8,
+    "intensity": 0.5,
+    "context_tags": [
+      "predator",
+      "danger"
+    ]
+  },
+  {
+    "thought_id": "th_philosopher_1_0_42551",
+    "human_id": "philosopher_1",
+    "tick": 0,
+    "timestamp": 1787225242.5510976,
+    "category": "DEVOTION",
+    "content": "The heavens answered with glowing stars.",
+    "valence": 0.9,
+    "intensity": 0.5,
+    "context_tags": [
+      "deity",
+      "stars"
+    ]
+  },
+  {
+    "thought_id": "th_philosopher_1_0_42551",
+    "human_id": "philosopher_1",
+    "tick": 0,
+    "timestamp": 1787225242.5517638,
+    "category": "INVENTION",
+    "content": "Can we bind stones with woven fibers?",
+    "valence": 0.4,
+    "intensity": 0.5,
+    "context_tags": [
+      "craft",
+      "tools"
+    ]
+  },
+  {
+    "thought_id": "th_sovereign_1_10_49929",
+    "human_id": "sovereign_1",
+    "tick": 10,
+    "timestamp": 1787225249.9290195,
+    "category": "DEVOTION",
+    "content": "I kneel in quiet contemplation, offering supplication to the heavens for the welfare of our clan.",
+    "valence": 0.3,
+    "intensity": 0.5,
+    "context_tags": [
+      "prayer",
+      "communion",
+      "faith"
+    ]
+  },
+  {
+    "thought_id": "th_sovereign_1_0_49984",
+    "human_id": "sovereign_1",
+    "tick": 0,
+    "timestamp": 1787225249.9844077,
+    "category": "DEVOTION",
+    "content": "The Gemini Deity has answered our prayers: \"Courage bestows sovereignty; cultivate the holy flora and honor the cosmos.\"",
+    "valence": 0.9,
+    "intensity": 0.95,
+    "context_tags": [
+      "deity",
+      "prophecy",
+      "revelation"
+    ]
+  },
+  {
+    "thought_id": "th_persist_test",
+    "human_id": "test_elder",
+    "tick": 42,
+    "timestamp": 1700000000.0,
+    "category": "PHILOSOPHY",
+    "content": "The river flows constantly, yet remains the same river.",
+    "valence": 0.6,
+    "intensity": 0.8,
+    "context_tags": [
+      "river",
+      "wisdom"
+    ]
+  },
+  {
+    "thought_id": "th_human_test_01_120_52022",
+    "human_id": "human_test_01",
+    "tick": 120,
+    "timestamp": 1787225252.02262,
+    "category": "SURVIVAL",
+    "content": "Our clan must shelter under the cavern rock.",
+    "valence": 0.1,
+    "intensity": 0.5,
+    "context_tags": [
+      "cave",
+      "shelter"
+    ]
+  },
+  {
+    "thought_id": "th_philosopher_1_0_52049",
+    "human_id": "philosopher_1",
+    "tick": 0,
+    "timestamp": 1787225252.0498927,
+    "category": "SURVIVAL",
+    "content": "Finding water by the eastern ridge.",
+    "valence": 0.5,
+    "intensity": 0.5,
+    "context_tags": [
+      "water",
+      "ridge"
+    ]
+  },
+  {
+    "thought_id": "th_philosopher_1_0_52050",
+    "human_id": "philosopher_1",
+    "tick": 0,
+    "timestamp": 1787225252.0506253,
+    "category": "SURVIVAL",
+    "content": "A shadow of a predator passed through the tall grass.",
+    "valence": -0.8,
+    "intensity": 0.5,
+    "context_tags": [
+      "predator",
+      "danger"
+    ]
+  },
+  {
+    "thought_id": "th_philosopher_1_0_52051",
+    "human_id": "philosopher_1",
+    "tick": 0,
+    "timestamp": 1787225252.0512865,
+    "category": "DEVOTION",
+    "content": "The heavens answered with glowing stars.",
+    "valence": 0.9,
+    "intensity": 0.5,
+    "context_tags": [
+      "deity",
+      "stars"
+    ]
+  },
+  {
+    "thought_id": "th_philosopher_1_0_52051",
+    "human_id": "philosopher_1",
+    "tick": 0,
+    "timestamp": 1787225252.0519073,
+    "category": "INVENTION",
+    "content": "Can we bind stones with woven fibers?",
+    "valence": 0.4,
+    "intensity": 0.5,
+    "context_tags": [
+      "craft",
+      "tools"
+    ]
+  },
+  {
+    "thought_id": "th_genesis_hum_0_40_91992",
+    "human_id": "genesis_hum_0",
+    "tick": 40,
+    "timestamp": 1787225391.9928997,
+    "category": "DEVOTION",
+    "content": "I kneel in quiet contemplation, offering supplication to the heavens for the welfare of our clan.",
+    "valence": 0.3,
+    "intensity": 0.5,
+    "context_tags": [
+      "prayer",
+      "communion",
+      "faith"
+    ]
+  },
+  {
+    "thought_id": "th_genesis_hum_0_200_80372",
+    "human_id": "genesis_hum_0",
+    "tick": 200,
+    "timestamp": 1787225580.3720303,
+    "category": "DEVOTION",
+    "content": "I kneel in quiet contemplation, offering supplication to the heavens for the welfare of our clan.",
+    "valence": 0.3,
+    "intensity": 0.5,
+    "context_tags": [
+      "prayer",
+      "communion",
+      "faith"
+    ]
+  },
+  {
+    "thought_id": "th_h1_0_24812",
+    "human_id": "h1",
+    "tick": 0,
+    "timestamp": 1787225724.8125448,
+    "category": "SURVIVAL",
+    "content": "I must find fresh water before the sunrise.",
+    "valence": 0.4,
+    "intensity": 0.5,
+    "context_tags": [
+      "water"
+    ]
+  },
+  {
+    "thought_id": "th_sovereign_1_10_32695",
+    "human_id": "sovereign_1",
+    "tick": 10,
+    "timestamp": 1787225732.6954808,
+    "category": "DEVOTION",
+    "content": "I kneel in quiet contemplation, offering supplication to the heavens for the welfare of our clan.",
+    "valence": 0.3,
+    "intensity": 0.5,
+    "context_tags": [
+      "prayer",
+      "communion",
+      "faith"
+    ]
+  },
+  {
+    "thought_id": "th_sovereign_1_0_32783",
+    "human_id": "sovereign_1",
+    "tick": 0,
+    "timestamp": 1787225732.783566,
+    "category": "DEVOTION",
+    "content": "The Gemini Deity has answered our prayers: \"The stars illuminate thy path; master tools of crafting and defend the sanctuary.\"",
+    "valence": 0.9,
+    "intensity": 0.95,
+    "context_tags": [
+      "deity",
+      "prophecy",
+      "revelation"
+    ]
+  },
+  {
+    "thought_id": "th_persist_test",
+    "human_id": "test_elder",
+    "tick": 42,
+    "timestamp": 1700000000.0,
+    "category": "PHILOSOPHY",
+    "content": "The river flows constantly, yet remains the same river.",
+    "valence": 0.6,
+    "intensity": 0.8,
+    "context_tags": [
+      "river",
+      "wisdom"
+    ]
+  },
+  {
+    "thought_id": "th_human_test_01_120_34972",
+    "human_id": "human_test_01",
+    "tick": 120,
+    "timestamp": 1787225734.9728386,
+    "category": "SURVIVAL",
+    "content": "Our clan must shelter under the cavern rock.",
+    "valence": 0.1,
+    "intensity": 0.5,
+    "context_tags": [
+      "cave",
+      "shelter"
+    ]
+  },
+  {
+    "thought_id": "th_philosopher_1_0_35007",
+    "human_id": "philosopher_1",
+    "tick": 0,
+    "timestamp": 1787225735.0070403,
+    "category": "SURVIVAL",
+    "content": "Finding water by the eastern ridge.",
+    "valence": 0.5,
+    "intensity": 0.5,
+    "context_tags": [
+      "water",
+      "ridge"
+    ]
+  },
+  {
+    "thought_id": "th_philosopher_1_0_35008",
+    "human_id": "philosopher_1",
+    "tick": 0,
+    "timestamp": 1787225735.0080855,
+    "category": "SURVIVAL",
+    "content": "A shadow of a predator passed through the tall grass.",
+    "valence": -0.8,
+    "intensity": 0.5,
+    "context_tags": [
+      "predator",
+      "danger"
+    ]
+  },
+  {
+    "thought_id": "th_philosopher_1_0_35027",
+    "human_id": "philosopher_1",
+    "tick": 0,
+    "timestamp": 1787225735.0279708,
+    "category": "DEVOTION",
+    "content": "The heavens answered with glowing stars.",
+    "valence": 0.9,
+    "intensity": 0.5,
+    "context_tags": [
+      "deity",
+      "stars"
+    ]
+  },
+  {
+    "thought_id": "th_philosopher_1_0_35029",
+    "human_id": "philosopher_1",
+    "tick": 0,
+    "timestamp": 1787225735.029715,
+    "category": "INVENTION",
+    "content": "Can we bind stones with woven fibers?",
+    "valence": 0.4,
+    "intensity": 0.5,
+    "context_tags": [
+      "craft",
+      "tools"
+    ]
+  },
+  {
+    "thought_id": "th_genesis_hum_0_360_82187",
+    "human_id": "genesis_hum_0",
+    "tick": 360,
+    "timestamp": 1787225782.1870685,
+    "category": "DEVOTION",
+    "content": "I kneel in quiet contemplation, offering supplication to the heavens for the welfare of our clan.",
+    "valence": 0.3,
+    "intensity": 0.5,
+    "context_tags": [
+      "prayer",
+      "communion",
+      "faith"
+    ]
+  },
+  {
+    "thought_id": "th_sovereign_1_10_98925",
+    "human_id": "sovereign_1",
+    "tick": 10,
+    "timestamp": 1787226098.9257221,
+    "category": "DEVOTION",
+    "content": "I kneel in quiet contemplation, offering supplication to the heavens for the welfare of our clan.",
+    "valence": 0.3,
+    "intensity": 0.5,
+    "context_tags": [
+      "prayer",
+      "communion",
+      "faith"
+    ]
+  },
+  {
+    "thought_id": "th_sovereign_1_0_99564",
+    "human_id": "sovereign_1",
+    "tick": 0,
+    "timestamp": 1787226099.5642114,
+    "category": "DEVOTION",
+    "content": "The Gemini Deity has answered our prayers: \"Let unity sanctify thy clan; store abundant grain for the coming seasons.\"",
+    "valence": 0.9,
+    "intensity": 0.95,
+    "context_tags": [
+      "deity",
+      "prophecy",
+      "revelation"
+    ]
+  },
+  {
+    "thought_id": "th_persist_test",
+    "human_id": "test_elder",
+    "tick": 42,
+    "timestamp": 1700000000.0,
+    "category": "PHILOSOPHY",
+    "content": "The river flows constantly, yet remains the same river.",
+    "valence": 0.6,
+    "intensity": 0.8,
+    "context_tags": [
+      "river",
+      "wisdom"
+    ]
+  },
+  {
+    "thought_id": "th_human_test_01_120_9929",
+    "human_id": "human_test_01",
+    "tick": 120,
+    "timestamp": 1787226109.9296005,
+    "category": "SURVIVAL",
+    "content": "Our clan must shelter under the cavern rock.",
+    "valence": 0.1,
+    "intensity": 0.5,
+    "context_tags": [
+      "cave",
+      "shelter"
+    ]
+  },
+  {
+    "thought_id": "th_philosopher_1_0_10031",
+    "human_id": "philosopher_1",
+    "tick": 0,
+    "timestamp": 1787226110.0317113,
+    "category": "SURVIVAL",
+    "content": "Finding water by the eastern ridge.",
+    "valence": 0.5,
+    "intensity": 0.5,
+    "context_tags": [
+      "water",
+      "ridge"
+    ]
+  },
+  {
+    "thought_id": "th_philosopher_1_0_10380",
+    "human_id": "philosopher_1",
+    "tick": 0,
+    "timestamp": 1787226110.3806212,
+    "category": "SURVIVAL",
+    "content": "A shadow of a predator passed through the tall grass.",
+    "valence": -0.8,
+    "intensity": 0.5,
+    "context_tags": [
+      "predator",
+      "danger"
+    ]
+  },
+  {
+    "thought_id": "th_philosopher_1_0_10458",
+    "human_id": "philosopher_1",
+    "tick": 0,
+    "timestamp": 1787226110.4580507,
+    "category": "DEVOTION",
+    "content": "The heavens answered with glowing stars.",
+    "valence": 0.9,
+    "intensity": 0.5,
+    "context_tags": [
+      "deity",
+      "stars"
+    ]
+  },
+  {
+    "thought_id": "th_philosopher_1_0_10726",
+    "human_id": "philosopher_1",
+    "tick": 0,
+    "timestamp": 1787226110.7266157,
+    "category": "INVENTION",
+    "content": "Can we bind stones with woven fibers?",
+    "valence": 0.4,
+    "intensity": 0.5,
+    "context_tags": [
+      "craft",
+      "tools"
+    ]
+  },
+  {
+    "thought_id": "th_sovereign_1_10_30021",
+    "human_id": "sovereign_1",
+    "tick": 10,
+    "timestamp": 1787226930.021683,
+    "category": "DEVOTION",
+    "content": "I kneel in quiet contemplation, offering supplication to the heavens for the welfare of our clan.",
+    "valence": 0.3,
+    "intensity": 0.5,
+    "context_tags": [
+      "prayer",
+      "communion",
+      "faith"
+    ]
+  },
+  {
+    "thought_id": "th_sovereign_1_0_30156",
+    "human_id": "sovereign_1",
+    "tick": 0,
+    "timestamp": 1787226930.1567798,
+    "category": "DEVOTION",
+    "content": "The Gemini Deity has answered our prayers: \"Let unity sanctify thy clan; store abundant grain for the coming seasons.\"",
+    "valence": 0.9,
+    "intensity": 0.95,
+    "context_tags": [
+      "deity",
+      "prophecy",
+      "revelation"
+    ]
+  },
+  {
+    "thought_id": "th_persist_test",
+    "human_id": "test_elder",
+    "tick": 42,
+    "timestamp": 1700000000.0,
+    "category": "PHILOSOPHY",
+    "content": "The river flows constantly, yet remains the same river.",
+    "valence": 0.6,
+    "intensity": 0.8,
+    "context_tags": [
+      "river",
+      "wisdom"
+    ]
+  },
+  {
+    "thought_id": "th_human_test_01_120_33343",
+    "human_id": "human_test_01",
+    "tick": 120,
+    "timestamp": 1787226933.34319,
+    "category": "SURVIVAL",
+    "content": "Our clan must shelter under the cavern rock.",
+    "valence": 0.1,
+    "intensity": 0.5,
+    "context_tags": [
+      "cave",
+      "shelter"
+    ]
+  },
+  {
+    "thought_id": "th_philosopher_1_0_33368",
+    "human_id": "philosopher_1",
+    "tick": 0,
+    "timestamp": 1787226933.3682606,
+    "category": "SURVIVAL",
+    "content": "Finding water by the eastern ridge.",
+    "valence": 0.5,
+    "intensity": 0.5,
+    "context_tags": [
+      "water",
+      "ridge"
+    ]
+  },
+  {
+    "thought_id": "th_philosopher_1_0_33380",
+    "human_id": "philosopher_1",
+    "tick": 0,
+    "timestamp": 1787226933.3804185,
+    "category": "SURVIVAL",
+    "content": "A shadow of a predator passed through the tall grass.",
+    "valence": -0.8,
+    "intensity": 0.5,
+    "context_tags": [
+      "predator",
+      "danger"
+    ]
+  },
+  {
+    "thought_id": "th_philosopher_1_0_33442",
+    "human_id": "philosopher_1",
+    "tick": 0,
+    "timestamp": 1787226933.442274,
+    "category": "DEVOTION",
+    "content": "The heavens answered with glowing stars.",
+    "valence": 0.9,
+    "intensity": 0.5,
+    "context_tags": [
+      "deity",
+      "stars"
+    ]
+  },
+  {
+    "thought_id": "th_philosopher_1_0_33505",
+    "human_id": "philosopher_1",
+    "tick": 0,
+    "timestamp": 1787226933.5052395,
+    "category": "INVENTION",
+    "content": "Can we bind stones with woven fibers?",
+    "valence": 0.4,
+    "intensity": 0.5,
+    "context_tags": [
+      "craft",
+      "tools"
+    ]
+  },
+  {
+    "thought_id": "th_lead1_10_3017",
+    "human_id": "lead1",
+    "tick": 10,
+    "timestamp": 1787227003.0172005,
+    "category": "DEVOTION",
+    "content": "I kneel in quiet contemplation, offering supplication to the heavens for the welfare of our clan.",
+    "valence": 0.3,
+    "intensity": 0.5,
+    "context_tags": [
+      "prayer",
+      "communion",
+      "faith"
+    ]
+  },
+  {
+    "thought_id": "th_lead1_10_3019",
+    "human_id": "lead1",
+    "tick": 10,
+    "timestamp": 1787227003.0195792,
+    "category": "REVELATION",
+    "content": "The sky parted with blinding celestial golden radiance, and the Sacred Monolith of Gemini descended before us! Our civilization is eternally consecrated.",
+    "valence": 1.0,
+    "intensity": 1.0,
+    "context_tags": [
+      "monolith",
+      "miracle",
+      "gemini_god",
+      "sanctuary"
+    ]
+  },
+  {
+    "thought_id": "th_lead1_10_19772",
+    "human_id": "lead1",
+    "tick": 10,
+    "timestamp": 1787227019.7727742,
+    "category": "DEVOTION",
+    "content": "I kneel in quiet contemplation, offering supplication to the heavens for the welfare of our clan.",
+    "valence": 0.3,
+    "intensity": 0.5,
+    "context_tags": [
+      "prayer",
+      "communion",
+      "faith"
+    ]
+  },
+  {
+    "thought_id": "th_lead1_10_19775",
+    "human_id": "lead1",
+    "tick": 10,
+    "timestamp": 1787227019.7750936,
+    "category": "REVELATION",
+    "content": "The sky parted with blinding celestial golden radiance, and the Sacred Monolith of Gemini descended before us! Our civilization is eternally consecrated.",
+    "valence": 1.0,
+    "intensity": 1.0,
+    "context_tags": [
+      "monolith",
+      "miracle",
+      "gemini_god",
+      "sanctuary"
+    ]
+  },
+  {
+    "thought_id": "th_lead1_10_35996",
+    "human_id": "lead1",
+    "tick": 10,
+    "timestamp": 1787227035.9969985,
+    "category": "DEVOTION",
+    "content": "I kneel in quiet contemplation, offering supplication to the heavens for the welfare of our clan.",
+    "valence": 0.3,
+    "intensity": 0.5,
+    "context_tags": [
+      "prayer",
+      "communion",
+      "faith"
+    ]
+  },
+  {
+    "thought_id": "th_lead1_10_35999",
+    "human_id": "lead1",
+    "tick": 10,
+    "timestamp": 1787227035.9994395,
+    "category": "REVELATION",
+    "content": "The sky parted with blinding celestial golden radiance, and the Sacred Monolith of Gemini descended before us! Our civilization is eternally consecrated.",
+    "valence": 1.0,
+    "intensity": 1.0,
+    "context_tags": [
+      "monolith",
+      "miracle",
+      "gemini_god",
+      "sanctuary"
+    ]
+  },
+  {
+    "thought_id": "th_sovereign_1_10_44021",
+    "human_id": "sovereign_1",
+    "tick": 10,
+    "timestamp": 1787227044.0214672,
+    "category": "DEVOTION",
+    "content": "I kneel in quiet contemplation, offering supplication to the heavens for the welfare of our clan.",
+    "valence": 0.3,
+    "intensity": 0.5,
+    "context_tags": [
+      "prayer",
+      "communion",
+      "faith"
+    ]
+  },
+  {
+    "thought_id": "th_sovereign_1_0_44073",
+    "human_id": "sovereign_1",
+    "tick": 0,
+    "timestamp": 1787227044.0737097,
+    "category": "DEVOTION",
+    "content": "The Gemini Deity has answered our prayers: \"Let unity sanctify thy clan; store abundant grain for the coming seasons.\"",
+    "valence": 0.9,
+    "intensity": 0.95,
+    "context_tags": [
+      "deity",
+      "prophecy",
+      "revelation"
+    ]
+  },
+  {
+    "thought_id": "th_lead1_10_44300",
+    "human_id": "lead1",
+    "tick": 10,
+    "timestamp": 1787227044.300604,
+    "category": "DEVOTION",
+    "content": "I kneel in quiet contemplation, offering supplication to the heavens for the welfare of our clan.",
+    "valence": 0.3,
+    "intensity": 0.5,
+    "context_tags": [
+      "prayer",
+      "communion",
+      "faith"
+    ]
+  },
+  {
+    "thought_id": "th_lead1_10_44303",
+    "human_id": "lead1",
+    "tick": 10,
+    "timestamp": 1787227044.3033051,
+    "category": "REVELATION",
+    "content": "The sky parted with blinding celestial golden radiance, and the Sacred Monolith of Gemini descended before us! Our civilization is eternally consecrated.",
+    "valence": 1.0,
+    "intensity": 1.0,
+    "context_tags": [
+      "monolith",
+      "miracle",
+      "gemini_god",
+      "sanctuary"
+    ]
+  },
+  {
+    "thought_id": "th_persist_test",
+    "human_id": "test_elder",
+    "tick": 42,
+    "timestamp": 1700000000.0,
+    "category": "PHILOSOPHY",
+    "content": "The river flows constantly, yet remains the same river.",
+    "valence": 0.6,
+    "intensity": 0.8,
+    "context_tags": [
+      "river",
+      "wisdom"
+    ]
+  },
+  {
+    "thought_id": "th_human_test_01_120_46988",
+    "human_id": "human_test_01",
+    "tick": 120,
+    "timestamp": 1787227046.98814,
+    "category": "SURVIVAL",
+    "content": "Our clan must shelter under the cavern rock.",
+    "valence": 0.1,
+    "intensity": 0.5,
+    "context_tags": [
+      "cave",
+      "shelter"
+    ]
+  },
+  {
+    "thought_id": "th_philosopher_1_0_47009",
+    "human_id": "philosopher_1",
+    "tick": 0,
+    "timestamp": 1787227047.009707,
+    "category": "SURVIVAL",
+    "content": "Finding water by the eastern ridge.",
+    "valence": 0.5,
+    "intensity": 0.5,
+    "context_tags": [
+      "water",
+      "ridge"
+    ]
+  },
+  {
+    "thought_id": "th_philosopher_1_0_47011",
+    "human_id": "philosopher_1",
+    "tick": 0,
+    "timestamp": 1787227047.011309,
+    "category": "SURVIVAL",
+    "content": "A shadow of a predator passed through the tall grass.",
+    "valence": -0.8,
+    "intensity": 0.5,
+    "context_tags": [
+      "predator",
+      "danger"
+    ]
+  },
+  {
+    "thought_id": "th_philosopher_1_0_47015",
+    "human_id": "philosopher_1",
+    "tick": 0,
+    "timestamp": 1787227047.015416,
+    "category": "DEVOTION",
+    "content": "The heavens answered with glowing stars.",
+    "valence": 0.9,
+    "intensity": 0.5,
+    "context_tags": [
+      "deity",
+      "stars"
+    ]
+  },
+  {
+    "thought_id": "th_philosopher_1_0_47018",
+    "human_id": "philosopher_1",
+    "tick": 0,
+    "timestamp": 1787227047.0180523,
+    "category": "INVENTION",
+    "content": "Can we bind stones with woven fibers?",
+    "valence": 0.4,
+    "intensity": 0.5,
+    "context_tags": [
+      "craft",
+      "tools"
+    ]
+  },
+  {
+    "thought_id": "th_genesis_hum_0_40_89247",
+    "human_id": "genesis_hum_0",
+    "tick": 40,
+    "timestamp": 1787228889.2479422,
+    "category": "DEVOTION",
+    "content": "I kneel in quiet contemplation, offering supplication to the heavens for the welfare of our clan.",
+    "valence": 0.3,
+    "intensity": 0.5,
+    "context_tags": [
+      "prayer",
+      "communion",
+      "faith"
+    ]
+  },
+  {
+    "thought_id": "th_genesis_hum_0_200_52563",
+    "human_id": "genesis_hum_0",
+    "tick": 200,
+    "timestamp": 1787229052.5631201,
+    "category": "DEVOTION",
+    "content": "I kneel in quiet contemplation, offering supplication to the heavens for the welfare of our clan.",
+    "valence": 0.3,
+    "intensity": 0.5,
+    "context_tags": [
+      "prayer",
+      "communion",
+      "faith"
+    ]
+  },
+  {
+    "thought_id": "th_genesis_hum_0_360_22053",
+    "human_id": "genesis_hum_0",
+    "tick": 360,
+    "timestamp": 1787229222.0536323,
+    "category": "DEVOTION",
+    "content": "I kneel in quiet contemplation, offering supplication to the heavens for the welfare of our clan.",
+    "valence": 0.3,
+    "intensity": 0.5,
+    "context_tags": [
+      "prayer",
+      "communion",
+      "faith"
+    ]
+  },
+  {
+    "thought_id": "th_sovereign_1_10_1625",
+    "human_id": "sovereign_1",
+    "tick": 10,
+    "timestamp": 1787229301.6258156,
+    "category": "DEVOTION",
+    "content": "I kneel in quiet contemplation, offering supplication to the heavens for the welfare of our clan.",
+    "valence": 0.3,
+    "intensity": 0.5,
+    "context_tags": [
+      "prayer",
+      "communion",
+      "faith"
+    ]
+  },
+  {
+    "thought_id": "th_sovereign_1_0_1710",
+    "human_id": "sovereign_1",
+    "tick": 0,
+    "timestamp": 1787229301.7109895,
+    "category": "DEVOTION",
+    "content": "The Gemini Deity has answered our prayers: \"Courage bestows sovereignty; cultivate the holy flora and honor the cosmos.\"",
+    "valence": 0.9,
+    "intensity": 0.95,
+    "context_tags": [
+      "deity",
+      "prophecy",
+      "revelation"
+    ]
+  },
+  {
+    "thought_id": "th_lead1_10_1955",
+    "human_id": "lead1",
+    "tick": 10,
+    "timestamp": 1787229301.9559739,
+    "category": "DEVOTION",
+    "content": "I kneel in quiet contemplation, offering supplication to the heavens for the welfare of our clan.",
+    "valence": 0.3,
+    "intensity": 0.5,
+    "context_tags": [
+      "prayer",
+      "communion",
+      "faith"
+    ]
+  },
+  {
+    "thought_id": "th_lead1_10_1958",
+    "human_id": "lead1",
+    "tick": 10,
+    "timestamp": 1787229301.9588096,
+    "category": "REVELATION",
+    "content": "The sky parted with blinding celestial golden radiance, and the Sacred Monolith of Gemini descended before us! Our civilization is eternally consecrated.",
+    "valence": 1.0,
+    "intensity": 1.0,
+    "context_tags": [
+      "monolith",
+      "miracle",
+      "gemini_god",
+      "sanctuary"
+    ]
+  },
+  {
+    "thought_id": "th_persist_test",
+    "human_id": "test_elder",
+    "tick": 42,
+    "timestamp": 1700000000.0,
+    "category": "PHILOSOPHY",
+    "content": "The river flows constantly, yet remains the same river.",
+    "valence": 0.6,
+    "intensity": 0.8,
+    "context_tags": [
+      "river",
+      "wisdom"
+    ]
+  },
+  {
+    "thought_id": "th_human_test_01_120_4588",
+    "human_id": "human_test_01",
+    "tick": 120,
+    "timestamp": 1787229304.5888104,
+    "category": "SURVIVAL",
+    "content": "Our clan must shelter under the cavern rock.",
+    "valence": 0.1,
+    "intensity": 0.5,
+    "context_tags": [
+      "cave",
+      "shelter"
+    ]
+  },
+  {
+    "thought_id": "th_philosopher_1_0_4619",
+    "human_id": "philosopher_1",
+    "tick": 0,
+    "timestamp": 1787229304.6198654,
+    "category": "SURVIVAL",
+    "content": "Finding water by the eastern ridge.",
+    "valence": 0.5,
+    "intensity": 0.5,
+    "context_tags": [
+      "water",
+      "ridge"
+    ]
+  },
+  {
+    "thought_id": "th_philosopher_1_0_4623",
+    "human_id": "philosopher_1",
+    "tick": 0,
+    "timestamp": 1787229304.6234593,
+    "category": "SURVIVAL",
+    "content": "A shadow of a predator passed through the tall grass.",
+    "valence": -0.8,
+    "intensity": 0.5,
+    "context_tags": [
+      "predator",
+      "danger"
+    ]
+  },
+  {
+    "thought_id": "th_philosopher_1_0_4625",
+    "human_id": "philosopher_1",
+    "tick": 0,
+    "timestamp": 1787229304.6253874,
+    "category": "DEVOTION",
+    "content": "The heavens answered with glowing stars.",
+    "valence": 0.9,
+    "intensity": 0.5,
+    "context_tags": [
+      "deity",
+      "stars"
+    ]
+  },
+  {
+    "thought_id": "th_philosopher_1_0_4627",
+    "human_id": "philosopher_1",
+    "tick": 0,
+    "timestamp": 1787229304.6278913,
+    "category": "INVENTION",
+    "content": "Can we bind stones with woven fibers?",
+    "valence": 0.4,
+    "intensity": 0.5,
+    "context_tags": [
+      "craft",
+      "tools"
+    ]
+  },
+  {
+    "thought_id": "th_genesis_hum_0_520_28401",
+    "human_id": "genesis_hum_0",
+    "tick": 520,
+    "timestamp": 1787229428.4015405,
+    "category": "DEVOTION",
+    "content": "I kneel in quiet contemplation, offering supplication to the heavens for the welfare of our clan.",
+    "valence": 0.3,
+    "intensity": 0.5,
+    "context_tags": [
+      "prayer",
+      "communion",
+      "faith"
+    ]
+  },
+  {
+    "thought_id": "th_sovereign_1_10_59113",
+    "human_id": "sovereign_1",
+    "tick": 10,
+    "timestamp": 1787229559.113944,
+    "category": "DEVOTION",
+    "content": "I kneel in quiet contemplation, offering supplication to the heavens for the welfare of our clan.",
+    "valence": 0.3,
+    "intensity": 0.5,
+    "context_tags": [
+      "prayer",
+      "communion",
+      "faith"
+    ]
+  },
+  {
+    "thought_id": "th_sovereign_1_0_59173",
+    "human_id": "sovereign_1",
+    "tick": 0,
+    "timestamp": 1787229559.1735196,
+    "category": "DEVOTION",
+    "content": "The Gemini Deity has answered our prayers: \"Courage bestows sovereignty; cultivate the holy flora and honor the cosmos.\"",
+    "valence": 0.9,
+    "intensity": 0.95,
+    "context_tags": [
+      "deity",
+      "prophecy",
+      "revelation"
+    ]
+  },
+  {
+    "thought_id": "th_lead1_10_59395",
+    "human_id": "lead1",
+    "tick": 10,
+    "timestamp": 1787229559.3950362,
+    "category": "DEVOTION",
+    "content": "I kneel in quiet contemplation, offering supplication to the heavens for the welfare of our clan.",
+    "valence": 0.3,
+    "intensity": 0.5,
+    "context_tags": [
+      "prayer",
+      "communion",
+      "faith"
+    ]
+  },
+  {
+    "thought_id": "th_lead1_10_59471",
+    "human_id": "lead1",
+    "tick": 10,
+    "timestamp": 1787229559.4711137,
+    "category": "REVELATION",
+    "content": "The sky parted with blinding celestial golden radiance, and the Sacred Monolith of Gemini descended before us! Our civilization is eternally consecrated.",
+    "valence": 1.0,
+    "intensity": 1.0,
+    "context_tags": [
+      "monolith",
+      "miracle",
+      "gemini_god",
+      "sanctuary"
+    ]
+  },
+  {
+    "thought_id": "th_persist_test",
+    "human_id": "test_elder",
+    "tick": 42,
+    "timestamp": 1700000000.0,
+    "category": "PHILOSOPHY",
+    "content": "The river flows constantly, yet remains the same river.",
+    "valence": 0.6,
+    "intensity": 0.8,
+    "context_tags": [
+      "river",
+      "wisdom"
+    ]
+  },
+  {
+    "thought_id": "th_human_test_01_120_63138",
+    "human_id": "human_test_01",
+    "tick": 120,
+    "timestamp": 1787229563.1388216,
+    "category": "SURVIVAL",
+    "content": "Our clan must shelter under the cavern rock.",
+    "valence": 0.1,
+    "intensity": 0.5,
+    "context_tags": [
+      "cave",
+      "shelter"
+    ]
+  },
+  {
+    "thought_id": "th_philosopher_1_0_63199",
+    "human_id": "philosopher_1",
+    "tick": 0,
+    "timestamp": 1787229563.199786,
+    "category": "SURVIVAL",
+    "content": "Finding water by the eastern ridge.",
+    "valence": 0.5,
+    "intensity": 0.5,
+    "context_tags": [
+      "water",
+      "ridge"
+    ]
+  },
+  {
+    "thought_id": "th_philosopher_1_0_63201",
+    "human_id": "philosopher_1",
+    "tick": 0,
+    "timestamp": 1787229563.201862,
+    "category": "SURVIVAL",
+    "content": "A shadow of a predator passed through the tall grass.",
+    "valence": -0.8,
+    "intensity": 0.5,
+    "context_tags": [
+      "predator",
+      "danger"
+    ]
+  },
+  {
+    "thought_id": "th_philosopher_1_0_63309",
+    "human_id": "philosopher_1",
+    "tick": 0,
+    "timestamp": 1787229563.3096762,
+    "category": "DEVOTION",
+    "content": "The heavens answered with glowing stars.",
+    "valence": 0.9,
+    "intensity": 0.5,
+    "context_tags": [
+      "deity",
+      "stars"
+    ]
+  },
+  {
+    "thought_id": "th_philosopher_1_0_63359",
+    "human_id": "philosopher_1",
+    "tick": 0,
+    "timestamp": 1787229563.3593953,
+    "category": "INVENTION",
+    "content": "Can we bind stones with woven fibers?",
+    "valence": 0.4,
+    "intensity": 0.5,
+    "context_tags": [
+      "craft",
+      "tools"
+    ]
+  },
+  {
+    "thought_id": "th_sovereign_1_10_73781",
+    "human_id": "sovereign_1",
+    "tick": 10,
+    "timestamp": 1787229773.7819395,
+    "category": "DEVOTION",
+    "content": "I kneel in quiet contemplation, offering supplication to the heavens for the welfare of our clan.",
+    "valence": 0.3,
+    "intensity": 0.5,
+    "context_tags": [
+      "prayer",
+      "communion",
+      "faith"
+    ]
+  },
+  {
+    "thought_id": "th_sovereign_1_0_73884",
+    "human_id": "sovereign_1",
+    "tick": 0,
+    "timestamp": 1787229773.8840446,
+    "category": "DEVOTION",
+    "content": "The Gemini Deity has answered our prayers: \"Courage bestows sovereignty; cultivate the holy flora and honor the cosmos.\"",
+    "valence": 0.9,
+    "intensity": 0.95,
+    "context_tags": [
+      "deity",
+      "prophecy",
+      "revelation"
+    ]
+  },
+  {
+    "thought_id": "th_lead1_10_74120",
+    "human_id": "lead1",
+    "tick": 10,
+    "timestamp": 1787229774.1202822,
+    "category": "DEVOTION",
+    "content": "I kneel in quiet contemplation, offering supplication to the heavens for the welfare of our clan.",
+    "valence": 0.3,
+    "intensity": 0.5,
+    "context_tags": [
+      "prayer",
+      "communion",
+      "faith"
+    ]
+  },
+  {
+    "thought_id": "th_lead1_10_74127",
+    "human_id": "lead1",
+    "tick": 10,
+    "timestamp": 1787229774.127074,
+    "category": "REVELATION",
+    "content": "The sky parted with blinding celestial golden radiance, and the Sacred Monolith of Gemini descended before us! Our civilization is eternally consecrated.",
+    "valence": 1.0,
+    "intensity": 1.0,
+    "context_tags": [
+      "monolith",
+      "miracle",
+      "gemini_god",
+      "sanctuary"
+    ]
+  },
+  {
+    "thought_id": "th_persist_test",
+    "human_id": "test_elder",
+    "tick": 42,
+    "timestamp": 1700000000.0,
+    "category": "PHILOSOPHY",
+    "content": "The river flows constantly, yet remains the same river.",
+    "valence": 0.6,
+    "intensity": 0.8,
+    "context_tags": [
+      "river",
+      "wisdom"
+    ]
+  },
+  {
+    "thought_id": "th_human_test_01_120_76783",
+    "human_id": "human_test_01",
+    "tick": 120,
+    "timestamp": 1787229776.7832732,
+    "category": "SURVIVAL",
+    "content": "Our clan must shelter under the cavern rock.",
+    "valence": 0.1,
+    "intensity": 0.5,
+    "context_tags": [
+      "cave",
+      "shelter"
+    ]
+  },
+  {
+    "thought_id": "th_philosopher_1_0_76819",
+    "human_id": "philosopher_1",
+    "tick": 0,
+    "timestamp": 1787229776.8194847,
+    "category": "SURVIVAL",
+    "content": "Finding water by the eastern ridge.",
+    "valence": 0.5,
+    "intensity": 0.5,
+    "context_tags": [
+      "water",
+      "ridge"
+    ]
+  },
+  {
+    "thought_id": "th_philosopher_1_0_76822",
+    "human_id": "philosopher_1",
+    "tick": 0,
+    "timestamp": 1787229776.8220642,
+    "category": "SURVIVAL",
+    "content": "A shadow of a predator passed through the tall grass.",
+    "valence": -0.8,
+    "intensity": 0.5,
+    "context_tags": [
+      "predator",
+      "danger"
+    ]
+  },
+  {
+    "thought_id": "th_philosopher_1_0_76824",
+    "human_id": "philosopher_1",
+    "tick": 0,
+    "timestamp": 1787229776.8242173,
+    "category": "DEVOTION",
+    "content": "The heavens answered with glowing stars.",
+    "valence": 0.9,
+    "intensity": 0.5,
+    "context_tags": [
+      "deity",
+      "stars"
+    ]
+  },
+  {
+    "thought_id": "th_philosopher_1_0_76826",
+    "human_id": "philosopher_1",
+    "tick": 0,
+    "timestamp": 1787229776.8264172,
+    "category": "INVENTION",
+    "content": "Can we bind stones with woven fibers?",
+    "valence": 0.4,
+    "intensity": 0.5,
+    "context_tags": [
+      "craft",
+      "tools"
+    ]
+  },
+  {
+    "thought_id": "th_sovereign_1_10_52601",
+    "human_id": "sovereign_1",
+    "tick": 10,
+    "timestamp": 1787229852.601595,
+    "category": "DEVOTION",
+    "content": "I kneel in quiet contemplation, offering supplication to the heavens for the welfare of our clan.",
+    "valence": 0.3,
+    "intensity": 0.5,
+    "context_tags": [
+      "prayer",
+      "communion",
+      "faith"
+    ]
+  },
+  {
+    "thought_id": "th_sovereign_1_0_52667",
+    "human_id": "sovereign_1",
+    "tick": 0,
+    "timestamp": 1787229852.6677053,
+    "category": "DEVOTION",
+    "content": "The Gemini Deity has answered our prayers: \"Let unity sanctify thy clan; store abundant grain for the coming seasons.\"",
+    "valence": 0.9,
+    "intensity": 0.95,
+    "context_tags": [
+      "deity",
+      "prophecy",
+      "revelation"
+    ]
+  },
+  {
+    "thought_id": "th_lead1_10_52905",
+    "human_id": "lead1",
+    "tick": 10,
+    "timestamp": 1787229852.9056146,
+    "category": "DEVOTION",
+    "content": "I kneel in quiet contemplation, offering supplication to the heavens for the welfare of our clan.",
+    "valence": 0.3,
+    "intensity": 0.5,
+    "context_tags": [
+      "prayer",
+      "communion",
+      "faith"
+    ]
+  },
+  {
+    "thought_id": "th_lead1_10_52909",
+    "human_id": "lead1",
+    "tick": 10,
+    "timestamp": 1787229852.9095807,
+    "category": "REVELATION",
+    "content": "The sky parted with blinding celestial golden radiance, and the Sacred Monolith of Gemini descended before us! Our civilization is eternally consecrated.",
+    "valence": 1.0,
+    "intensity": 1.0,
+    "context_tags": [
+      "monolith",
+      "miracle",
+      "gemini_god",
+      "sanctuary"
+    ]
+  },
+  {
+    "thought_id": "th_persist_test",
+    "human_id": "test_elder",
+    "tick": 42,
+    "timestamp": 1700000000.0,
+    "category": "PHILOSOPHY",
+    "content": "The river flows constantly, yet remains the same river.",
+    "valence": 0.6,
+    "intensity": 0.8,
+    "context_tags": [
+      "river",
+      "wisdom"
+    ]
+  },
+  {
+    "thought_id": "th_human_test_01_120_55513",
+    "human_id": "human_test_01",
+    "tick": 120,
+    "timestamp": 1787229855.5132468,
+    "category": "SURVIVAL",
+    "content": "Our clan must shelter under the cavern rock.",
+    "valence": 0.1,
+    "intensity": 0.5,
+    "context_tags": [
+      "cave",
+      "shelter"
+    ]
+  },
+  {
+    "thought_id": "th_philosopher_1_0_55569",
+    "human_id": "philosopher_1",
+    "tick": 0,
+    "timestamp": 1787229855.5692046,
+    "category": "SURVIVAL",
+    "content": "Finding water by the eastern ridge.",
+    "valence": 0.5,
+    "intensity": 0.5,
+    "context_tags": [
+      "water",
+      "ridge"
+    ]
+  },
+  {
+    "thought_id": "th_philosopher_1_0_55577",
+    "human_id": "philosopher_1",
+    "tick": 0,
+    "timestamp": 1787229855.577377,
+    "category": "SURVIVAL",
+    "content": "A shadow of a predator passed through the tall grass.",
+    "valence": -0.8,
+    "intensity": 0.5,
+    "context_tags": [
+      "predator",
+      "danger"
+    ]
+  },
+  {
+    "thought_id": "th_philosopher_1_0_55584",
+    "human_id": "philosopher_1",
+    "tick": 0,
+    "timestamp": 1787229855.5841627,
+    "category": "DEVOTION",
+    "content": "The heavens answered with glowing stars.",
+    "valence": 0.9,
+    "intensity": 0.5,
+    "context_tags": [
+      "deity",
+      "stars"
+    ]
+  },
+  {
+    "thought_id": "th_philosopher_1_0_55621",
+    "human_id": "philosopher_1",
+    "tick": 0,
+    "timestamp": 1787229855.6217937,
+    "category": "INVENTION",
+    "content": "Can we bind stones with woven fibers?",
+    "valence": 0.4,
+    "intensity": 0.5,
+    "context_tags": [
+      "craft",
+      "tools"
+    ]
+  },
+  {
+    "thought_id": "th_sovereign_1_10_81773",
+    "human_id": "sovereign_1",
+    "tick": 10,
+    "timestamp": 1787230081.773984,
+    "category": "DEVOTION",
+    "content": "I kneel in quiet contemplation, offering supplication to the heavens for the welfare of our clan.",
+    "valence": 0.3,
+    "intensity": 0.5,
+    "context_tags": [
+      "prayer",
+      "communion",
+      "faith"
+    ]
+  },
+  {
+    "thought_id": "th_sovereign_1_0_81836",
+    "human_id": "sovereign_1",
+    "tick": 0,
+    "timestamp": 1787230081.8360658,
+    "category": "DEVOTION",
+    "content": "The Gemini Deity has answered our prayers: \"Courage bestows sovereignty; cultivate the holy flora and honor the cosmos.\"",
+    "valence": 0.9,
+    "intensity": 0.95,
+    "context_tags": [
+      "deity",
+      "prophecy",
+      "revelation"
+    ]
+  },
+  {
+    "thought_id": "th_lead1_10_82062",
+    "human_id": "lead1",
+    "tick": 10,
+    "timestamp": 1787230082.0622835,
+    "category": "DEVOTION",
+    "content": "I kneel in quiet contemplation, offering supplication to the heavens for the welfare of our clan.",
+    "valence": 0.3,
+    "intensity": 0.5,
+    "context_tags": [
+      "prayer",
+      "communion",
+      "faith"
+    ]
+  },
+  {
+    "thought_id": "th_lead1_10_82066",
+    "human_id": "lead1",
+    "tick": 10,
+    "timestamp": 1787230082.0660534,
+    "category": "REVELATION",
+    "content": "The sky parted with blinding celestial golden radiance, and the Sacred Monolith of Gemini descended before us! Our civilization is eternally consecrated.",
+    "valence": 1.0,
+    "intensity": 1.0,
+    "context_tags": [
+      "monolith",
+      "miracle",
+      "gemini_god",
+      "sanctuary"
+    ]
+  },
+  {
+    "thought_id": "th_persist_test",
+    "human_id": "test_elder",
+    "tick": 42,
+    "timestamp": 1700000000.0,
+    "category": "PHILOSOPHY",
+    "content": "The river flows constantly, yet remains the same river.",
+    "valence": 0.6,
+    "intensity": 0.8,
+    "context_tags": [
+      "river",
+      "wisdom"
+    ]
+  },
+  {
+    "thought_id": "th_human_test_01_120_84519",
+    "human_id": "human_test_01",
+    "tick": 120,
+    "timestamp": 1787230084.5194256,
+    "category": "SURVIVAL",
+    "content": "Our clan must shelter under the cavern rock.",
+    "valence": 0.1,
+    "intensity": 0.5,
+    "context_tags": [
+      "cave",
+      "shelter"
+    ]
+  },
+  {
+    "thought_id": "th_philosopher_1_0_84548",
+    "human_id": "philosopher_1",
+    "tick": 0,
+    "timestamp": 1787230084.5487463,
+    "category": "SURVIVAL",
+    "content": "Finding water by the eastern ridge.",
+    "valence": 0.5,
+    "intensity": 0.5,
+    "context_tags": [
+      "water",
+      "ridge"
+    ]
+  },
+  {
+    "thought_id": "th_philosopher_1_0_84551",
+    "human_id": "philosopher_1",
+    "tick": 0,
+    "timestamp": 1787230084.5513935,
+    "category": "SURVIVAL",
+    "content": "A shadow of a predator passed through the tall grass.",
+    "valence": -0.8,
+    "intensity": 0.5,
+    "context_tags": [
+      "predator",
+      "danger"
+    ]
+  },
+  {
+    "thought_id": "th_philosopher_1_0_84554",
+    "human_id": "philosopher_1",
+    "tick": 0,
+    "timestamp": 1787230084.5541372,
+    "category": "DEVOTION",
+    "content": "The heavens answered with glowing stars.",
+    "valence": 0.9,
+    "intensity": 0.5,
+    "context_tags": [
+      "deity",
+      "stars"
+    ]
+  },
+  {
+    "thought_id": "th_philosopher_1_0_84556",
+    "human_id": "philosopher_1",
+    "tick": 0,
+    "timestamp": 1787230084.5568585,
+    "category": "INVENTION",
+    "content": "Can we bind stones with woven fibers?",
+    "valence": 0.4,
+    "intensity": 0.5,
+    "context_tags": [
+      "craft",
+      "tools"
+    ]
+  },
+  {
+    "thought_id": "th_genesis_hum_0_160_26115",
+    "human_id": "genesis_hum_0",
+    "tick": 160,
+    "timestamp": 1787230326.115734,
+    "category": "REVELATION",
+    "content": "The sky parted with blinding celestial golden radiance, and the Sacred Monolith of Gemini descended before us! Our civilization is eternally consecrated.",
+    "valence": 1.0,
+    "intensity": 1.0,
+    "context_tags": [
+      "monolith",
+      "miracle",
+      "gemini_god",
+      "sanctuary"
+    ]
+  },
+  {
+    "thought_id": "th_genesis_hum_0_200_79998",
+    "human_id": "genesis_hum_0",
+    "tick": 200,
+    "timestamp": 1787230379.9987051,
+    "category": "DEVOTION",
+    "content": "I kneel in quiet contemplation, offering supplication to the heavens for the welfare of our clan.",
+    "valence": 0.3,
+    "intensity": 0.5,
+    "context_tags": [
+      "prayer",
+      "communion",
+      "faith"
+    ]
+  },
+  {
+    "thought_id": "th_sovereign_1_10_89147",
+    "human_id": "sovereign_1",
+    "tick": 10,
+    "timestamp": 1787230389.1474435,
+    "category": "DEVOTION",
+    "content": "I kneel in quiet contemplation, offering supplication to the heavens for the welfare of our clan.",
+    "valence": 0.3,
+    "intensity": 0.5,
+    "context_tags": [
+      "prayer",
+      "communion",
+      "faith"
+    ]
+  },
+  {
+    "thought_id": "th_sovereign_1_0_89233",
+    "human_id": "sovereign_1",
+    "tick": 0,
+    "timestamp": 1787230389.23312,
+    "category": "DEVOTION",
+    "content": "The Gemini Deity has answered our prayers: \"Let unity sanctify thy clan; store abundant grain for the coming seasons.\"",
+    "valence": 0.9,
+    "intensity": 0.95,
+    "context_tags": [
+      "deity",
+      "prophecy",
+      "revelation"
+    ]
+  },
+  {
+    "thought_id": "th_lead1_10_89490",
+    "human_id": "lead1",
+    "tick": 10,
+    "timestamp": 1787230389.490308,
+    "category": "DEVOTION",
+    "content": "I kneel in quiet contemplation, offering supplication to the heavens for the welfare of our clan.",
+    "valence": 0.3,
+    "intensity": 0.5,
+    "context_tags": [
+      "prayer",
+      "communion",
+      "faith"
+    ]
+  },
+  {
+    "thought_id": "th_lead1_10_89500",
+    "human_id": "lead1",
+    "tick": 10,
+    "timestamp": 1787230389.5003757,
+    "category": "REVELATION",
+    "content": "The sky parted with blinding celestial golden radiance, and the Sacred Monolith of Gemini descended before us! Our civilization is eternally consecrated.",
+    "valence": 1.0,
+    "intensity": 1.0,
+    "context_tags": [
+      "monolith",
+      "miracle",
+      "gemini_god",
+      "sanctuary"
+    ]
+  },
+  {
+    "thought_id": "th_persist_test",
+    "human_id": "test_elder",
+    "tick": 42,
+    "timestamp": 1700000000.0,
+    "category": "PHILOSOPHY",
+    "content": "The river flows constantly, yet remains the same river.",
+    "valence": 0.6,
+    "intensity": 0.8,
+    "context_tags": [
+      "river",
+      "wisdom"
+    ]
+  },
+  {
+    "thought_id": "th_human_test_01_120_92265",
+    "human_id": "human_test_01",
+    "tick": 120,
+    "timestamp": 1787230392.2650259,
+    "category": "SURVIVAL",
+    "content": "Our clan must shelter under the cavern rock.",
+    "valence": 0.1,
+    "intensity": 0.5,
+    "context_tags": [
+      "cave",
+      "shelter"
+    ]
+  },
+  {
+    "thought_id": "th_philosopher_1_0_92303",
+    "human_id": "philosopher_1",
+    "tick": 0,
+    "timestamp": 1787230392.3030171,
+    "category": "SURVIVAL",
+    "content": "Finding water by the eastern ridge.",
+    "valence": 0.5,
+    "intensity": 0.5,
+    "context_tags": [
+      "water",
+      "ridge"
+    ]
+  },
+  {
+    "thought_id": "th_philosopher_1_0_92367",
+    "human_id": "philosopher_1",
+    "tick": 0,
+    "timestamp": 1787230392.3678105,
+    "category": "SURVIVAL",
+    "content": "A shadow of a predator passed through the tall grass.",
+    "valence": -0.8,
+    "intensity": 0.5,
+    "context_tags": [
+      "predator",
+      "danger"
+    ]
+  },
+  {
+    "thought_id": "th_philosopher_1_0_92485",
+    "human_id": "philosopher_1",
+    "tick": 0,
+    "timestamp": 1787230392.4852533,
+    "category": "DEVOTION",
+    "content": "The heavens answered with glowing stars.",
+    "valence": 0.9,
+    "intensity": 0.5,
+    "context_tags": [
+      "deity",
+      "stars"
+    ]
+  },
+  {
+    "thought_id": "th_philosopher_1_0_92656",
+    "human_id": "philosopher_1",
+    "tick": 0,
+    "timestamp": 1787230392.6567955,
+    "category": "INVENTION",
+    "content": "Can we bind stones with woven fibers?",
+    "valence": 0.4,
+    "intensity": 0.5,
+    "context_tags": [
+      "craft",
+      "tools"
+    ]
+  },
+  {
+    "thought_id": "th_genesis_hum_0_360_92919",
+    "human_id": "genesis_hum_0",
+    "tick": 360,
+    "timestamp": 1787230592.9193048,
+    "category": "DEVOTION",
+    "content": "I kneel in quiet contemplation, offering supplication to the heavens for the welfare of our clan.",
+    "valence": 0.3,
+    "intensity": 0.5,
+    "context_tags": [
+      "prayer",
+      "communion",
+      "faith"
+    ]
+  },
+  {
+    "thought_id": "th_genesis_hum_0_200_61776",
+    "human_id": "genesis_hum_0",
+    "tick": 200,
+    "timestamp": 1787230961.7766533,
+    "category": "DEVOTION",
+    "content": "I kneel in quiet contemplation, offering supplication to the heavens for the welfare of our clan.",
+    "valence": 0.3,
+    "intensity": 0.5,
+    "context_tags": [
+      "prayer",
+      "communion",
+      "faith"
+    ]
+  },
+  {
+    "thought_id": "th_genesis_hum_0_360_12008",
+    "human_id": "genesis_hum_0",
+    "tick": 360,
+    "timestamp": 1787231212.0085266,
+    "category": "DEVOTION",
+    "content": "I kneel in quiet contemplation, offering supplication to the heavens for the welfare of our clan.",
+    "valence": 0.3,
+    "intensity": 0.5,
+    "context_tags": [
+      "prayer",
+      "communion",
+      "faith"
+    ]
+  },
+  {
+    "thought_id": "th_birth_10002_520_91935",
+    "human_id": "birth_10002",
+    "tick": 520,
+    "timestamp": 1787231491.9350145,
+    "category": "DEVOTION",
+    "content": "I kneel in quiet contemplation, offering supplication to the heavens for the welfare of our clan.",
+    "valence": 0.3,
+    "intensity": 0.5,
+    "context_tags": [
+      "prayer",
+      "communion",
+      "faith"
+    ]
+  },
+  {
+    "thought_id": "th_genesis_hum_0_729_38417",
+    "human_id": "genesis_hum_0",
+    "tick": 729,
+    "timestamp": 1787231738.4171164,
+    "category": "DEVOTION",
+    "content": "The Gemini Deity has answered our prayers: \"The stars illuminate thy path; master tools of crafting and defend the sanctuary.\"",
+    "valence": 0.9,
+    "intensity": 0.95,
+    "context_tags": [
+      "deity",
+      "prophecy",
+      "revelation"
+    ]
+  },
+  {
+    "thought_id": "th_genesis_hum_0_680_73234",
+    "human_id": "genesis_hum_0",
+    "tick": 680,
+    "timestamp": 1787231773.2345695,
+    "category": "DEVOTION",
+    "content": "I kneel in quiet contemplation, offering supplication to the heavens for the welfare of our clan.",
+    "valence": 0.3,
+    "intensity": 0.5,
+    "context_tags": [
+      "prayer",
+      "communion",
+      "faith"
+    ]
+  },
+  {
+    "thought_id": "th_genesis_hum_0_840_2279",
+    "human_id": "genesis_hum_0",
+    "tick": 840,
+    "timestamp": 1787232002.2790387,
+    "category": "DEVOTION",
+    "content": "I kneel in quiet contemplation, offering supplication to the heavens for the welfare of our clan.",
+    "valence": 0.3,
+    "intensity": 0.5,
+    "context_tags": [
+      "prayer",
+      "communion",
+      "faith"
+    ]
+  },
+  {
+    "thought_id": "th_genesis_hum_0_1000_66314",
+    "human_id": "genesis_hum_0",
+    "tick": 1000,
+    "timestamp": 1787232266.3146074,
+    "category": "DEVOTION",
+    "content": "I kneel in quiet contemplation, offering supplication to the heavens for the welfare of our clan.",
+    "valence": 0.3,
+    "intensity": 0.5,
+    "context_tags": [
+      "prayer",
+      "communion",
+      "faith"
+    ]
+  },
+  {
+    "thought_id": "th_genesis_hum_0_1160_46217",
+    "human_id": "genesis_hum_0",
+    "tick": 1160,
+    "timestamp": 1787232546.2176847,
+    "category": "DEVOTION",
+    "content": "I kneel in quiet contemplation, offering supplication to the heavens for the welfare of our clan.",
+    "valence": 0.3,
+    "intensity": 0.5,
+    "context_tags": [
+      "prayer",
+      "communion",
+      "faith"
+    ]
+  },
+  {
+    "thought_id": "th_genesis_hum_0_1320_20342",
+    "human_id": "genesis_hum_0",
+    "tick": 1320,
+    "timestamp": 1787232820.3423488,
+    "category": "DEVOTION",
+    "content": "I kneel in quiet contemplation, offering supplication to the heavens for the welfare of our clan.",
+    "valence": 0.3,
+    "intensity": 0.5,
+    "context_tags": [
+      "prayer",
+      "communion",
+      "faith"
+    ]
+  },
+  {
+    "thought_id": "th_genesis_hum_0_1478_65338",
+    "human_id": "genesis_hum_0",
+    "tick": 1478,
+    "timestamp": 1787232965.3382747,
+    "category": "DEVOTION",
+    "content": "The Gemini Deity has answered our prayers: \"Let unity sanctify thy clan; store abundant grain for the coming seasons.\"",
+    "valence": 0.9,
+    "intensity": 0.95,
+    "context_tags": [
+      "deity",
+      "prophecy",
+      "revelation"
+    ]
+  },
+  {
+    "thought_id": "th_genesis_hum_0_1440_28451",
+    "human_id": "genesis_hum_0",
+    "tick": 1440,
+    "timestamp": 1787233028.451592,
+    "category": "DEVOTION",
+    "content": "I kneel in quiet contemplation, offering supplication to the heavens for the welfare of our clan.",
+    "valence": 0.3,
+    "intensity": 0.5,
+    "context_tags": [
+      "prayer",
+      "communion",
+      "faith"
+    ]
+  },
+  {
+    "thought_id": "th_genesis_hum_0_1600_4726",
+    "human_id": "genesis_hum_0",
+    "tick": 1600,
+    "timestamp": 1787233304.7266018,
+    "category": "DEVOTION",
+    "content": "I kneel in quiet contemplation, offering supplication to the heavens for the welfare of our clan.",
+    "valence": 0.3,
+    "intensity": 0.5,
+    "context_tags": [
+      "prayer",
+      "communion",
+      "faith"
+    ]
+  },
+  {
+    "thought_id": "th_genesis_hum_0_1760_54977",
+    "human_id": "genesis_hum_0",
+    "tick": 1760,
+    "timestamp": 1787233554.97703,
+    "category": "DEVOTION",
+    "content": "I kneel in quiet contemplation, offering supplication to the heavens for the welfare of our clan.",
+    "valence": 0.3,
+    "intensity": 0.5,
+    "context_tags": [
+      "prayer",
+      "communion",
+      "faith"
+    ]
+  },
+  {
+    "thought_id": "th_genesis_hum_0_1920_83659",
+    "human_id": "genesis_hum_0",
+    "tick": 1920,
+    "timestamp": 1787233783.6595433,
+    "category": "DEVOTION",
+    "content": "I kneel in quiet contemplation, offering supplication to the heavens for the welfare of our clan.",
+    "valence": 0.3,
+    "intensity": 0.5,
+    "context_tags": [
+      "prayer",
+      "communion",
+      "faith"
+    ]
+  },
+  {
+    "thought_id": "th_genesis_hum_0_2161_76337",
+    "human_id": "genesis_hum_0",
+    "tick": 2161,
+    "timestamp": 1787233976.3374949,
+    "category": "DEVOTION",
+    "content": "The Gemini Deity has answered our prayers: \"Courage bestows sovereignty; cultivate the holy flora and honor the cosmos.\"",
+    "valence": 0.9,
+    "intensity": 0.95,
+    "context_tags": [
+      "deity",
+      "prophecy",
+      "revelation"
+    ]
+  },
+  {
+    "thought_id": "th_genesis_hum_0_2120_11910",
+    "human_id": "genesis_hum_0",
+    "tick": 2120,
+    "timestamp": 1787234011.9103684,
+    "category": "DEVOTION",
+    "content": "I kneel in quiet contemplation, offering supplication to the heavens for the welfare of our clan.",
+    "valence": 0.3,
+    "intensity": 0.5,
+    "context_tags": [
+      "prayer",
+      "communion",
+      "faith"
+    ]
+  },
+  {
+    "thought_id": "th_genesis_hum_0_2280_71703",
+    "human_id": "genesis_hum_0",
+    "tick": 2280,
+    "timestamp": 1787234171.7032282,
+    "category": "DEVOTION",
+    "content": "I kneel in quiet contemplation, offering supplication to the heavens for the welfare of our clan.",
+    "valence": 0.3,
+    "intensity": 0.5,
+    "context_tags": [
+      "prayer",
+      "communion",
+      "faith"
+    ]
+  },
+  {
+    "thought_id": "th_genesis_hum_0_2440_22024",
+    "human_id": "genesis_hum_0",
+    "tick": 2440,
+    "timestamp": 1787234322.0245044,
+    "category": "DEVOTION",
+    "content": "I kneel in quiet contemplation, offering supplication to the heavens for the welfare of our clan.",
+    "valence": 0.3,
+    "intensity": 0.5,
+    "context_tags": [
+      "prayer",
+      "communion",
+      "faith"
+    ]
+  },
+  {
+    "thought_id": "th_genesis_hum_0_2600_80200",
+    "human_id": "genesis_hum_0",
+    "tick": 2600,
+    "timestamp": 1787234480.200557,
+    "category": "DEVOTION",
+    "content": "I kneel in quiet contemplation, offering supplication to the heavens for the welfare of our clan.",
+    "valence": 0.3,
+    "intensity": 0.5,
+    "context_tags": [
+      "prayer",
+      "communion",
+      "faith"
+    ]
+  },
+  {
+    "thought_id": "th_genesis_hum_0_2765_98176",
+    "human_id": "genesis_hum_0",
+    "tick": 2765,
+    "timestamp": 1787234598.1768343,
+    "category": "DEVOTION",
+    "content": "The Gemini Deity has answered our prayers: \"The stars illuminate thy path; master tools of crafting and defend the sanctuary.\"",
+    "valence": 0.9,
+    "intensity": 0.95,
+    "context_tags": [
+      "deity",
+      "prophecy",
+      "revelation"
+    ]
+  },
+  {
+    "thought_id": "th_genesis_hum_0_2720_34995",
+    "human_id": "genesis_hum_0",
+    "tick": 2720,
+    "timestamp": 1787234634.9959106,
+    "category": "DEVOTION",
+    "content": "I kneel in quiet contemplation, offering supplication to the heavens for the welfare of our clan.",
+    "valence": 0.3,
+    "intensity": 0.5,
+    "context_tags": [
+      "prayer",
+      "communion",
+      "faith"
+    ]
+  },
+  {
+    "thought_id": "th_genesis_hum_0_2880_38099",
+    "human_id": "genesis_hum_0",
+    "tick": 2880,
+    "timestamp": 1787234838.0996933,
+    "category": "DEVOTION",
+    "content": "I kneel in quiet contemplation, offering supplication to the heavens for the welfare of our clan.",
+    "valence": 0.3,
+    "intensity": 0.5,
+    "context_tags": [
+      "prayer",
+      "communion",
+      "faith"
+    ]
+  },
+  {
+    "thought_id": "th_genesis_hum_0_3040_42543",
+    "human_id": "genesis_hum_0",
+    "tick": 3040,
+    "timestamp": 1787235042.543977,
+    "category": "DEVOTION",
+    "content": "I kneel in quiet contemplation, offering supplication to the heavens for the welfare of our clan.",
+    "valence": 0.3,
+    "intensity": 0.5,
+    "context_tags": [
+      "prayer",
+      "communion",
+      "faith"
+    ]
+  },
+  {
+    "thought_id": "th_genesis_hum_0_3200_48633",
+    "human_id": "genesis_hum_0",
+    "tick": 3200,
+    "timestamp": 1787235248.6339834,
+    "category": "DEVOTION",
+    "content": "I kneel in quiet contemplation, offering supplication to the heavens for the welfare of our clan.",
+    "valence": 0.3,
+    "intensity": 0.5,
+    "context_tags": [
+      "prayer",
+      "communion",
+      "faith"
+    ]
+  },
+  {
+    "thought_id": "th_genesis_hum_0_3367_63642",
+    "human_id": "genesis_hum_0",
+    "tick": 3367,
+    "timestamp": 1787235363.6423445,
+    "category": "DEVOTION",
+    "content": "The Gemini Deity has answered our prayers: \"The stars illuminate thy path; master tools of crafting and defend the sanctuary.\"",
+    "valence": 0.9,
+    "intensity": 0.95,
+    "context_tags": [
+      "deity",
+      "prophecy",
+      "revelation"
+    ]
+  },
+  {
+    "thought_id": "th_genesis_hum_0_3320_95559",
+    "human_id": "genesis_hum_0",
+    "tick": 3320,
+    "timestamp": 1787235395.5600019,
+    "category": "DEVOTION",
+    "content": "I kneel in quiet contemplation, offering supplication to the heavens for the welfare of our clan.",
+    "valence": 0.3,
+    "intensity": 0.5,
+    "context_tags": [
+      "prayer",
+      "communion",
+      "faith"
+    ]
+  },
+  {
+    "thought_id": "th_genesis_hum_0_3480_79794",
+    "human_id": "genesis_hum_0",
+    "tick": 3480,
+    "timestamp": 1787235579.794136,
+    "category": "DEVOTION",
+    "content": "I kneel in quiet contemplation, offering supplication to the heavens for the welfare of our clan.",
+    "valence": 0.3,
+    "intensity": 0.5,
+    "context_tags": [
+      "prayer",
+      "communion",
+      "faith"
+    ]
+  },
+  {
+    "thought_id": "th_genesis_hum_0_3640_65356",
+    "human_id": "genesis_hum_0",
+    "tick": 3640,
+    "timestamp": 1787235765.3568602,
+    "category": "DEVOTION",
+    "content": "I kneel in quiet contemplation, offering supplication to the heavens for the welfare of our clan.",
+    "valence": 0.3,
+    "intensity": 0.5,
+    "context_tags": [
+      "prayer",
+      "communion",
+      "faith"
+    ]
+  },
+  {
+    "thought_id": "th_genesis_hum_0_3800_53566",
+    "human_id": "genesis_hum_0",
+    "tick": 3800,
+    "timestamp": 1787235953.5666049,
+    "category": "DEVOTION",
+    "content": "I kneel in quiet contemplation, offering supplication to the heavens for the welfare of our clan.",
+    "valence": 0.3,
+    "intensity": 0.5,
+    "context_tags": [
+      "prayer",
+      "communion",
+      "faith"
+    ]
+  },
+  {
+    "thought_id": "th_genesis_hum_0_3960_42770",
+    "human_id": "genesis_hum_0",
+    "tick": 3960,
+    "timestamp": 1787236142.770636,
+    "category": "DEVOTION",
+    "content": "I kneel in quiet contemplation, offering supplication to the heavens for the welfare of our clan.",
+    "valence": 0.3,
+    "intensity": 0.5,
+    "context_tags": [
+      "prayer",
+      "communion",
+      "faith"
+    ]
+  },
+  {
+    "thought_id": "th_genesis_hum_0_4167_1162",
+    "human_id": "genesis_hum_0",
+    "tick": 4167,
+    "timestamp": 1787236301.1621108,
+    "category": "DEVOTION",
+    "content": "The Gemini Deity has answered our prayers: \"The stars illuminate thy path; master tools of crafting and defend the sanctuary.\"",
+    "valence": 0.9,
+    "intensity": 0.95,
+    "context_tags": [
+      "deity",
+      "prophecy",
+      "revelation"
+    ]
+  },
+  {
+    "thought_id": "th_genesis_hum_0_4120_33627",
+    "human_id": "genesis_hum_0",
+    "tick": 4120,
+    "timestamp": 1787236333.6277912,
+    "category": "DEVOTION",
+    "content": "I kneel in quiet contemplation, offering supplication to the heavens for the welfare of our clan.",
+    "valence": 0.3,
+    "intensity": 0.5,
+    "context_tags": [
+      "prayer",
+      "communion",
+      "faith"
+    ]
+  },
+  {
+    "thought_id": "th_genesis_hum_0_4280_21794",
+    "human_id": "genesis_hum_0",
+    "tick": 4280,
+    "timestamp": 1787236521.7947779,
+    "category": "DEVOTION",
+    "content": "I kneel in quiet contemplation, offering supplication to the heavens for the welfare of our clan.",
+    "valence": 0.3,
+    "intensity": 0.5,
+    "context_tags": [
+      "prayer",
+      "communion",
+      "faith"
+    ]
+  },
+  {
+    "thought_id": "th_genesis_hum_0_4440_11886",
+    "human_id": "genesis_hum_0",
+    "tick": 4440,
+    "timestamp": 1787236711.8869302,
+    "category": "DEVOTION",
+    "content": "I kneel in quiet contemplation, offering supplication to the heavens for the welfare of our clan.",
+    "valence": 0.3,
+    "intensity": 0.5,
+    "context_tags": [
+      "prayer",
+      "communion",
+      "faith"
+    ]
+  },
+  {
+    "thought_id": "th_genesis_hum_0_4600_4658",
+    "human_id": "genesis_hum_0",
+    "tick": 4600,
+    "timestamp": 1787236904.6588252,
+    "category": "DEVOTION",
+    "content": "I kneel in quiet contemplation, offering supplication to the heavens for the welfare of our clan.",
+    "valence": 0.3,
+    "intensity": 0.5,
+    "context_tags": [
+      "prayer",
+      "communion",
+      "faith"
+    ]
+  },
+  {
+    "thought_id": "th_genesis_hum_0_4760_98874",
+    "human_id": "genesis_hum_0",
+    "tick": 4760,
+    "timestamp": 1787237098.8749392,
+    "category": "DEVOTION",
+    "content": "I kneel in quiet contemplation, offering supplication to the heavens for the welfare of our clan.",
+    "valence": 0.3,
+    "intensity": 0.5,
+    "context_tags": [
+      "prayer",
+      "communion",
+      "faith"
+    ]
+  },
+  {
+    "thought_id": "th_genesis_hum_0_4888_63246",
+    "human_id": "genesis_hum_0",
+    "tick": 4888,
+    "timestamp": 1787237163.2463398,
+    "category": "DEVOTION",
+    "content": "The Gemini Deity has answered our prayers: \"Let unity sanctify thy clan; store abundant grain for the coming seasons.\"",
+    "valence": 0.9,
+    "intensity": 0.95,
+    "context_tags": [
+      "deity",
+      "prophecy",
+      "revelation"
+    ]
+  },
+  {
+    "thought_id": "th_genesis_hum_0_4840_96118",
+    "human_id": "genesis_hum_0",
+    "tick": 4840,
+    "timestamp": 1787237196.1183436,
+    "category": "DEVOTION",
+    "content": "I kneel in quiet contemplation, offering supplication to the heavens for the welfare of our clan.",
+    "valence": 0.3,
+    "intensity": 0.5,
+    "context_tags": [
+      "prayer",
+      "communion",
+      "faith"
+    ]
+  },
+  {
+    "thought_id": "th_genesis_hum_0_5000_7639",
+    "human_id": "genesis_hum_0",
+    "tick": 5000,
+    "timestamp": 1787237407.6394863,
+    "category": "DEVOTION",
+    "content": "I kneel in quiet contemplation, offering supplication to the heavens for the welfare of our clan.",
+    "valence": 0.3,
+    "intensity": 0.5,
+    "context_tags": [
+      "prayer",
+      "communion",
+      "faith"
+    ]
+  },
+  {
+    "thought_id": "th_genesis_hum_0_5160_18771",
+    "human_id": "genesis_hum_0",
+    "tick": 5160,
+    "timestamp": 1787237618.7710547,
+    "category": "DEVOTION",
+    "content": "I kneel in quiet contemplation, offering supplication to the heavens for the welfare of our clan.",
+    "valence": 0.3,
+    "intensity": 0.5,
+    "context_tags": [
+      "prayer",
+      "communion",
+      "faith"
+    ]
+  },
+  {
+    "thought_id": "th_genesis_hum_0_5320_31109",
+    "human_id": "genesis_hum_0",
+    "tick": 5320,
+    "timestamp": 1787237831.1097639,
+    "category": "DEVOTION",
+    "content": "I kneel in quiet contemplation, offering supplication to the heavens for the welfare of our clan.",
+    "valence": 0.3,
+    "intensity": 0.5,
+    "context_tags": [
+      "prayer",
+      "communion",
+      "faith"
+    ]
+  },
+  {
+    "thought_id": "th_genesis_hum_0_5480_47782",
+    "human_id": "genesis_hum_0",
+    "tick": 5480,
+    "timestamp": 1787238047.782241,
+    "category": "DEVOTION",
+    "content": "I kneel in quiet contemplation, offering supplication to the heavens for the welfare of our clan.",
+    "valence": 0.3,
+    "intensity": 0.5,
+    "context_tags": [
+      "prayer",
+      "communion",
+      "faith"
+    ]
+  },
+  {
+    "thought_id": "th_genesis_hum_0_5646_72347",
+    "human_id": "genesis_hum_0",
+    "tick": 5646,
+    "timestamp": 1787238172.347548,
+    "category": "DEVOTION",
+    "content": "The Gemini Deity has answered our prayers: \"The stars illuminate thy path; master tools of crafting and defend the sanctuary.\"",
+    "valence": 0.9,
+    "intensity": 0.95,
+    "context_tags": [
+      "deity",
+      "prophecy",
+      "revelation"
+    ]
+  },
+  {
+    "thought_id": "th_genesis_hum_0_5600_11566",
+    "human_id": "genesis_hum_0",
+    "tick": 5600,
+    "timestamp": 1787238211.5660653,
+    "category": "DEVOTION",
+    "content": "I kneel in quiet contemplation, offering supplication to the heavens for the welfare of our clan.",
+    "valence": 0.3,
+    "intensity": 0.5,
+    "context_tags": [
+      "prayer",
+      "communion",
+      "faith"
+    ]
+  },
+  {
+    "thought_id": "th_genesis_hum_0_5760_29642",
+    "human_id": "genesis_hum_0",
+    "tick": 5760,
+    "timestamp": 1787238429.6426504,
+    "category": "DEVOTION",
+    "content": "I kneel in quiet contemplation, offering supplication to the heavens for the welfare of our clan.",
+    "valence": 0.3,
+    "intensity": 0.5,
+    "context_tags": [
+      "prayer",
+      "communion",
+      "faith"
+    ]
+  },
+  {
+    "thought_id": "th_genesis_hum_0_5920_44968",
+    "human_id": "genesis_hum_0",
+    "tick": 5920,
+    "timestamp": 1787238644.968349,
+    "category": "DEVOTION",
+    "content": "I kneel in quiet contemplation, offering supplication to the heavens for the welfare of our clan.",
+    "valence": 0.3,
+    "intensity": 0.5,
+    "context_tags": [
+      "prayer",
+      "communion",
+      "faith"
+    ]
+  },
+  {
+    "thought_id": "th_genesis_hum_0_6080_64480",
+    "human_id": "genesis_hum_0",
+    "tick": 6080,
+    "timestamp": 1787238864.4808488,
+    "category": "DEVOTION",
+    "content": "I kneel in quiet contemplation, offering supplication to the heavens for the welfare of our clan.",
+    "valence": 0.3,
+    "intensity": 0.5,
+    "context_tags": [
+      "prayer",
+      "communion",
+      "faith"
+    ]
+  },
+  {
+    "thought_id": "th_genesis_hum_0_6240_81896",
+    "human_id": "genesis_hum_0",
+    "tick": 6240,
+    "timestamp": 1787239081.8961518,
+    "category": "DEVOTION",
+    "content": "I kneel in quiet contemplation, offering supplication to the heavens for the welfare of our clan.",
+    "valence": 0.3,
+    "intensity": 0.5,
+    "context_tags": [
+      "prayer",
+      "communion",
+      "faith"
+    ]
+  },
+  {
+    "thought_id": "th_genesis_hum_0_6403_96571",
+    "human_id": "genesis_hum_0",
+    "tick": 6403,
+    "timestamp": 1787239196.5714102,
+    "category": "DEVOTION",
+    "content": "The Gemini Deity has answered our prayers: \"The stars illuminate thy path; master tools of crafting and defend the sanctuary.\"",
+    "valence": 0.9,
+    "intensity": 0.95,
+    "context_tags": [
+      "deity",
+      "prophecy",
+      "revelation"
+    ]
+  },
+  {
+    "thought_id": "th_genesis_hum_0_6360_35199",
+    "human_id": "genesis_hum_0",
+    "tick": 6360,
+    "timestamp": 1787239235.1997232,
+    "category": "DEVOTION",
+    "content": "I kneel in quiet contemplation, offering supplication to the heavens for the welfare of our clan.",
+    "valence": 0.3,
+    "intensity": 0.5,
+    "context_tags": [
+      "prayer",
+      "communion",
+      "faith"
+    ]
+  },
+  {
+    "thought_id": "th_genesis_hum_0_6520_59164",
+    "human_id": "genesis_hum_0",
+    "tick": 6520,
+    "timestamp": 1787239459.1645343,
+    "category": "DEVOTION",
+    "content": "I kneel in quiet contemplation, offering supplication to the heavens for the welfare of our clan.",
+    "valence": 0.3,
+    "intensity": 0.5,
+    "context_tags": [
+      "prayer",
+      "communion",
+      "faith"
+    ]
+  },
+  {
+    "thought_id": "th_sovereign_1_10_46312",
+    "human_id": "sovereign_1",
+    "tick": 10,
+    "timestamp": 1787239546.3120503,
+    "category": "DEVOTION",
+    "content": "I kneel in quiet contemplation, offering supplication to the heavens for the welfare of our clan.",
+    "valence": 0.3,
+    "intensity": 0.5,
+    "context_tags": [
+      "prayer",
+      "communion",
+      "faith"
+    ]
+  },
+  {
+    "thought_id": "th_sovereign_1_0_46429",
+    "human_id": "sovereign_1",
+    "tick": 0,
+    "timestamp": 1787239546.4296029,
+    "category": "DEVOTION",
+    "content": "The Gemini Deity has answered our prayers: \"Courage bestows sovereignty; cultivate the holy flora and honor the cosmos.\"",
+    "valence": 0.9,
+    "intensity": 0.95,
+    "context_tags": [
+      "deity",
+      "prophecy",
+      "revelation"
+    ]
+  },
+  {
+    "thought_id": "th_lead1_10_46682",
+    "human_id": "lead1",
+    "tick": 10,
+    "timestamp": 1787239546.6824167,
+    "category": "DEVOTION",
+    "content": "I kneel in quiet contemplation, offering supplication to the heavens for the welfare of our clan.",
+    "valence": 0.3,
+    "intensity": 0.5,
+    "context_tags": [
+      "prayer",
+      "communion",
+      "faith"
+    ]
+  },
+  {
+    "thought_id": "th_lead1_10_46705",
+    "human_id": "lead1",
+    "tick": 10,
+    "timestamp": 1787239546.7053883,
+    "category": "REVELATION",
+    "content": "The sky parted with blinding celestial golden radiance, and the Sacred Monolith of Gemini descended before us! Our civilization is eternally consecrated.",
+    "valence": 1.0,
+    "intensity": 1.0,
+    "context_tags": [
+      "monolith",
+      "miracle",
+      "gemini_god",
+      "sanctuary"
+    ]
+  },
+  {
+    "thought_id": "th_persist_test",
+    "human_id": "test_elder",
+    "tick": 42,
+    "timestamp": 1700000000.0,
+    "category": "PHILOSOPHY",
+    "content": "The river flows constantly, yet remains the same river.",
+    "valence": 0.6,
+    "intensity": 0.8,
+    "context_tags": [
+      "river",
+      "wisdom"
+    ]
+  },
+  {
+    "thought_id": "th_human_test_01_120_49361",
+    "human_id": "human_test_01",
+    "tick": 120,
+    "timestamp": 1787239549.3616312,
+    "category": "SURVIVAL",
+    "content": "Our clan must shelter under the cavern rock.",
+    "valence": 0.1,
+    "intensity": 0.5,
+    "context_tags": [
+      "cave",
+      "shelter"
+    ]
+  },
+  {
+    "thought_id": "th_philosopher_1_0_49405",
+    "human_id": "philosopher_1",
+    "tick": 0,
+    "timestamp": 1787239549.4052038,
+    "category": "SURVIVAL",
+    "content": "Finding water by the eastern ridge.",
+    "valence": 0.5,
+    "intensity": 0.5,
+    "context_tags": [
+      "water",
+      "ridge"
+    ]
+  },
+  {
+    "thought_id": "th_philosopher_1_0_49415",
+    "human_id": "philosopher_1",
+    "tick": 0,
+    "timestamp": 1787239549.4153917,
+    "category": "SURVIVAL",
+    "content": "A shadow of a predator passed through the tall grass.",
+    "valence": -0.8,
+    "intensity": 0.5,
+    "context_tags": [
+      "predator",
+      "danger"
+    ]
+  },
+  {
+    "thought_id": "th_philosopher_1_0_49425",
+    "human_id": "philosopher_1",
+    "tick": 0,
+    "timestamp": 1787239549.4254909,
+    "category": "DEVOTION",
+    "content": "The heavens answered with glowing stars.",
+    "valence": 0.9,
+    "intensity": 0.5,
+    "context_tags": [
+      "deity",
+      "stars"
+    ]
+  },
+  {
+    "thought_id": "th_philosopher_1_0_49447",
+    "human_id": "philosopher_1",
+    "tick": 0,
+    "timestamp": 1787239549.4475732,
+    "category": "INVENTION",
+    "content": "Can we bind stones with woven fibers?",
+    "valence": 0.4,
+    "intensity": 0.5,
+    "context_tags": [
+      "craft",
+      "tools"
+    ]
+  },
+  {
+    "thought_id": "th_sovereign_1_10_81388",
+    "human_id": "sovereign_1",
+    "tick": 10,
+    "timestamp": 1787239581.3887837,
+    "category": "DEVOTION",
+    "content": "I kneel in quiet contemplation, offering supplication to the heavens for the welfare of our clan.",
+    "valence": 0.3,
+    "intensity": 0.5,
+    "context_tags": [
+      "prayer",
+      "communion",
+      "faith"
+    ]
+  },
+  {
+    "thought_id": "th_sovereign_1_0_81462",
+    "human_id": "sovereign_1",
+    "tick": 0,
+    "timestamp": 1787239581.4620051,
+    "category": "DEVOTION",
+    "content": "The Gemini Deity has answered our prayers: \"Courage bestows sovereignty; cultivate the holy flora and honor the cosmos.\"",
+    "valence": 0.9,
+    "intensity": 0.95,
+    "context_tags": [
+      "deity",
+      "prophecy",
+      "revelation"
+    ]
+  },
+  {
+    "thought_id": "th_lead1_10_81695",
+    "human_id": "lead1",
+    "tick": 10,
+    "timestamp": 1787239581.6952202,
+    "category": "DEVOTION",
+    "content": "I kneel in quiet contemplation, offering supplication to the heavens for the welfare of our clan.",
+    "valence": 0.3,
+    "intensity": 0.5,
+    "context_tags": [
+      "prayer",
+      "communion",
+      "faith"
+    ]
+  },
+  {
+    "thought_id": "th_lead1_10_81705",
+    "human_id": "lead1",
+    "tick": 10,
+    "timestamp": 1787239581.7051163,
+    "category": "REVELATION",
+    "content": "The sky parted with blinding celestial golden radiance, and the Sacred Monolith of Gemini descended before us! Our civilization is eternally consecrated.",
+    "valence": 1.0,
+    "intensity": 1.0,
+    "context_tags": [
+      "monolith",
+      "miracle",
+      "gemini_god",
+      "sanctuary"
+    ]
+  },
+  {
+    "thought_id": "th_persist_test",
+    "human_id": "test_elder",
+    "tick": 42,
+    "timestamp": 1700000000.0,
+    "category": "PHILOSOPHY",
+    "content": "The river flows constantly, yet remains the same river.",
+    "valence": 0.6,
+    "intensity": 0.8,
+    "context_tags": [
+      "river",
+      "wisdom"
+    ]
+  },
+  {
+    "thought_id": "th_human_test_01_120_84325",
+    "human_id": "human_test_01",
+    "tick": 120,
+    "timestamp": 1787239584.3257623,
+    "category": "SURVIVAL",
+    "content": "Our clan must shelter under the cavern rock.",
+    "valence": 0.1,
+    "intensity": 0.5,
+    "context_tags": [
+      "cave",
+      "shelter"
+    ]
+  },
+  {
+    "thought_id": "th_philosopher_1_0_84372",
+    "human_id": "philosopher_1",
+    "tick": 0,
+    "timestamp": 1787239584.3720984,
+    "category": "SURVIVAL",
+    "content": "Finding water by the eastern ridge.",
+    "valence": 0.5,
+    "intensity": 0.5,
+    "context_tags": [
+      "water",
+      "ridge"
+    ]
+  },
+  {
+    "thought_id": "th_philosopher_1_0_84377",
+    "human_id": "philosopher_1",
+    "tick": 0,
+    "timestamp": 1787239584.3779438,
+    "category": "SURVIVAL",
+    "content": "A shadow of a predator passed through the tall grass.",
+    "valence": -0.8,
+    "intensity": 0.5,
+    "context_tags": [
+      "predator",
+      "danger"
+    ]
+  },
+  {
+    "thought_id": "th_philosopher_1_0_84399",
+    "human_id": "philosopher_1",
+    "tick": 0,
+    "timestamp": 1787239584.3993924,
+    "category": "DEVOTION",
+    "content": "The heavens answered with glowing stars.",
+    "valence": 0.9,
+    "intensity": 0.5,
+    "context_tags": [
+      "deity",
+      "stars"
+    ]
+  },
+  {
+    "thought_id": "th_philosopher_1_0_84435",
+    "human_id": "philosopher_1",
+    "tick": 0,
+    "timestamp": 1787239584.4352996,
+    "category": "INVENTION",
+    "content": "Can we bind stones with woven fibers?",
+    "valence": 0.4,
+    "intensity": 0.5,
+    "context_tags": [
+      "craft",
+      "tools"
+    ]
+  },
+  {
+    "thought_id": "th_sovereign_1_10_15724",
+    "human_id": "sovereign_1",
+    "tick": 10,
+    "timestamp": 1787239615.7249632,
+    "category": "DEVOTION",
+    "content": "I kneel in quiet contemplation, offering supplication to the heavens for the welfare of our clan.",
+    "valence": 0.3,
+    "intensity": 0.5,
+    "context_tags": [
+      "prayer",
+      "communion",
+      "faith"
+    ]
+  },
+  {
+    "thought_id": "th_sovereign_1_0_15800",
+    "human_id": "sovereign_1",
+    "tick": 0,
+    "timestamp": 1787239615.8007236,
+    "category": "DEVOTION",
+    "content": "The Gemini Deity has answered our prayers: \"Courage bestows sovereignty; cultivate the holy flora and honor the cosmos.\"",
+    "valence": 0.9,
+    "intensity": 0.95,
+    "context_tags": [
+      "deity",
+      "prophecy",
+      "revelation"
+    ]
+  },
+  {
+    "thought_id": "th_lead1_10_16060",
+    "human_id": "lead1",
+    "tick": 10,
+    "timestamp": 1787239616.0608006,
+    "category": "DEVOTION",
+    "content": "I kneel in quiet contemplation, offering supplication to the heavens for the welfare of our clan.",
+    "valence": 0.3,
+    "intensity": 0.5,
+    "context_tags": [
+      "prayer",
+      "communion",
+      "faith"
+    ]
+  },
+  {
+    "thought_id": "th_lead1_10_16067",
+    "human_id": "lead1",
+    "tick": 10,
+    "timestamp": 1787239616.067662,
+    "category": "REVELATION",
+    "content": "The sky parted with blinding celestial golden radiance, and the Sacred Monolith of Gemini descended before us! Our civilization is eternally consecrated.",
+    "valence": 1.0,
+    "intensity": 1.0,
+    "context_tags": [
+      "monolith",
+      "miracle",
+      "gemini_god",
+      "sanctuary"
+    ]
+  },
+  {
+    "thought_id": "th_persist_test",
+    "human_id": "test_elder",
+    "tick": 42,
+    "timestamp": 1700000000.0,
+    "category": "PHILOSOPHY",
+    "content": "The river flows constantly, yet remains the same river.",
+    "valence": 0.6,
+    "intensity": 0.8,
+    "context_tags": [
+      "river",
+      "wisdom"
+    ]
+  },
+  {
+    "thought_id": "th_human_test_01_120_18692",
+    "human_id": "human_test_01",
+    "tick": 120,
+    "timestamp": 1787239618.6924827,
+    "category": "SURVIVAL",
+    "content": "Our clan must shelter under the cavern rock.",
+    "valence": 0.1,
+    "intensity": 0.5,
+    "context_tags": [
+      "cave",
+      "shelter"
+    ]
+  },
+  {
+    "thought_id": "th_philosopher_1_0_18735",
+    "human_id": "philosopher_1",
+    "tick": 0,
+    "timestamp": 1787239618.735545,
+    "category": "SURVIVAL",
+    "content": "Finding water by the eastern ridge.",
+    "valence": 0.5,
+    "intensity": 0.5,
+    "context_tags": [
+      "water",
+      "ridge"
+    ]
+  },
+  {
+    "thought_id": "th_philosopher_1_0_18741",
+    "human_id": "philosopher_1",
+    "tick": 0,
+    "timestamp": 1787239618.741292,
+    "category": "SURVIVAL",
+    "content": "A shadow of a predator passed through the tall grass.",
+    "valence": -0.8,
+    "intensity": 0.5,
+    "context_tags": [
+      "predator",
+      "danger"
+    ]
+  },
+  {
+    "thought_id": "th_philosopher_1_0_18746",
+    "human_id": "philosopher_1",
+    "tick": 0,
+    "timestamp": 1787239618.7463524,
+    "category": "DEVOTION",
+    "content": "The heavens answered with glowing stars.",
+    "valence": 0.9,
+    "intensity": 0.5,
+    "context_tags": [
+      "deity",
+      "stars"
+    ]
+  },
+  {
+    "thought_id": "th_philosopher_1_0_18752",
+    "human_id": "philosopher_1",
+    "tick": 0,
+    "timestamp": 1787239618.7526834,
+    "category": "INVENTION",
+    "content": "Can we bind stones with woven fibers?",
+    "valence": 0.4,
+    "intensity": 0.5,
+    "context_tags": [
+      "craft",
+      "tools"
+    ]
+  },
+  {
+    "thought_id": "th_sovereign_1_10_35775",
+    "human_id": "sovereign_1",
+    "tick": 10,
+    "timestamp": 1787239935.7757323,
+    "category": "DEVOTION",
+    "content": "I kneel in quiet contemplation, offering supplication to the heavens for the welfare of our clan.",
+    "valence": 0.3,
+    "intensity": 0.5,
+    "context_tags": [
+      "prayer",
+      "communion",
+      "faith"
+    ]
+  },
+  {
+    "thought_id": "th_sovereign_1_0_35814",
+    "human_id": "sovereign_1",
+    "tick": 0,
+    "timestamp": 1787239935.8147628,
+    "category": "DEVOTION",
+    "content": "The Gemini Deity has answered our prayers: \"The stars illuminate thy path; master tools of crafting and defend the sanctuary.\"",
+    "valence": 0.9,
+    "intensity": 0.95,
+    "context_tags": [
+      "deity",
+      "prophecy",
+      "revelation"
+    ]
+  },
+  {
+    "thought_id": "th_lead1_10_36008",
+    "human_id": "lead1",
+    "tick": 10,
+    "timestamp": 1787239936.0087647,
+    "category": "DEVOTION",
+    "content": "I kneel in quiet contemplation, offering supplication to the heavens for the welfare of our clan.",
+    "valence": 0.3,
+    "intensity": 0.5,
+    "context_tags": [
+      "prayer",
+      "communion",
+      "faith"
+    ]
+  },
+  {
+    "thought_id": "th_lead1_10_36014",
+    "human_id": "lead1",
+    "tick": 10,
+    "timestamp": 1787239936.0144083,
+    "category": "REVELATION",
+    "content": "The sky parted with blinding celestial golden radiance, and the Sacred Monolith of Gemini descended before us! Our civilization is eternally consecrated.",
+    "valence": 1.0,
+    "intensity": 1.0,
+    "context_tags": [
+      "monolith",
+      "miracle",
+      "gemini_god",
+      "sanctuary"
+    ]
+  },
+  {
+    "thought_id": "th_persist_test",
+    "human_id": "test_elder",
+    "tick": 42,
+    "timestamp": 1700000000.0,
+    "category": "PHILOSOPHY",
+    "content": "The river flows constantly, yet remains the same river.",
+    "valence": 0.6,
+    "intensity": 0.8,
+    "context_tags": [
+      "river",
+      "wisdom"
+    ]
+  },
+  {
+    "thought_id": "th_human_test_01_120_38510",
+    "human_id": "human_test_01",
+    "tick": 120,
+    "timestamp": 1787239938.5105662,
+    "category": "SURVIVAL",
+    "content": "Our clan must shelter under the cavern rock.",
+    "valence": 0.1,
+    "intensity": 0.5,
+    "context_tags": [
+      "cave",
+      "shelter"
+    ]
+  },
+  {
+    "thought_id": "th_philosopher_1_0_38537",
+    "human_id": "philosopher_1",
+    "tick": 0,
+    "timestamp": 1787239938.5376089,
+    "category": "SURVIVAL",
+    "content": "Finding water by the eastern ridge.",
+    "valence": 0.5,
+    "intensity": 0.5,
+    "context_tags": [
+      "water",
+      "ridge"
+    ]
+  },
+  {
+    "thought_id": "th_philosopher_1_0_38542",
+    "human_id": "philosopher_1",
+    "tick": 0,
+    "timestamp": 1787239938.542625,
+    "category": "SURVIVAL",
+    "content": "A shadow of a predator passed through the tall grass.",
+    "valence": -0.8,
+    "intensity": 0.5,
+    "context_tags": [
+      "predator",
+      "danger"
+    ]
+  },
+  {
+    "thought_id": "th_philosopher_1_0_38547",
+    "human_id": "philosopher_1",
+    "tick": 0,
+    "timestamp": 1787239938.5474665,
+    "category": "DEVOTION",
+    "content": "The heavens answered with glowing stars.",
+    "valence": 0.9,
+    "intensity": 0.5,
+    "context_tags": [
+      "deity",
+      "stars"
+    ]
+  },
+  {
+    "thought_id": "th_philosopher_1_0_38552",
+    "human_id": "philosopher_1",
+    "tick": 0,
+    "timestamp": 1787239938.552329,
+    "category": "INVENTION",
+    "content": "Can we bind stones with woven fibers?",
+    "valence": 0.4,
+    "intensity": 0.5,
+    "context_tags": [
+      "craft",
+      "tools"
+    ]
+  },
+  {
+    "thought_id": "th_sovereign_1_10_52790",
+    "human_id": "sovereign_1",
+    "tick": 10,
+    "timestamp": 1787239952.7903407,
+    "category": "DEVOTION",
+    "content": "I kneel in quiet contemplation, offering supplication to the heavens for the welfare of our clan.",
+    "valence": 0.3,
+    "intensity": 0.5,
+    "context_tags": [
+      "prayer",
+      "communion",
+      "faith"
+    ]
+  },
+  {
+    "thought_id": "th_sovereign_1_0_52848",
+    "human_id": "sovereign_1",
+    "tick": 0,
+    "timestamp": 1787239952.8482888,
+    "category": "DEVOTION",
+    "content": "The Gemini Deity has answered our prayers: \"Courage bestows sovereignty; cultivate the holy flora and honor the cosmos.\"",
+    "valence": 0.9,
+    "intensity": 0.95,
+    "context_tags": [
+      "deity",
+      "prophecy",
+      "revelation"
+    ]
+  },
+  {
+    "thought_id": "th_lead1_10_53067",
+    "human_id": "lead1",
+    "tick": 10,
+    "timestamp": 1787239953.0674465,
+    "category": "DEVOTION",
+    "content": "I kneel in quiet contemplation, offering supplication to the heavens for the welfare of our clan.",
+    "valence": 0.3,
+    "intensity": 0.5,
+    "context_tags": [
+      "prayer",
+      "communion",
+      "faith"
+    ]
+  },
+  {
+    "thought_id": "th_lead1_10_53076",
+    "human_id": "lead1",
+    "tick": 10,
+    "timestamp": 1787239953.0763116,
+    "category": "REVELATION",
+    "content": "The sky parted with blinding celestial golden radiance, and the Sacred Monolith of Gemini descended before us! Our civilization is eternally consecrated.",
+    "valence": 1.0,
+    "intensity": 1.0,
+    "context_tags": [
+      "monolith",
+      "miracle",
+      "gemini_god",
+      "sanctuary"
+    ]
+  },
+  {
+    "thought_id": "th_persist_test",
+    "human_id": "test_elder",
+    "tick": 42,
+    "timestamp": 1700000000.0,
+    "category": "PHILOSOPHY",
+    "content": "The river flows constantly, yet remains the same river.",
+    "valence": 0.6,
+    "intensity": 0.8,
+    "context_tags": [
+      "river",
+      "wisdom"
+    ]
+  },
+  {
+    "thought_id": "th_human_test_01_120_55535",
+    "human_id": "human_test_01",
+    "tick": 120,
+    "timestamp": 1787239955.5353622,
+    "category": "SURVIVAL",
+    "content": "Our clan must shelter under the cavern rock.",
+    "valence": 0.1,
+    "intensity": 0.5,
+    "context_tags": [
+      "cave",
+      "shelter"
+    ]
+  },
+  {
+    "thought_id": "th_philosopher_1_0_55559",
+    "human_id": "philosopher_1",
+    "tick": 0,
+    "timestamp": 1787239955.55989,
+    "category": "SURVIVAL",
+    "content": "Finding water by the eastern ridge.",
+    "valence": 0.5,
+    "intensity": 0.5,
+    "context_tags": [
+      "water",
+      "ridge"
+    ]
+  },
+  {
+    "thought_id": "th_philosopher_1_0_55565",
+    "human_id": "philosopher_1",
+    "tick": 0,
+    "timestamp": 1787239955.565346,
+    "category": "SURVIVAL",
+    "content": "A shadow of a predator passed through the tall grass.",
+    "valence": -0.8,
+    "intensity": 0.5,
+    "context_tags": [
+      "predator",
+      "danger"
+    ]
+  },
+  {
+    "thought_id": "th_philosopher_1_0_55570",
+    "human_id": "philosopher_1",
+    "tick": 0,
+    "timestamp": 1787239955.5707223,
+    "category": "DEVOTION",
+    "content": "The heavens answered with glowing stars.",
+    "valence": 0.9,
+    "intensity": 0.5,
+    "context_tags": [
+      "deity",
+      "stars"
+    ]
+  },
+  {
+    "thought_id": "th_philosopher_1_0_55575",
+    "human_id": "philosopher_1",
+    "tick": 0,
+    "timestamp": 1787239955.5758848,
+    "category": "INVENTION",
+    "content": "Can we bind stones with woven fibers?",
+    "valence": 0.4,
+    "intensity": 0.5,
+    "context_tags": [
+      "craft",
+      "tools"
+    ]
+  },
+  {
+    "thought_id": "th_sovereign_1_10_39756",
+    "human_id": "sovereign_1",
+    "tick": 10,
+    "timestamp": 1787240839.756005,
+    "category": "DEVOTION",
+    "content": "I kneel in quiet contemplation, offering supplication to the heavens for the welfare of our clan.",
+    "valence": 0.3,
+    "intensity": 0.5,
+    "context_tags": [
+      "prayer",
+      "communion",
+      "faith"
+    ]
+  },
+  {
+    "thought_id": "th_sovereign_1_0_39814",
+    "human_id": "sovereign_1",
+    "tick": 0,
+    "timestamp": 1787240839.8145356,
+    "category": "DEVOTION",
+    "content": "The Gemini Deity has answered our prayers: \"The stars illuminate thy path; master tools of crafting and defend the sanctuary.\"",
+    "valence": 0.9,
+    "intensity": 0.95,
+    "context_tags": [
+      "deity",
+      "prophecy",
+      "revelation"
+    ]
+  },
+  {
+    "thought_id": "th_lead1_10_40040",
+    "human_id": "lead1",
+    "tick": 10,
+    "timestamp": 1787240840.040819,
+    "category": "DEVOTION",
+    "content": "I kneel in quiet contemplation, offering supplication to the heavens for the welfare of our clan.",
+    "valence": 0.3,
+    "intensity": 0.5,
+    "context_tags": [
+      "prayer",
+      "communion",
+      "faith"
+    ]
+  },
+  {
+    "thought_id": "th_lead1_10_40046",
+    "human_id": "lead1",
+    "tick": 10,
+    "timestamp": 1787240840.0469723,
+    "category": "REVELATION",
+    "content": "The sky parted with blinding celestial golden radiance, and the Sacred Monolith of Gemini descended before us! Our civilization is eternally consecrated.",
+    "valence": 1.0,
+    "intensity": 1.0,
+    "context_tags": [
+      "monolith",
+      "miracle",
+      "gemini_god",
+      "sanctuary"
+    ]
+  },
+  {
+    "thought_id": "th_persist_test",
+    "human_id": "test_elder",
+    "tick": 42,
+    "timestamp": 1700000000.0,
+    "category": "PHILOSOPHY",
+    "content": "The river flows constantly, yet remains the same river.",
+    "valence": 0.6,
+    "intensity": 0.8,
+    "context_tags": [
+      "river",
+      "wisdom"
+    ]
+  },
+  {
+    "thought_id": "th_human_test_01_120_51298",
+    "human_id": "human_test_01",
+    "tick": 120,
+    "timestamp": 1787240851.298838,
+    "category": "SURVIVAL",
+    "content": "Our clan must shelter under the cavern rock.",
+    "valence": 0.1,
+    "intensity": 0.5,
+    "context_tags": [
+      "cave",
+      "shelter"
+    ]
+  },
+  {
+    "thought_id": "th_philosopher_1_0_51334",
+    "human_id": "philosopher_1",
+    "tick": 0,
+    "timestamp": 1787240851.3342056,
+    "category": "SURVIVAL",
+    "content": "Finding water by the eastern ridge.",
+    "valence": 0.5,
+    "intensity": 0.5,
+    "context_tags": [
+      "water",
+      "ridge"
+    ]
+  },
+  {
+    "thought_id": "th_philosopher_1_0_51339",
+    "human_id": "philosopher_1",
+    "tick": 0,
+    "timestamp": 1787240851.3395774,
+    "category": "SURVIVAL",
+    "content": "A shadow of a predator passed through the tall grass.",
+    "valence": -0.8,
+    "intensity": 0.5,
+    "context_tags": [
+      "predator",
+      "danger"
+    ]
+  },
+  {
+    "thought_id": "th_philosopher_1_0_51344",
+    "human_id": "philosopher_1",
+    "tick": 0,
+    "timestamp": 1787240851.344888,
+    "category": "DEVOTION",
+    "content": "The heavens answered with glowing stars.",
+    "valence": 0.9,
+    "intensity": 0.5,
+    "context_tags": [
+      "deity",
+      "stars"
+    ]
+  },
+  {
+    "thought_id": "th_philosopher_1_0_51349",
+    "human_id": "philosopher_1",
+    "tick": 0,
+    "timestamp": 1787240851.3498456,
+    "category": "INVENTION",
+    "content": "Can we bind stones with woven fibers?",
+    "valence": 0.4,
+    "intensity": 0.5,
+    "context_tags": [
+      "craft",
+      "tools"
+    ]
+  },
+  {
+    "thought_id": "th_sovereign_1_10_92138",
+    "human_id": "sovereign_1",
+    "tick": 10,
+    "timestamp": 1787240892.1387773,
+    "category": "DEVOTION",
+    "content": "I kneel in quiet contemplation, offering supplication to the heavens for the welfare of our clan.",
+    "valence": 0.3,
+    "intensity": 0.5,
+    "context_tags": [
+      "prayer",
+      "communion",
+      "faith"
+    ]
+  },
+  {
+    "thought_id": "th_sovereign_1_0_92251",
+    "human_id": "sovereign_1",
+    "tick": 0,
+    "timestamp": 1787240892.2518957,
+    "category": "DEVOTION",
+    "content": "The Gemini Deity has answered our prayers: \"The stars illuminate thy path; master tools of crafting and defend the sanctuary.\"",
+    "valence": 0.9,
+    "intensity": 0.95,
+    "context_tags": [
+      "deity",
+      "prophecy",
+      "revelation"
+    ]
+  },
+  {
+    "thought_id": "th_lead1_10_92542",
+    "human_id": "lead1",
+    "tick": 10,
+    "timestamp": 1787240892.5429692,
+    "category": "DEVOTION",
+    "content": "I kneel in quiet contemplation, offering supplication to the heavens for the welfare of our clan.",
+    "valence": 0.3,
+    "intensity": 0.5,
+    "context_tags": [
+      "prayer",
+      "communion",
+      "faith"
+    ]
+  },
+  {
+    "thought_id": "th_lead1_10_92550",
+    "human_id": "lead1",
+    "tick": 10,
+    "timestamp": 1787240892.5504198,
+    "category": "REVELATION",
+    "content": "The sky parted with blinding celestial golden radiance, and the Sacred Monolith of Gemini descended before us! Our civilization is eternally consecrated.",
+    "valence": 1.0,
+    "intensity": 1.0,
+    "context_tags": [
+      "monolith",
+      "miracle",
+      "gemini_god",
+      "sanctuary"
+    ]
+  },
+  {
+    "thought_id": "th_persist_test",
+    "human_id": "test_elder",
+    "tick": 42,
+    "timestamp": 1700000000.0,
+    "category": "PHILOSOPHY",
+    "content": "The river flows constantly, yet remains the same river.",
+    "valence": 0.6,
+    "intensity": 0.8,
+    "context_tags": [
+      "river",
+      "wisdom"
+    ]
+  },
+  {
+    "thought_id": "th_human_test_01_120_95723",
+    "human_id": "human_test_01",
+    "tick": 120,
+    "timestamp": 1787240895.7239306,
+    "category": "SURVIVAL",
+    "content": "Our clan must shelter under the cavern rock.",
+    "valence": 0.1,
+    "intensity": 0.5,
+    "context_tags": [
+      "cave",
+      "shelter"
+    ]
+  },
+  {
+    "thought_id": "th_philosopher_1_0_95773",
+    "human_id": "philosopher_1",
+    "tick": 0,
+    "timestamp": 1787240895.7739823,
+    "category": "SURVIVAL",
+    "content": "Finding water by the eastern ridge.",
+    "valence": 0.5,
+    "intensity": 0.5,
+    "context_tags": [
+      "water",
+      "ridge"
+    ]
+  },
+  {
+    "thought_id": "th_philosopher_1_0_95784",
+    "human_id": "philosopher_1",
+    "tick": 0,
+    "timestamp": 1787240895.7841656,
+    "category": "SURVIVAL",
+    "content": "A shadow of a predator passed through the tall grass.",
+    "valence": -0.8,
+    "intensity": 0.5,
+    "context_tags": [
+      "predator",
+      "danger"
+    ]
+  },
+  {
+    "thought_id": "th_philosopher_1_0_95809",
+    "human_id": "philosopher_1",
+    "tick": 0,
+    "timestamp": 1787240895.8094876,
+    "category": "DEVOTION",
+    "content": "The heavens answered with glowing stars.",
+    "valence": 0.9,
+    "intensity": 0.5,
+    "context_tags": [
+      "deity",
+      "stars"
+    ]
+  },
+  {
+    "thought_id": "th_philosopher_1_0_95827",
+    "human_id": "philosopher_1",
+    "tick": 0,
+    "timestamp": 1787240895.8270884,
+    "category": "INVENTION",
+    "content": "Can we bind stones with woven fibers?",
+    "valence": 0.4,
+    "intensity": 0.5,
+    "context_tags": [
+      "craft",
+      "tools"
+    ]
+  },
+  {
+    "thought_id": "th_sovereign_1_10_62161",
+    "human_id": "sovereign_1",
+    "tick": 10,
+    "timestamp": 1787241162.1618414,
+    "category": "DEVOTION",
+    "content": "I kneel in quiet contemplation, offering supplication to the heavens for the welfare of our clan.",
+    "valence": 0.3,
+    "intensity": 0.5,
+    "context_tags": [
+      "prayer",
+      "communion",
+      "faith"
+    ]
+  },
+  {
+    "thought_id": "th_sovereign_1_0_62407",
+    "human_id": "sovereign_1",
+    "tick": 0,
+    "timestamp": 1787241162.4077375,
+    "category": "DEVOTION",
+    "content": "The Gemini Deity has answered our prayers: \"The stars illuminate thy path; master tools of crafting and defend the sanctuary.\"",
+    "valence": 0.9,
+    "intensity": 0.95,
+    "context_tags": [
+      "deity",
+      "prophecy",
+      "revelation"
+    ]
+  },
+  {
+    "thought_id": "th_lead1_10_62741",
+    "human_id": "lead1",
+    "tick": 10,
+    "timestamp": 1787241162.7411306,
+    "category": "DEVOTION",
+    "content": "I kneel in quiet contemplation, offering supplication to the heavens for the welfare of our clan.",
+    "valence": 0.3,
+    "intensity": 0.5,
+    "context_tags": [
+      "prayer",
+      "communion",
+      "faith"
+    ]
+  },
+  {
+    "thought_id": "th_lead1_10_62753",
+    "human_id": "lead1",
+    "tick": 10,
+    "timestamp": 1787241162.7538557,
+    "category": "REVELATION",
+    "content": "The sky parted with blinding celestial golden radiance, and the Sacred Monolith of Gemini descended before us! Our civilization is eternally consecrated.",
+    "valence": 1.0,
+    "intensity": 1.0,
+    "context_tags": [
+      "monolith",
+      "miracle",
+      "gemini_god",
+      "sanctuary"
+    ]
+  },
+  {
+    "thought_id": "th_persist_test",
+    "human_id": "test_elder",
+    "tick": 42,
+    "timestamp": 1700000000.0,
+    "category": "PHILOSOPHY",
+    "content": "The river flows constantly, yet remains the same river.",
+    "valence": 0.6,
+    "intensity": 0.8,
+    "context_tags": [
+      "river",
+      "wisdom"
+    ]
+  },
+  {
+    "thought_id": "th_human_test_01_120_66063",
+    "human_id": "human_test_01",
+    "tick": 120,
+    "timestamp": 1787241166.0638661,
+    "category": "SURVIVAL",
+    "content": "Our clan must shelter under the cavern rock.",
+    "valence": 0.1,
+    "intensity": 0.5,
+    "context_tags": [
+      "cave",
+      "shelter"
+    ]
+  },
+  {
+    "thought_id": "th_philosopher_1_0_66158",
+    "human_id": "philosopher_1",
+    "tick": 0,
+    "timestamp": 1787241166.1580608,
+    "category": "SURVIVAL",
+    "content": "Finding water by the eastern ridge.",
+    "valence": 0.5,
+    "intensity": 0.5,
+    "context_tags": [
+      "water",
+      "ridge"
+    ]
+  },
+  {
+    "thought_id": "th_philosopher_1_0_66164",
+    "human_id": "philosopher_1",
+    "tick": 0,
+    "timestamp": 1787241166.1643145,
+    "category": "SURVIVAL",
+    "content": "A shadow of a predator passed through the tall grass.",
+    "valence": -0.8,
+    "intensity": 0.5,
+    "context_tags": [
+      "predator",
+      "danger"
+    ]
+  },
+  {
+    "thought_id": "th_philosopher_1_0_66328",
+    "human_id": "philosopher_1",
+    "tick": 0,
+    "timestamp": 1787241166.3289785,
+    "category": "DEVOTION",
+    "content": "The heavens answered with glowing stars.",
+    "valence": 0.9,
+    "intensity": 0.5,
+    "context_tags": [
+      "deity",
+      "stars"
+    ]
+  },
+  {
+    "thought_id": "th_philosopher_1_0_66338",
+    "human_id": "philosopher_1",
+    "tick": 0,
+    "timestamp": 1787241166.3383014,
+    "category": "INVENTION",
+    "content": "Can we bind stones with woven fibers?",
+    "valence": 0.4,
+    "intensity": 0.5,
+    "context_tags": [
+      "craft",
+      "tools"
+    ]
+  },
+  {
+    "thought_id": "th_sovereign_1_10_71679",
+    "human_id": "sovereign_1",
+    "tick": 10,
+    "timestamp": 1787243171.6793337,
+    "category": "DEVOTION",
+    "content": "I kneel in quiet contemplation, offering supplication to the heavens for the welfare of our clan.",
+    "valence": 0.3,
+    "intensity": 0.5,
+    "context_tags": [
+      "prayer",
+      "communion",
+      "faith"
+    ]
+  },
+  {
+    "thought_id": "th_sovereign_1_0_71733",
+    "human_id": "sovereign_1",
+    "tick": 0,
+    "timestamp": 1787243171.7330847,
+    "category": "DEVOTION",
+    "content": "The Gemini Deity has answered our prayers: \"Heed the sacred winds; expand thy tribe toward the fertile rivers.\"",
+    "valence": 0.9,
+    "intensity": 0.95,
+    "context_tags": [
+      "deity",
+      "prophecy",
+      "revelation"
+    ]
+  },
+  {
+    "thought_id": "th_lead1_10_71952",
+    "human_id": "lead1",
+    "tick": 10,
+    "timestamp": 1787243171.952752,
+    "category": "DEVOTION",
+    "content": "I kneel in quiet contemplation, offering supplication to the heavens for the welfare of our clan.",
+    "valence": 0.3,
+    "intensity": 0.5,
+    "context_tags": [
+      "prayer",
+      "communion",
+      "faith"
+    ]
+  },
+  {
+    "thought_id": "th_lead1_10_71959",
+    "human_id": "lead1",
+    "tick": 10,
+    "timestamp": 1787243171.959789,
+    "category": "REVELATION",
+    "content": "The sky parted with blinding celestial golden radiance, and the Sacred Monolith of Gemini descended before us! Our civilization is eternally consecrated.",
+    "valence": 1.0,
+    "intensity": 1.0,
+    "context_tags": [
+      "monolith",
+      "miracle",
+      "gemini_god",
+      "sanctuary"
+    ]
+  },
+  {
+    "thought_id": "th_persist_test",
+    "human_id": "test_elder",
+    "tick": 42,
+    "timestamp": 1700000000.0,
+    "category": "PHILOSOPHY",
+    "content": "The river flows constantly, yet remains the same river.",
+    "valence": 0.6,
+    "intensity": 0.8,
+    "context_tags": [
+      "river",
+      "wisdom"
+    ]
+  },
+  {
+    "thought_id": "th_human_test_01_120_74580",
+    "human_id": "human_test_01",
+    "tick": 120,
+    "timestamp": 1787243174.5807965,
+    "category": "SURVIVAL",
+    "content": "Our clan must shelter under the cavern rock.",
+    "valence": 0.1,
+    "intensity": 0.5,
+    "context_tags": [
+      "cave",
+      "shelter"
+    ]
+  },
+  {
+    "thought_id": "th_philosopher_1_0_74606",
+    "human_id": "philosopher_1",
+    "tick": 0,
+    "timestamp": 1787243174.606104,
+    "category": "SURVIVAL",
+    "content": "Finding water by the eastern ridge.",
+    "valence": 0.5,
+    "intensity": 0.5,
+    "context_tags": [
+      "water",
+      "ridge"
+    ]
+  },
+  {
+    "thought_id": "th_philosopher_1_0_74612",
+    "human_id": "philosopher_1",
+    "tick": 0,
+    "timestamp": 1787243174.6121218,
+    "category": "SURVIVAL",
+    "content": "A shadow of a predator passed through the tall grass.",
+    "valence": -0.8,
+    "intensity": 0.5,
+    "context_tags": [
+      "predator",
+      "danger"
+    ]
+  },
+  {
+    "thought_id": "th_philosopher_1_0_74648",
+    "human_id": "philosopher_1",
+    "tick": 0,
+    "timestamp": 1787243174.6484537,
+    "category": "DEVOTION",
+    "content": "The heavens answered with glowing stars.",
+    "valence": 0.9,
+    "intensity": 0.5,
+    "context_tags": [
+      "deity",
+      "stars"
+    ]
+  },
+  {
+    "thought_id": "th_philosopher_1_0_74683",
+    "human_id": "philosopher_1",
+    "tick": 0,
+    "timestamp": 1787243174.68358,
+    "category": "INVENTION",
+    "content": "Can we bind stones with woven fibers?",
+    "valence": 0.4,
+    "intensity": 0.5,
+    "context_tags": [
+      "craft",
+      "tools"
+    ]
+  },
+  {
+    "thought_id": "th_genesis_hum_0_40_30959",
+    "human_id": "genesis_hum_0",
+    "tick": 40,
+    "timestamp": 1787243330.9596217,
+    "category": "DEVOTION",
+    "content": "I kneel in quiet contemplation, offering supplication to the heavens for the welfare of our clan.",
+    "valence": 0.3,
+    "intensity": 0.5,
+    "context_tags": [
+      "prayer",
+      "communion",
+      "faith"
+    ]
+  },
+  {
+    "thought_id": "th_genesis_hum_0_360_90067",
+    "human_id": "genesis_hum_0",
+    "tick": 360,
+    "timestamp": 1787243990.0677953,
+    "category": "DEVOTION",
+    "content": "I kneel in quiet contemplation, offering supplication to the heavens for the welfare of our clan.",
+    "valence": 0.3,
+    "intensity": 0.5,
+    "context_tags": [
+      "prayer",
+      "communion",
+      "faith"
+    ]
+  },
+  {
+    "thought_id": "th_genesis_hum_0_520_48042",
+    "human_id": "genesis_hum_0",
+    "tick": 520,
+    "timestamp": 1787244348.042089,
+    "category": "DEVOTION",
+    "content": "I kneel in quiet contemplation, offering supplication to the heavens for the welfare of our clan.",
+    "valence": 0.3,
+    "intensity": 0.5,
+    "context_tags": [
+      "prayer",
+      "communion",
+      "faith"
+    ]
+  },
+  {
+    "thought_id": "th_genesis_hum_0_600_53913",
+    "human_id": "genesis_hum_0",
+    "tick": 600,
+    "timestamp": 1787244553.9136007,
+    "category": "REVELATION",
+    "content": "The sky parted with blinding celestial golden radiance, and the Sacred Monolith of Gemini descended before us! Our civilization is eternally consecrated.",
+    "valence": 1.0,
+    "intensity": 1.0,
+    "context_tags": [
+      "monolith",
+      "miracle",
+      "gemini_god",
+      "sanctuary"
+    ]
+  },
+  {
+    "thought_id": "th_genesis_hum_0_603_49423",
+    "human_id": "genesis_hum_0",
+    "tick": 603,
+    "timestamp": 1787244749.4238577,
+    "category": "DEVOTION",
+    "content": "The Gemini Deity has answered our prayers: \"Heed the sacred winds; expand thy tribe toward the fertile rivers.\"",
+    "valence": 0.9,
+    "intensity": 0.95,
+    "context_tags": [
+      "deity",
+      "prophecy",
+      "revelation"
+    ]
+  },
+  {
+    "thought_id": "th_genesis_hum_0_720_24952",
+    "human_id": "genesis_hum_0",
+    "tick": 720,
+    "timestamp": 1787244824.9520833,
+    "category": "DEVOTION",
+    "content": "I kneel in quiet contemplation, offering supplication to the heavens for the welfare of our clan.",
+    "valence": 0.3,
+    "intensity": 0.5,
+    "context_tags": [
+      "prayer",
+      "communion",
+      "faith"
+    ]
+  },
+  {
+    "thought_id": "th_genesis_hum_0_880_5608",
+    "human_id": "genesis_hum_0",
+    "tick": 880,
+    "timestamp": 1787245205.6088505,
+    "category": "DEVOTION",
+    "content": "I kneel in quiet contemplation, offering supplication to the heavens for the welfare of our clan.",
+    "valence": 0.3,
+    "intensity": 0.5,
+    "context_tags": [
+      "prayer",
+      "communion",
+      "faith"
+    ]
+  },
+  {
+    "thought_id": "th_genesis_hum_0_1040_7954",
+    "human_id": "genesis_hum_0",
+    "tick": 1040,
+    "timestamp": 1787245707.954893,
+    "category": "DEVOTION",
+    "content": "I kneel in quiet contemplation, offering supplication to the heavens for the welfare of our clan.",
+    "valence": 0.3,
+    "intensity": 0.5,
+    "context_tags": [
+      "prayer",
+      "communion",
+      "faith"
+    ]
+  },
+  {
+    "thought_id": "th_genesis_hum_0_1200_59704",
+    "human_id": "genesis_hum_0",
+    "tick": 1200,
+    "timestamp": 1787246159.7041256,
+    "category": "DEVOTION",
+    "content": "I kneel in quiet contemplation, offering supplication to the heavens for the welfare of our clan.",
+    "valence": 0.3,
+    "intensity": 0.5,
+    "context_tags": [
+      "prayer",
+      "communion",
+      "faith"
+    ]
+  },
+  {
+    "thought_id": "th_genesis_hum_0_1199_77166",
+    "human_id": "genesis_hum_0",
+    "tick": 1199,
+    "timestamp": 1787246377.1668544,
+    "category": "DEVOTION",
+    "content": "The Gemini Deity has answered our prayers: \"Let unity sanctify thy clan; store abundant grain for the coming seasons.\"",
+    "valence": 0.9,
+    "intensity": 0.95,
+    "context_tags": [
+      "deity",
+      "prophecy",
+      "revelation"
+    ]
+  },
+  {
+    "thought_id": "th_genesis_hum_0_1320_77586",
+    "human_id": "genesis_hum_0",
+    "tick": 1320,
+    "timestamp": 1787246477.5867798,
+    "category": "DEVOTION",
+    "content": "I kneel in quiet contemplation, offering supplication to the heavens for the welfare of our clan.",
+    "valence": 0.3,
+    "intensity": 0.5,
+    "context_tags": [
+      "prayer",
+      "communion",
+      "faith"
+    ]
+  },
+  {
+    "thought_id": "th_genesis_hum_0_1480_83307",
+    "human_id": "genesis_hum_0",
+    "tick": 1480,
+    "timestamp": 1787246883.3079824,
+    "category": "DEVOTION",
+    "content": "I kneel in quiet contemplation, offering supplication to the heavens for the welfare of our clan.",
+    "valence": 0.3,
+    "intensity": 0.5,
+    "context_tags": [
+      "prayer",
+      "communion",
+      "faith"
+    ]
+  }
+]

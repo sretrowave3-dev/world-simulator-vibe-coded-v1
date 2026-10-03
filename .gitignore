@@ -1,0 +1,51 @@
+# =============================================================================
+# Git Ignore Rules for World Simulator
+# =============================================================================
+
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+
+# Environment files and credentials (CRITICAL: never commit real secrets)
+.env
+.env.*
+!.env.example
+*.key
+*.pem
+
+# Local simulation saves and states (keeps local saves safe without polluting repo)
+saves/
+*.dat
+*.dat.*
+*.meta.json
+
+# Simulation logs and audit records
+security_audit.jsonl
+seeds_log.json
+*.log
+
+# Scratch and debug artifacts
+scratch/__pycache__/
+
+# Distribution / packaging
+build/
+dist/
+*.egg-info/
+
+# Testing and coverage
+.pytest_cache/
+.coverage
+htmlcov/
+
+# IDE / Editor configuration
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Operating System files
+.DS_Store
+Thumbs.db
+desktop.ini
