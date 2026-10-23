@@ -1,0 +1,6 @@
+# World Simulator (Advanced Neural Network) - Dependencies
+numpy>=1.24.0
+pygame>=2.5.0
+
+# Optional: Deep Neural Memory & Cognitive Acceleration
+# torch>=2.0.0

@@ -25,6 +25,8 @@ saves/
 security_audit.jsonl
 seeds_log.json
 *.log
+auto_debugger_crash_dump.json
+*_crash_dump.json
 
 # Scratch and debug artifacts
 scratch/__pycache__/
