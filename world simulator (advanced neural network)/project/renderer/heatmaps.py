@@ -6,6 +6,7 @@ Atmospheric and chemical grid visual overlay layers using Pygame.
 
 from __future__ import annotations
 
+import math
 from typing import Tuple, List, Dict, Optional
 import pygame
 from project.renderer.camera import Camera
@@ -41,8 +42,8 @@ class HeatmapRenderer:
         g = pheromone_grid.grids[ch]
         w = pheromone_grid.width
 
-        # Scale size based on zoom
-        cell_pixel_size = max(1, int(pheromone_grid.cell_size * camera.zoom))
+        # Scale size based on zoom with slight overlap to prevent visual seam gaps
+        cell_pixel_size = max(2, int(math.ceil(pheromone_grid.cell_size * camera.zoom)) + 1)
 
         # Reusable single SRCALPHA canvas
         surf_sz = surface.get_size()
@@ -56,20 +57,20 @@ class HeatmapRenderer:
             y_offset = gy * w
             for gx in range(min_gx, max_gx + 1):
                 val = g[y_offset + gx]
-                if val > 0.05:
+                if val > 0.005:
                     wx = gx * pheromone_grid.cell_size
                     wy = gy * pheromone_grid.cell_size
                     sx, sy = camera.world_to_screen(wx, wy)
 
-                    # Compute alpha color intensity [0 to 180]
-                    alpha = min(180, int(val * 15.0))
-                    if alpha > 5:
-                        pygame.draw.rect(
-                            self._overlay_surface,
-                            (r, g_col, b, alpha),
-                            pygame.Rect(sx, sy, cell_pixel_size, cell_pixel_size)
-                        )
-                        has_drawn = True
+                    # Dynamic non-linear alpha scaling: faint scents are visible, strong scents glow vividly
+                    intensity_norm = min(1.0, math.sqrt(min(2.5, val) / 2.5))
+                    alpha = min(220, max(28, int(intensity_norm * 180.0) + 30))
+                    pygame.draw.rect(
+                        self._overlay_surface,
+                        (r, g_col, b, alpha),
+                        pygame.Rect(sx, sy, cell_pixel_size, cell_pixel_size)
+                    )
+                    has_drawn = True
 
         if has_drawn:
             surface.blit(self._overlay_surface, (0, 0))

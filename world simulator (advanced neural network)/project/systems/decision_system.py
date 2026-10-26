@@ -75,6 +75,8 @@ class DecisionSystem:
     def update(self, context: UpdateContext) -> None:
         dt = context.delta_time
         sim_tick = context.tick
+        time_snap = getattr(context, "time_snapshot", None)
+        daylight = getattr(time_snap, "daylight_factor", 1.0) if time_snap else 1.0
 
         # Pre-filter all candidate foods in the world for rapid spatial foraging queries
         available_foods = [e for e in self._entities_list if is_food_entity(e)]
@@ -272,12 +274,96 @@ class DecisionSystem:
             # D. Human: Tactical Survival, Tribal Cooperation, Psychological Community & Faith
             # ---------------------------------------------------------
             elif entity.entity_type == EntityType.HUMAN:
-                # 1. Psychological Mobbing & Community Formation
+                # 0a. Evaluate Minecraft Shelter Need (Cold night darkness & predator attacks)
+                entity.evaluate_shelter_need(daylight=daylight, threats_nearby=len(threats), sim_tick=sim_tick)
+
+                # 0b. Nocturnal Shelter Seeking & Resting (Minecraft Rule: Survive the Night)
+                if daylight < 0.40 or entity.shelter_importance_score > 0.65:
+                    from project.civilization.settlement import world_settlement_mgr
+                    if entity.in_shelter_id:
+                        # Safely sleeping/resting inside shelter away from nocturnal monsters
+                        goal_type = GoalType.REST
+                        target_pos = (entity.pos_x, entity.pos_y)
+                        priority = 0.99
+                        entity.current_action = "SLEEPING_IN_SHELTER"
+                        if entity.energy < entity.max_energy:
+                            entity.gain_energy(15.0 * dt)
+                        if entity.health < entity.max_health:
+                            entity.health = min(entity.max_health, entity.health + 2.0 * dt)
+                    else:
+                        best_shelter = world_settlement_mgr.find_best_shelter(entity.pos_x, entity.pos_y, max_dist=500.0)
+                        if best_shelter:
+                            dist_to_shelter = math.hypot(best_shelter.pos_x - entity.pos_x, best_shelter.pos_y - entity.pos_y)
+                            if dist_to_shelter < 20.0:
+                                entity.enter_shelter(best_shelter)
+                                goal_type = GoalType.REST
+                                target_pos = (best_shelter.pos_x, best_shelter.pos_y)
+                                priority = 0.99
+                                entity.current_action = "ENTERED_SHELTER"
+                            else:
+                                target_pos = (best_shelter.pos_x, best_shelter.pos_y)
+                                goal_type = GoalType.WANDER
+                                priority = 0.95
+                                entity.current_action = "SEEKING_SHELTER"
+                        elif entity.inventory.get("wood", 0) >= 1.5 or entity.inventory.get("stone", 0) >= 1.5:
+                            # Emergency building: create a shelter!
+                            crafted_name = entity.attempt_emergent_crafting(sim_tick=sim_tick)
+                            if crafted_name:
+                                entity.current_action = f"BUILT_{crafted_name.upper().replace(' ', '_')}"
+                elif daylight >= 0.45 and entity.in_shelter_id:
+                    # Dawn breaks: exit shelter to forage and work
+                    entity.exit_shelter()
+                    entity.current_action = "EMERGING_AT_DAWN"
+
+                # 0c. Thirst & Hydration: Drink from nearby rivers / water bodies
+                if entity.hydration < 140.0:
+                    entity.drink_water(80.0)
+                    entity.current_action = "DRINKING_WATER"
+
+                # 1. Emergent Crafting: Non-hardcoded discovery based on held materials & IQ
+                if sim_tick % 20 == 0 and not threats:
+                    crafted_name = entity.attempt_emergent_crafting(sim_tick=sim_tick)
+                    if crafted_name:
+                        entity.current_action = f"CRAFTED_{crafted_name.upper().replace(' ', '_')}"
+
+                # 2. Resource Foraging: Active Minecraft-style wood harvesting and stone quarrying
+                if not is_hungry and not threats and entity.inventory_weight < entity.max_inventory_capacity_kg - 5.0:
+                    # Seek out nearby mature trees
+                    nearby_trees = [
+                        e for e in self._entities_list
+                        if e.is_alive and getattr(e, "is_tree", None) and e.is_tree()
+                        and math.hypot(e.pos_x - entity.pos_x, e.pos_y - entity.pos_y) < 300.0
+                    ]
+                    if nearby_trees and entity.inventory.get("wood", 0.0) < 15.0:
+                        chosen_tree = min(nearby_trees, key=lambda t: (t.pos_x - entity.pos_x)**2 + (t.pos_y - entity.pos_y)**2)
+                        dist = math.hypot(chosen_tree.pos_x - entity.pos_x, chosen_tree.pos_y - entity.pos_y)
+                        if dist < 8.0:
+                            harvested = entity.harvest_from_tree(chosen_tree)
+                            if harvested > 0:
+                                entity.current_action = "HARVESTING_TIMBER"
+                        else:
+                            target_pos = (chosen_tree.pos_x, chosen_tree.pos_y)
+                            goal_type = GoalType.FORAGE_FOOD
+                            priority = 0.85
+                            entity.current_action = "APPROACHING_TREE"
+
+                    # Gather stones if near mountains, rocky quarry boulders, or rivers
+                    elif entity.inventory.get("stone", 0.0) < 12.0 and random.random() < 0.35:
+                        entity.gather_stone(2.5)
+                        entity.current_action = "GATHERING_STONE"
+
+                # 3. Armed Defense against Predators
+                if threats and entity.equipped_tool in ("wood_spear", "stone_axe") and (entity.health / max(1.0, entity.max_health)) > 0.4:
+                    goal_type = GoalType.ATTACK_ENEMY
+                    closest_threat = min(threats, key=lambda t: (t.pos_x - entity.pos_x)**2 + (t.pos_y - entity.pos_y)**2)
+                    target_pos = (closest_threat.pos_x, closest_threat.pos_y)
+                    priority = 0.98
+                    entity.current_action = "DEFENDING_CLAN"
+
+                # 4. Psychological Mobbing & Community Formation
                 # Based on shared vulnerability (fear), social affinity, and existential dread (stress).
                 # Humans naturally gravitate together when stressed to form a "Mob/Community"
-                social_pull = (entity.custom_data.get("stress", 0.0) * 0.4) + (profile.herd_cohesion_weight * 0.6)
-                if not is_hungry and allies and social_pull > 0.35:
-                    # Seek the largest cluster of humans
+                elif not is_hungry and allies and (entity.custom_data.get("stress", 0.0) * 0.4 + profile.herd_cohesion_weight * 0.6) > 0.35:
                     cluster_x = sum(a.pos_x for a in allies) / len(allies)
                     cluster_y = sum(a.pos_y for a in allies) / len(allies)
                     dist_to_cluster = math.hypot(cluster_x - entity.pos_x, cluster_y - entity.pos_y)
@@ -288,27 +374,25 @@ class DecisionSystem:
                         priority = 0.85
                         entity.current_action = "JOINING_COMMUNITY"
                     else:
-                        # Once in the mob, assess faith/prayer conditions
                         g_sys = getattr(self, "gemini_sys", None)
                         if g_sys and getattr(g_sys, "global_god_affinity", 0.0) >= 100.0:
                             entity.current_action = "PRAYING"
                             priority = 0.99
                             if getattr(g_sys, "god_incarnated", False) and random.random() < 0.05:
-                                entity.custom_data["dopamine"] = 1.0 # Euphoria seeing the god
+                                entity.custom_data["dopamine"] = 1.0
                         else:
                             entity.current_action = "SOCIALIZING"
-                            # Socializing reduces stress via oxytocin/dopamine
                             entity.custom_data["stress"] = max(0.0, entity.custom_data.get("stress", 0.0) - 0.05)
                             entity.custom_data["dopamine"] = min(1.0, entity.custom_data.get("dopamine", 0.0) + 0.01)
 
-                # 2. Tactical Fleeing
+                # 5. Tactical Fleeing (Unarmed / Injured)
                 elif (entity.health / max(1.0, entity.max_health)) < profile.tactical_retreat_threshold and threats:
                     goal_type = GoalType.FLEE
                     closest_threat = min(threats, key=lambda t: (t.pos_x - entity.pos_x)**2 + (t.pos_y - entity.pos_y)**2)
                     target_pos = (closest_threat.pos_x, closest_threat.pos_y)
                     priority = 0.95
                 
-                # 3. Altruistic Feeding
+                # 6. Altruistic Feeding
                 elif not is_hungry and allies and entity.energy > 300.0:
                     starving_ally = next((a for a in allies if a.energy < a.max_energy * 0.3), None)
                     if starving_ally:
@@ -320,7 +404,7 @@ class DecisionSystem:
                             starving_ally.gain_energy(20.0)
                             entity.custom_data["dopamine"] = 1.0
                 
-                # 4. Leader Follow
+                # 7. Leader Follow
                 elif not is_hungry and entity.custom_data.get("emergent_role") != "LEADER":
                     leader = next((a for a in allies if a.custom_data.get("emergent_role") == "LEADER"), None)
                     if leader and math.hypot(leader.pos_x - entity.pos_x, leader.pos_y - entity.pos_y) > 120.0:

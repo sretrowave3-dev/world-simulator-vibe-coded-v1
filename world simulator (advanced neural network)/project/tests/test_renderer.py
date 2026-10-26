@@ -144,6 +144,37 @@ class TestRendererElements(unittest.TestCase):
 
         renderer.close()
 
+    def test_pheromone_overlay_rendering(self) -> None:
+        """Verifies that HeatmapRenderer draws visible food trails and danger scents."""
+        from project.renderer.heatmaps import HeatmapRenderer
+        from project.ai.pheromone import PheromoneGrid, PheromoneType
+        import pygame
+
+        camera = Camera(screen_width=800, screen_height=600)
+        camera.pos_x = 400.0
+        camera.pos_y = 300.0
+        camera.zoom = 1.0
+
+        grid = PheromoneGrid(width=100, height=100, cell_size=16.0)
+        # Deposit visible scent at camera center
+        grid.deposit(400.0, 300.0, PheromoneType.FOOD_TRAIL, intensity=1.5)
+        grid.deposit(420.0, 300.0, PheromoneType.DANGER_ALARM, intensity=2.0)
+
+        surface = pygame.Surface((800, 600), pygame.SRCALPHA)
+        hr = HeatmapRenderer(cell_size=16.0)
+
+        # Draw Food Trail
+        hr.draw_pheromone_overlay(surface, camera, grid, PheromoneType.FOOD_TRAIL, (0, 255, 100))
+        # Surface must have non-zero alpha pixels drawn
+        has_food_pixels = any(surface.get_at((x, y))[3] > 0 for x in range(380, 420, 5) for y in range(280, 320, 5))
+        self.assertTrue(has_food_pixels)
+
+        # Draw Danger Alarm
+        danger_surface = pygame.Surface((800, 600), pygame.SRCALPHA)
+        hr.draw_pheromone_overlay(danger_surface, camera, grid, PheromoneType.DANGER_ALARM, (255, 50, 50))
+        has_danger_pixels = any(danger_surface.get_at((x, y))[3] > 0 for x in range(400, 440, 5) for y in range(280, 320, 5))
+        self.assertTrue(has_danger_pixels)
+
 
 if __name__ == "__main__":
     unittest.main()

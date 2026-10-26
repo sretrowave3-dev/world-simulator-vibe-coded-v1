@@ -106,22 +106,15 @@ class RenderSyncSystem:
                 brain_mut = getattr(e, 'genes', {}).get("brain_plasticity", 1.0)
                 ai_score = (age * 0.1) + (energy * 0.5) * brain_mut
                 
-                # Deep clone the neural network topology and active states
-                net_sizes = list(e.brain.layer_sizes)
-                net_outputs = [list(layer) for layer in e.brain.layer_outputs] if e.brain.layer_outputs else []
-                net_weights = []
-                # Weights are 3D array: weights[layer_idx][out_node][in_node]
-                for w_layer in e.brain.weights:
-                    net_weights.append([list(node_w) for node_w in w_layer])
-
+                # Direct zero-copy references for high-speed 60FPS synchronization
                 snap_data["ai_metrics"] = {
                     "intelligence_score": ai_score,
                     "plasticity": brain_mut,
                     "working_memory": list(e.brain.working_memory),
                     "last_reward": e.custom_data.get("last_learning_reward", 0.0),
-                    "net_sizes": net_sizes,
-                    "net_outputs": net_outputs,
-                    "net_weights": net_weights
+                    "net_sizes": list(e.brain.layer_sizes),
+                    "net_outputs": e.brain.layer_outputs or [],
+                    "net_weights": e.brain.weights,
                 }
                 
             new_snap.append(snap_data)

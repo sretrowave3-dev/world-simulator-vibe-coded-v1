@@ -332,6 +332,63 @@ class TestSecuritySubsystem(unittest.TestCase):
 
         sec_sys.shutdown()
 
+    def test_audit_logger_permission_error_resilience(self) -> None:
+        """Verify audit logger does not crash if file append raises PermissionError."""
+        from unittest.mock import patch
+        logger = SecurityAuditLogger()
+        logger.log_event(
+            severity=SecuritySeverity.WARNING,
+            event_type="TEST_LOCK",
+            details="Testing permission error tolerance",
+        )
+        self.assertEqual(len(logger.get_events()), 1)
+
+        # Mock open to raise PermissionError on primary file only, fallback succeeds
+        orig_open = open
+        fallback_created = []
+
+        def mock_open(file, *args, **kwargs):
+            if os.path.basename(str(file)) == "locked_audit.jsonl":
+                raise PermissionError(13, "Permission denied: 'locked_audit.jsonl'")
+            fallback_created.append(str(file))
+            return orig_open(file, *args, **kwargs)
+
+        try:
+            with patch("builtins.open", side_effect=mock_open):
+                count = logger.flush_to_jsonl("locked_audit.jsonl")
+                # Should have fallen back and written successfully without raising
+                self.assertEqual(count, 1)
+        finally:
+            for f in fallback_created:
+                if os.path.exists(f):
+                    try:
+                        os.remove(f)
+                    except OSError:
+                        pass
+
+    def test_security_system_update_permission_error_safety(self) -> None:
+        """Verify scheduler-driven update at tick 600 does not crash the system on PermissionError."""
+        from unittest.mock import patch
+        sec_sys = SecuritySystem(audit_log_path="read_only_audit.jsonl")
+        self.assertFalse(sec_sys.is_critical, "SecuritySystem must not be critical to avoid terminating simulation")
+
+        context = UpdateContext(
+            tick=600,
+            delta_time=0.1,
+            simulation_time=10.0,
+            random_seed=42,
+            world_reference=None,
+            is_paused=False,
+            active_thread_count=1,
+        )
+
+        with patch.object(sec_sys.audit_logger, "flush_to_jsonl", side_effect=PermissionError(13, "Permission denied")):
+            # Must not raise SystemExecutionError or PermissionError
+            try:
+                sec_sys.update(context)
+            except Exception as e:
+                self.fail(f"SecuritySystem.update raised an unhandled exception: {e}")
+
 
 if __name__ == "__main__":
     unittest.main()

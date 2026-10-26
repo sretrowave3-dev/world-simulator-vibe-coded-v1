@@ -111,17 +111,54 @@ class SecurityAuditLogger:
         return filtered[-limit:]
 
     def flush_to_jsonl(self, filepath: str) -> int:
-        """Appends buffered security events to a JSON-Lines audit log file."""
+        """Appends buffered security events to a JSON-Lines audit log file.
+
+        Resilient against Windows file locks, permission errors, and I/O collisions:
+        - Creates parent directory if missing.
+        - Falls back to an alternative timestamped file if the target file is locked.
+        - Caps in-memory buffer if the disk is completely unwritable to prevent memory leaks.
+        - Never raises uncaught exceptions that would crash callers or simulation loops.
+        """
         if not self._event_buffer:
             return 0
 
-        count = len(self._event_buffer)
-        with open(filepath, "a", encoding="utf-8") as f:
-            for event in self._event_buffer:
-                f.write(json.dumps(event.to_dict()) + "\n")
+        dir_path = os.path.dirname(filepath)
+        if dir_path:
+            try:
+                os.makedirs(dir_path, exist_ok=True)
+            except (PermissionError, OSError):
+                pass
 
-        self._event_buffer.clear()
-        return count
+        count = len(self._event_buffer)
+        written = False
+
+        # Attempt 1: Standard append to intended path
+        try:
+            with open(filepath, "a", encoding="utf-8") as f:
+                for event in self._event_buffer:
+                    f.write(json.dumps(event.to_dict()) + "\n")
+            written = True
+        except (PermissionError, OSError):
+            # Attempt 2: Fallback to an alternate file if primary is locked or inaccessible
+            try:
+                base_name = os.path.basename(filepath) or "security_audit.jsonl"
+                fallback_dir = dir_path if (dir_path and os.path.isdir(dir_path)) else os.getcwd()
+                fallback_path = os.path.join(fallback_dir, f"audit_{int(time.time())}_{secrets.token_hex(2)}_{base_name}")
+                with open(fallback_path, "a", encoding="utf-8") as f:
+                    for event in self._event_buffer:
+                        f.write(json.dumps(event.to_dict()) + "\n")
+                written = True
+            except (PermissionError, OSError):
+                # If disk writes completely fail, cap buffer to prevent unbounded memory growth
+                if len(self._event_buffer) > 1000:
+                    self._event_buffer = self._event_buffer[-1000:]
+                return 0
+
+        if written:
+            self._event_buffer.clear()
+            return count
+
+        return 0
 
     def get_summary(self) -> Dict[str, Any]:
         """Returns statistical overview of security posture."""

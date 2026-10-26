@@ -522,6 +522,7 @@ class BiomeStage(PipelineStage):
 class WaterStage(PipelineStage):
     def execute(self, chunk: TerrainChunk, noise: NoiseGenerator) -> None:
         sz = TerrainChunk.CHUNK_SIZE
+        sx, sy = chunk.chunk_x * sz, chunk.chunk_y * sz
         for x in range(sz):
             for y in range(sz):
                 h = chunk.height_map.height[x][y]
@@ -531,16 +532,43 @@ class WaterStage(PipelineStage):
                 elif h < 0.35:
                     chunk.water_map.water_type[x][y] = WaterType.OCEAN
                     chunk.water_map.depth[x][y] = (0.35 - h) * 30.0
+                else:
+                    # Procedural river network winding across the continent
+                    r_noise1 = noise.sample((sx + x) * 0.0018, (sy + y) * 0.0018)
+                    r_noise2 = noise.sample((sx + x) * 0.0035 + 45.0, (sy + y) * 0.0035 + 45.0)
+                    river_val = abs((r_noise1 + r_noise2 * 0.5) - 0.72)
+                    if river_val < 0.028 and h < 0.75:
+                        chunk.water_map.water_type[x][y] = WaterType.RIVER
+                        chunk.water_map.depth[x][y] = 6.0
+                        chunk.water_map.flow_x[x][y] = 1.2
+                        chunk.water_map.flow_y[x][y] = 0.8
+                        chunk.soil_map.moisture[x][y] = 0.95
 
 class ResourcesStage(PipelineStage):
     def execute(self, chunk: TerrainChunk, noise: NoiseGenerator) -> None:
         sz = TerrainChunk.CHUNK_SIZE
+        sx, sy = chunk.chunk_x * sz, chunk.chunk_y * sz
         for x in range(sz):
             for y in range(sz):
                 biome = chunk.biome_map.data[x][y]
+                h = chunk.height_map.height[x][y]
                 res_type = BIOME_REGISTRY[biome].primary_resource
                 if res_type != ResourceType.NONE:
                     chunk.resource_map.quantities[x][y][res_type] = 500.0
+
+                # Mountains provide stone, coal, and iron veins
+                if h > 0.65 or biome in (BiomeType.MOUNTAIN, BiomeType.ROCK_DESERT):
+                    chunk.resource_map.quantities[x][y][ResourceType.STONE] = 800.0
+                    chunk.resource_map.quantities[x][y][ResourceType.IRON] = 300.0
+
+                # Rivers and beaches provide stones and clay
+                if chunk.water_map.water_type[x][y] == WaterType.RIVER or biome == BiomeType.BEACH:
+                    chunk.resource_map.quantities[x][y][ResourceType.STONE] = 350.0
+
+                # Forests and woodlands provide timber wood and fruit
+                if biome in (BiomeType.FOREST, BiomeType.RAINFOREST, BiomeType.JUNGLE):
+                    chunk.resource_map.quantities[x][y][ResourceType.WOOD] = 1200.0
+                    chunk.resource_map.quantities[x][y][ResourceType.FRUIT] = 400.0
 
 class VegetationStage(PipelineStage):
     def execute(self, chunk: TerrainChunk, noise: NoiseGenerator) -> None:
@@ -878,3 +906,59 @@ class TerrainManager:
 
     def get_gemini_summary(self, center_x: int, center_y: int, radius: int = 5) -> GeminiContextSummary:
         return self.adapters.generate_gemini_summary(center_x, center_y, radius)
+
+    def sample_surface_point(self, x: float, y: float) -> Tuple[float, str, str]:
+        """
+        Ultra-fast direct procedural sampling of (height, water_type, biome_name) at (x, y).
+        If the chunk is already resident in memory, reads from the chunk.
+        Otherwise evaluates procedural formulas in ~0.01ms without allocating a 4096-tile chunk.
+        Returns: (height, water_type_str, biome_name_str)
+        """
+        cx = int(x) // TerrainChunk.CHUNK_SIZE
+        cy = int(y) // TerrainChunk.CHUNK_SIZE
+        cid = f"{cx}_{cy}"
+        if cid in self.chunk_manager.chunks:
+            chunk = self.chunk_manager.chunks[cid]
+            lx = max(0, min(TerrainChunk.CHUNK_SIZE - 1, int(x) % TerrainChunk.CHUNK_SIZE))
+            ly = max(0, min(TerrainChunk.CHUNK_SIZE - 1, int(y) % TerrainChunk.CHUNK_SIZE))
+            h = chunk.height_map.height[lx][ly]
+            w = chunk.water_map.water_type[lx][ly].name
+            b = chunk.biome_map.data[lx][ly].name
+            return (h, w, b)
+
+        # Procedural direct evaluation without chunk allocation
+        noise = self.generator.noise
+        gx, gy = x * 0.005, y * 0.005
+        h = max(0.0, min(1.0, noise.sample(gx, gy, noise_type=NoiseType.DOMAIN_WARP)))
+
+        # Water check
+        if h < 0.2:
+            return (h, 'OCEAN', 'DEEP_OCEAN')
+        if h < 0.35:
+            return (h, 'OCEAN', 'OCEAN')
+
+        # River check
+        r_noise1 = noise.sample(x * 0.0018, y * 0.0018)
+        r_noise2 = noise.sample(x * 0.0035 + 45.0, y * 0.0035 + 45.0)
+        river_val = abs((r_noise1 + r_noise2 * 0.5) - 0.72)
+        if river_val < 0.028 and h < 0.75:
+            return (h, 'RIVER', 'RIVER')
+
+        # Mountain check
+        if h > 0.65:
+            return (h, 'NONE', 'MOUNTAIN')
+
+        # Climate & Biome
+        cx_val, cy_val = x * 0.003, y * 0.003
+        latitude = min(90.0, abs(y) * 0.1)
+        lat_factor = math.cos(math.radians(latitude))
+        base_temp = (lat_factor * 50.0) - 10.0
+        temp = base_temp + (noise.sample(cx_val + 10.0, cy_val + 10.0) * 10.0) - (h * 30.0)
+        hum = noise.sample(cx_val + 20.0, cy_val + 20.0)
+        lat = y * 0.1
+        cont = noise.sample(gx + 30.0, gy + 30.0)
+        eros = noise.sample(gx + 40.0, gy + 40.0)
+        weird = noise.sample(gx + 50.0, gy + 50.0)
+        biome = BiomeClassifier.classify(h, cont, eros, temp, hum, lat, weird)
+        return (h, 'NONE', biome.name)
+

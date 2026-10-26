@@ -10,10 +10,51 @@ from typing import List, Dict, Any, Tuple, Callable, Optional
 import pygame
 _TEXT_SURFACE_CACHE: Dict[Tuple[int, str, int, int, int], pygame.Surface] = {}
 _MAX_TEXT_CACHE_SIZE = 1024
+_DEFAULT_FALLBACK_FONT: Optional[pygame.font.Font] = None
+_CIRCLE_SPRITE_CACHE: Dict[Tuple[Tuple[int, int, int], int], pygame.Surface] = {}
+_AURA_SPRITE_CACHE: Dict[Tuple[Tuple[int, int, int, int], int], pygame.Surface] = {}
 
 
-def get_cached_text(font: pygame.font.Font, text: str, color: Tuple[int, int, int]) -> pygame.Surface:
+def get_cached_circle_sprite(color: Tuple[int, int, int], radius: int) -> pygame.Surface:
+    """Pre-renders and caches anti-aliased solid circle sprites for fast blitting."""
+    key = (color, radius)
+    surf = _CIRCLE_SPRITE_CACHE.get(key)
+    if surf is not None:
+        return surf
+    if len(_CIRCLE_SPRITE_CACHE) >= 512:
+        _CIRCLE_SPRITE_CACHE.clear()
+    diam = max(2, radius * 2)
+    surf = pygame.Surface((diam, diam), pygame.SRCALPHA)
+    pygame.draw.circle(surf, color, (radius, radius), radius)
+    _CIRCLE_SPRITE_CACHE[key] = surf
+    return surf
+
+
+def get_cached_aura_sprite(color_rgba: Tuple[int, int, int, int], radius: int) -> pygame.Surface:
+    """Pre-renders and caches semi-transparent circular aura sprites."""
+    key = (color_rgba, radius)
+    surf = _AURA_SPRITE_CACHE.get(key)
+    if surf is not None:
+        return surf
+    if len(_AURA_SPRITE_CACHE) >= 512:
+        _AURA_SPRITE_CACHE.clear()
+    diam = max(2, radius * 2)
+    surf = pygame.Surface((diam, diam), pygame.SRCALPHA)
+    pygame.draw.circle(surf, color_rgba, (radius, radius), radius)
+    _AURA_SPRITE_CACHE[key] = surf
+    return surf
+
+
+def get_cached_text(font: Optional[pygame.font.Font], text: str, color: Tuple[int, int, int]) -> pygame.Surface:
     """Hyper-fast text rendering using bounded dictionary cache to prevent re-rendering static strings every frame."""
+    global _DEFAULT_FALLBACK_FONT
+    if font is None:
+        if _DEFAULT_FALLBACK_FONT is None:
+            if not pygame.font.get_init():
+                pygame.font.init()
+            _DEFAULT_FALLBACK_FONT = pygame.font.SysFont("Segoe UI", 12)
+        font = _DEFAULT_FALLBACK_FONT
+
     key = (id(font), text, color[0], color[1], color[2])
     surf = _TEXT_SURFACE_CACHE.get(key)
     if surf is not None:

@@ -46,26 +46,65 @@ class PheromoneSystem:
         # 1. Diffuse and evaporate pheromones
         self._pheromone_grid.tick(context.delta_time)
 
-        # 2. Let entities deposit pheromone trails based on actions
+        # 2. Let entities deposit pheromone trails based on biology and actions
+        dt = context.delta_time
         for entity in self._entities_list:
             if not entity.is_alive:
                 continue
 
-            if entity.current_action == "FORAGE_FOOD":
-                # Deposit food trail scent
+            action = getattr(entity, "current_action", "") or ""
+            action_upper = action.upper()
+            ex = entity.pos_x
+            ey = entity.pos_y
+
+            # A. Food Sources: Plants, crops, fruits, and food nodes emit appetizing ambient scent
+            is_food_source = (
+                entity.entity_type in (EntityType.PLANT, EntityType.FUNGUS)
+                or entity.custom_data.get("is_food", False)
+                or "food" in entity.species_id.lower()
+                or "fruit" in entity.species_id.lower()
+            )
+            if is_food_source:
                 self._pheromone_grid.deposit(
-                    entity.pos_x,
-                    entity.pos_y,
+                    ex, ey,
                     PheromoneType.FOOD_TRAIL,
-                    intensity=10.0 * context.delta_time
+                    intensity=25.0 * dt
                 )
-            elif entity.current_action == "FLEE":
-                # Deposit danger alarm scent
+
+            # B. Foraging Organisms: Entities eating, seeking, or carrying food deposit path scent
+            if (
+                "EAT" in action_upper
+                or "FORAGE" in action_upper
+                or "FEAST" in action_upper
+                or "GRAZE" in action_upper
+                or "FOOD" in action_upper
+                or action_upper == "FORAGE_FOOD"
+            ):
                 self._pheromone_grid.deposit(
-                    entity.pos_x,
-                    entity.pos_y,
+                    ex, ey,
+                    PheromoneType.FOOD_TRAIL,
+                    intensity=30.0 * dt
+                )
+
+            # C. Threat & Alarm: Fleeing, terrified, or combat-engaged organisms deposit danger scent
+            fear = getattr(entity, "fear", 0.0)
+            stress = getattr(entity, "stress", 0.0)
+            in_combat = getattr(entity, "in_combat", False) or "COMBAT" in action_upper or "ATTACK" in action_upper
+            is_fleeing = "FLEE" in action_upper or "ESCAPE" in action_upper
+
+            if is_fleeing or in_combat or fear > 0.35 or stress > 0.6:
+                self._pheromone_grid.deposit(
+                    ex, ey,
                     PheromoneType.DANGER_ALARM,
-                    intensity=25.0 * context.delta_time
+                    intensity=45.0 * dt
+                )
+
+            # D. Predator Trail: Apex carnivores emit an ominous localized threat scent
+            if entity.entity_type in (EntityType.PREDATOR, EntityType.CARNIVORE):
+                self._pheromone_grid.deposit(
+                    ex, ey,
+                    PheromoneType.DANGER_ALARM,
+                    intensity=15.0 * dt
                 )
 
     def late_update(self, context: UpdateContext) -> None:

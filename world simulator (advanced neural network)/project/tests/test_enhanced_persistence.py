@@ -149,6 +149,17 @@ class TestEnhancedPersistence(unittest.TestCase):
         if os.path.exists(saved):
             os.remove(saved)
 
+    def test_list_saves_browser_safety(self) -> None:
+        """Verifies that list_saves always provides safe fields (name, size_kb, modified, tick, alive) without raising KeyError."""
+        saves = PersistenceManager.list_saves()
+        for s in saves:
+            self.assertIn("name", s)
+            self.assertIn("size_kb", s)
+            # Both modified and date_str should be safely accessible or fallback
+            mod_s = s.get("modified", s.get("date_str", "—"))
+            self.assertIsInstance(mod_s, str)
+            self.assertGreater(len(mod_s), 0)
+
 
 if __name__ == "__main__":
     unittest.main()

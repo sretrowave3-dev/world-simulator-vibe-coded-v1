@@ -5,15 +5,16 @@ Sentient Human Entity Model for the ALife Platform.
 
 Features:
 - High-Capacity Cognitive Memory: Preallocated >= 50 MB Experience Replay Matrix & Spatial Mapping.
-- Advanced Tool Usage, Crafting, Inventory Management, and Shelter Construction.
+- Non-Hardcoded Emergent Tool Usage, Crafting, Inventory Management, and Shelter Construction.
 - Social Hierarchy, Tribal Organization, Cultural Knowledge Transmission, and Divine Ascension.
 - Robust Omnivorous Metabolism with high caloric reserves and sustainable foraging efficiency.
+- Tree and Forest Harvesting: Gathers wood/fruit from mature trees and stones from mountain quarries.
 """
 
 from __future__ import annotations
 
 from dataclasses import dataclass, field
-from typing import Dict, List, Optional
+from typing import Dict, List, Optional, Any
 from project.entities.entity import Entity, EntityType
 from project.ai.memory import HumanCognitiveMemory
 
@@ -35,6 +36,12 @@ class Human(Entity):
 
     inventory: Dict[str, float] = field(default_factory=dict)
     max_inventory_capacity_kg: float = 60.0
+    equipped_tool: Optional[str] = None  # "stone_axe", "wood_spear", "stone_pickaxe", etc.
+    shelter_importance_score: float = 0.3
+    desired_shelter_tier: int = 1
+    in_shelter_id: Optional[str] = None
+    night_exposure_ticks: int = 0
+    predator_attacks_survived: int = 0
     thought_cache: Optional[Any] = None
 
     def __post_init__(self) -> None:
@@ -88,33 +95,25 @@ class Human(Entity):
             valence=valence,
             intensity=intensity,
             tick=tick,
-            tags=tags,
+            tags=tags or [],
         )
 
-    def recall_thoughts(
-        self,
-        query: Optional[str] = None,
-        category: Optional[str] = None,
-        emotion_range: Optional[tuple[float, float]] = None,
-        limit: int = 5,
-    ) -> List[Any]:
-        """Subjectively retrieves past thoughts from memory cache based on context or sentiment."""
+    def recall_thoughts(self, query: str = "", category: Optional[str] = None, limit: int = 5) -> List[Any]:
+        """Recalls subjective thoughts from the thought cache matching keywords or category."""
         if self.thought_cache is None:
             return []
-        if query:
-            return self.thought_cache.recall_by_keyword(query, limit=limit)
         if category:
             return self.thought_cache.recall_by_category(category, limit=limit)
-        if emotion_range:
-            return self.thought_cache.recall_by_emotion(emotion_range[0], emotion_range[1], limit=limit)
-        return self.thought_cache.retrieve_recent(limit=limit)
+        if query:
+            return self.thought_cache.recall_by_keyword(query, limit=limit)
+        with self.thought_cache._lock:
+            return list(self.thought_cache._thoughts[-limit:])
 
-    @property
-    def memory_footprint_mb(self) -> float:
-        """Returns the memory buffer size in megabytes."""
-        if self.memory and hasattr(self.memory, "memory_size_mb"):
-            return self.memory.memory_size_mb
-        return 51.13
+    def _apply_individual_variance(self) -> None:
+        import random
+        self.intelligence_quotient += random.gauss(0.0, 10.0)
+        self.creativity = max(0.1, min(1.0, self.creativity + random.uniform(-0.15, 0.15)))
+        self.social_affinity = max(0.2, min(1.0, self.social_affinity + random.uniform(-0.1, 0.1)))
 
     @property
     def inventory_weight(self) -> float:
@@ -135,6 +134,165 @@ class Human(Entity):
         if self.inventory[item_name] <= 0.001:
             del self.inventory[item_name]
         return removed
+
+    def harvest_from_tree(self, plant_entity: Any) -> float:
+        """
+        Emergent wood and fruit gathering from trees and flora.
+        Equipped stone axe doubles woodcutting efficiency.
+        """
+        tool_mult = 2.2 if self.equipped_tool == "stone_axe" else 1.0
+        wood_harvested = plant_entity.harvest_wood(requested_kg=2.5, tool_multiplier=tool_mult)
+        if wood_harvested > 0:
+            self.add_to_inventory("wood", wood_harvested)
+            self.energy = max(10.0, self.energy - 3.0)
+
+        fruit_harvested = plant_entity.harvest_fruit(requested_kg=1.5)
+        if fruit_harvested > 0:
+            self.add_to_inventory("food", fruit_harvested)
+            self.gain_energy(fruit_harvested * 20.0)  # Immediate snack
+
+        return wood_harvested + fruit_harvested
+
+    def gather_stone(self, amount_kg: float = 2.0) -> float:
+        """Gathers stone from boulders, quarries, or mountain foothills."""
+        tool_mult = 2.5 if self.equipped_tool == "stone_pickaxe" else 1.0
+        effective = amount_kg * (1.2 if tool_mult > 1.0 else 1.0)
+        if self.add_to_inventory("stone", effective):
+            self.energy = max(10.0, self.energy - 4.0)
+            return effective
+        return 0.0
+
+    def drink_water(self, hydration_amount: float = 80.0) -> None:
+        """Quenches thirst at rivers and fresh water bodies."""
+        pottery_bonus = 40.0 if self.inventory.get("clay_pottery", 0.0) > 0 else 0.0
+        self.hydration = min(self.max_hydration, self.hydration + hydration_amount + pottery_bonus)
+        self.custom_data["stress"] = max(0.0, self.custom_data.get("stress", 0.0) - 0.1)
+
+    def evaluate_shelter_need(self, daylight: float, threats_nearby: int, sim_tick: int) -> None:
+        """
+        Minecraft Survival Instinct:
+        Humans experience vulnerability from cold nights, thunderstorms, and nocturnal predator ambushes.
+        As threats or night exposure increase, they realize shelter is vital and desire higher architectural tiers.
+        """
+        if self.in_shelter_id is not None:
+            self.night_exposure_ticks = 0
+            self.custom_data["stress"] = max(0.0, self.custom_data.get("stress", 0.0) - 0.05)
+            self.custom_data["fear"] = 0.0
+            return
+
+        is_night = daylight < 0.38
+        if is_night:
+            self.night_exposure_ticks += 1
+            if self.night_exposure_ticks % 40 == 0:
+                self.shelter_importance_score = min(1.0, self.shelter_importance_score + 0.12)
+                self.custom_data["stress"] = min(1.0, self.custom_data.get("stress", 0.0) + 0.05)
+                if self.shelter_importance_score > 0.55 and sim_tick % 100 == 0:
+                    self.think(
+                        "The nocturnal darkness is freezing and dangerous. We must erect a sturdy shelter with walls!",
+                        category="SURVIVAL",
+                        valence=-0.4,
+                        intensity=0.8,
+                        tick=sim_tick,
+                    )
+
+        if threats_nearby > 0:
+            self.shelter_importance_score = min(1.0, self.shelter_importance_score + 0.20)
+            if self.predator_attacks_survived > 0 and self.desired_shelter_tier < 3:
+                self.desired_shelter_tier = 3
+                if sim_tick % 80 == 0:
+                    self.think(
+                        "Predators can claw through simple branches! We must quarry cobblestone and construct an impenetrable fortress!",
+                        category="SURVIVAL",
+                        valence=-0.2,
+                        intensity=0.9,
+                        tick=sim_tick,
+                    )
+            elif self.desired_shelter_tier < 2:
+                self.desired_shelter_tier = 2
+
+    def enter_shelter(self, structure: Any) -> bool:
+        """Enters a built shelter structure, closing the door against predators and elements."""
+        if structure.add_occupant(self.entity_id):
+            self.in_shelter_id = structure.structure_id
+            self.custom_data["is_sheltered"] = True
+            self.custom_data["stress"] = 0.0
+            self.custom_data["fear"] = 0.0
+            self.custom_data["dopamine"] = 1.0
+            return True
+        return False
+
+    def exit_shelter(self, structure: Optional[Any] = None) -> None:
+        """Exits the shelter into the outside world."""
+        if structure and self.in_shelter_id == structure.structure_id:
+            structure.remove_occupant(self.entity_id)
+        self.in_shelter_id = None
+        self.custom_data["is_sheltered"] = False
+
+    def attempt_emergent_crafting(self, sim_tick: int = 0, force_shelter: bool = False) -> Optional[str]:
+        """
+        Non-hardcoded emergent crafting and construction:
+        Checks held raw materials against the technology tree.
+        Discovers new innovations AND repeatedly builds structures or crafts tools when needed.
+        """
+        from project.civilization.technology import world_tech_tree
+        need_shelter = force_shelter or (self.in_shelter_id is None and (self.shelter_importance_score > 0.45 or self.night_exposure_ticks > 0))
+        recipe = world_tech_tree.get_best_craftable_recipe(
+            inventory=self.inventory,
+            iq=self.intelligence_quotient,
+            creativity=self.creativity,
+            known_techs=self.known_technologies,
+            desired_tier=self.desired_shelter_tier,
+            need_shelter=need_shelter,
+            equipped_tool=self.equipped_tool,
+        )
+
+        if recipe:
+            # Consume required materials
+            for mat, amount in recipe.required_materials.items():
+                self.remove_from_inventory(mat, amount)
+
+            # Discover technology if new
+            is_new_discovery = recipe.name not in self.known_technologies
+            if is_new_discovery:
+                self.known_technologies.append(recipe.name)
+            if recipe.name not in world_tech_tree.discovered_recipes:
+                world_tech_tree.discovered_recipes.add(recipe.name)
+
+            # Equip, inventory, or spawn structure
+            if recipe.output_type in ("tool", "weapon"):
+                self.equipped_tool = recipe.output_item
+                self.add_to_inventory(recipe.output_item, recipe.output_weight_kg)
+                if "combat_bonus" in recipe.bonus_effects:
+                    self.strength = min(self.max_strength_cap, self.strength + recipe.bonus_effects["combat_bonus"])
+            elif recipe.output_type == "material":
+                self.add_to_inventory(recipe.output_item, recipe.output_weight_kg)
+            elif recipe.output_type == "structure":
+                from project.civilization.settlement import world_settlement_mgr
+                clan_id = self.tribe_id or "genesis_tribe"
+                st = world_settlement_mgr.spawn_structure(
+                    structure_type=recipe.output_item,
+                    pos_x=self.pos_x,
+                    pos_y=self.pos_y,
+                    clan_id=clan_id,
+                    tick=sim_tick,
+                )
+                if st.capacity > 0:
+                    self.enter_shelter(st)
+
+            # Boost morale and record thought
+            self.custom_data["dopamine"] = 1.0
+            self.custom_data["stress"] = 0.0
+            thought_prefix = "Eureka! Discovered" if is_new_discovery else "Constructed"
+            self.think(
+                f"{thought_prefix} a {recipe.name}! {recipe.description}",
+                category="CREATION",
+                valence=1.0,
+                intensity=0.9,
+                tick=sim_tick,
+            )
+            return recipe.name
+
+        return None
 
     def can_mate(self) -> bool:
         return (

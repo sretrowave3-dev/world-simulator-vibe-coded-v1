@@ -46,6 +46,7 @@ from project.entities.arthropod import Arthropod
 from project.entities.reptile import Reptile
 from project.entities.fungus import Fungus
 from project.core.linux_optimizer import linux_optimizer
+from project.core.git_save_manager import git_save_manager
 
 SAVES_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", "saves"))
 os.makedirs(SAVES_DIR, exist_ok=True)
@@ -129,7 +130,7 @@ class PersistenceManager:
 
     @classmethod
     def resolve_save_path(cls, filepath_or_name: str) -> str:
-        """Resolves save file path with fuzzy matching, numeric index, or default saves dir."""
+        """Resolves save file path with universe awareness, numeric index, or fuzzy matching."""
         clean_input = filepath_or_name.strip()
         os.makedirs(SAVES_DIR, exist_ok=True)
 
@@ -144,7 +145,21 @@ class PersistenceManager:
             if 0 <= idx < len(saves):
                 return saves[idx]["path"]
 
-        # 3. Exact filename match in SAVES_DIR
+        # 3. Check active universe checkpoints & autosaves first
+        try:
+            from project.core.quantum_persistence import quantum_persistence
+            univ_dir = quantum_persistence._get_universe_dir(quantum_persistence.active_universe_id)
+            for sub in ("checkpoints", "autosaves", "blackbox"):
+                cand = os.path.join(univ_dir, sub, clean_input)
+                if os.path.exists(cand):
+                    return cand
+                cand_ext = os.path.join(univ_dir, sub, f"{clean_input}.dat")
+                if os.path.exists(cand_ext):
+                    return cand_ext
+        except Exception:
+            pass
+
+        # 4. Exact filename match in SAVES_DIR
         target = os.path.join(SAVES_DIR, clean_input)
         if os.path.exists(target):
             return target
@@ -153,7 +168,7 @@ class PersistenceManager:
         if os.path.exists(target_with_ext):
             return target_with_ext
 
-        # 4. Fuzzy substring / prefix matching
+        # 5. Fuzzy substring / prefix matching
         saves = cls.list_saves()
         low = clean_input.lower()
         for s in saves:
@@ -161,26 +176,47 @@ class PersistenceManager:
             if s_low == low or s_low.startswith(low) or low in s_low:
                 return s["path"]
 
-        # Default fallback for new saves
+        # Default fallback: save inside active universe checkpoints directory
         if not clean_input.endswith(".dat"):
             clean_input = f"{clean_input}.dat"
-        return os.path.join(SAVES_DIR, clean_input)
+        try:
+            from project.core.quantum_persistence import quantum_persistence
+            univ_dir = quantum_persistence._get_universe_dir(quantum_persistence.active_universe_id)
+            return os.path.join(univ_dir, "checkpoints", clean_input)
+        except Exception:
+            return os.path.join(SAVES_DIR, clean_input)
 
     @classmethod
     def list_saves(cls) -> List[Dict[str, Any]]:
-        """Scans the saves directory and returns a richly annotated list using .meta.json sidecars."""
+        """Scans active universe snapshots and global saves directory."""
         os.makedirs(SAVES_DIR, exist_ok=True)
         results = []
+        scanned_paths: Set[str] = set()
+
+        # 1. First scan active universe snapshots
+        try:
+            from project.core.quantum_persistence import quantum_persistence
+            univ_snaps = quantum_persistence.list_universe_snapshots()
+            for s in univ_snaps:
+                scanned_paths.add(os.path.abspath(s["path"]))
+                results.append(s)
+        except Exception:
+            pass
+
+        # 2. Scan global SAVES_DIR for legacy/shared checkpoints
         for fname in sorted(os.listdir(SAVES_DIR)):
             if not fname.endswith(".dat") or fname.endswith(".tmp"):
                 continue
             full_p = os.path.join(SAVES_DIR, fname)
+            abs_p = os.path.abspath(full_p)
+            if abs_p in scanned_paths:
+                continue
+
             try:
                 stat = os.stat(full_p)
                 size_kb = round(stat.st_size / 1024.0, 1)
                 mtime_str = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(stat.st_mtime))
 
-                # Try to enrich from sidecar
                 meta_path = full_p + ".meta.json"
                 meta: Dict[str, Any] = {}
                 if os.path.exists(meta_path):
@@ -193,20 +229,24 @@ class PersistenceManager:
                 info = {
                     "name":      fname,
                     "path":      full_p,
+                    "category":  "LEGACY",
                     "size_kb":   size_kb,
                     "modified":  mtime_str,
+                    "date_str":  mtime_str,
                     "timestamp": stat.st_mtime,
                     "valid":     True,
-                    # Enriched from sidecar (may be empty for old saves)
                     "tick":      meta.get("tick", "?"),
                     "alive":     meta.get("alive", "?"),
                     "affinity":  meta.get("affinity", "?"),
                     "sha256":    meta.get("sha256", "—"),
+                    "commit_id": meta.get("commit_id", "—"),
+                    "branch":    meta.get("branch", "legacy"),
                     "version":   meta.get("save_fmt", "v1.x"),
                 }
                 results.append(info)
             except Exception:
                 pass
+
         return sorted(results, key=lambda x: x.get("timestamp", 0.0), reverse=True)
 
     @classmethod
@@ -216,16 +256,19 @@ class PersistenceManager:
         data: Dict[str, Any],
         sha256_hex: str,
         save_fmt: str = "v2.0",
+        commit_id: Optional[str] = None,
     ) -> None:
         """Writes a lightweight .meta.json sidecar next to the .dat file for instant browsing."""
         meta = {
-            "tick":     data.get("time", {}).get("tick", 0),
-            "alive":    sum(1 for e in data.get("entities", []) if e.get("alive", True)),
-            "affinity": round(data.get("gemini", {}).get("god_affinity", 0.0), 1),
-            "saved_at": time.strftime("%Y-%m-%d %H:%M:%S"),
-            "size_kb":  round(os.path.getsize(filepath) / 1024.0, 1) if os.path.exists(filepath) else 0,
-            "sha256":   sha256_hex,
-            "save_fmt": save_fmt,
+            "tick":      data.get("time", {}).get("tick", 0),
+            "alive":     sum(1 for e in data.get("entities", []) if e.get("alive", True)),
+            "affinity":  round(data.get("gemini", {}).get("god_affinity", 0.0), 1),
+            "saved_at":  time.strftime("%Y-%m-%d %H:%M:%S"),
+            "size_kb":   round(os.path.getsize(filepath) / 1024.0, 1) if os.path.exists(filepath) else 0,
+            "sha256":    sha256_hex,
+            "save_fmt":  save_fmt,
+            "commit_id": commit_id or "",
+            "branch":    git_save_manager.active_branch,
         }
         meta_path = filepath + ".meta.json"
         try:
@@ -277,13 +320,22 @@ class PersistenceManager:
         }
 
         # 1. Time keeper
-        state["time"] = {
-            "tick": time_mgr.current_tick,
-            "seconds": time_mgr.total_seconds,
-            "seconds_per_day": time_mgr.seconds_per_day,
-            "days_per_year": time_mgr.days_per_year,
-            "ticks_per_second": time_mgr.ticks_per_second,
-        }
+        if time_mgr:
+            state["time"] = {
+                "tick": getattr(time_mgr, "current_tick", 0),
+                "seconds": getattr(time_mgr, "total_seconds", 0.0),
+                "seconds_per_day": getattr(time_mgr, "seconds_per_day", 86400.0),
+                "days_per_year": getattr(time_mgr, "days_per_year", 365),
+                "ticks_per_second": getattr(time_mgr, "ticks_per_second", 60),
+            }
+        else:
+            state["time"] = {
+                "tick": 0,
+                "seconds": 0.0,
+                "seconds_per_day": 86400.0,
+                "days_per_year": 365,
+                "ticks_per_second": 60,
+            }
 
         # 2. Soil Chunks
         state["soil"] = {}
@@ -679,16 +731,31 @@ class PersistenceManager:
             ]
 
     @classmethod
-    def save_to_file(cls, filepath_or_name: str, data: Dict[str, Any]) -> str:
+    def save_to_file(cls, filepath_or_name: str, data: Dict[str, Any], commit_message: Optional[str] = None) -> str:
         """
-        Smart save v2.0:
+        Smart save v2.0 with Git-like Overwrite Protection:
+        - Checks and prevents accidental overwrites of progressed states (Zero Data Loss)
         - Serializes + compresses payload
         - Writes 52-byte header: magic | CRC32 | SHA-256 | version | timestamp
         - Atomically replaces the .dat via temp-file swap
         - Rotates up to 3 rolling backup generations (.bak1/.bak2/.bak3)
+        - Registers discrete Git commit node in git_manifest.json
         - Writes a .meta.json sidecar for instant browsing without decompression
         """
         filepath = cls.resolve_save_path(filepath_or_name)
+
+        # Accidental Overwrite Safeguard
+        current_tick = data.get("time", {}).get("tick", 0)
+        current_alive = sum(1 for e in data.get("entities", []) if e.get("alive", True))
+        try:
+            git_save_manager.check_and_protect_overwrite(
+                target_file_path=filepath,
+                current_tick=current_tick,
+                current_alive=current_alive,
+            )
+        except Exception as ge:
+            print(f"[GIT SAVE] Warning in conflict check: {ge}")
+
         compressed, checksum, sha256_raw = serialize_compressed_payload(data)
         sha256_hex = sha256_raw.hex()
         save_ts = int(time.time())
@@ -714,8 +781,21 @@ class PersistenceManager:
         # Atomic swap — POSIX guarantees this is crash-safe
         os.replace(temp_path, filepath)
 
+        # Register Git commit node
+        commit_id = None
+        try:
+            commit = git_save_manager.record_commit(
+                file_path=filepath,
+                tick=current_tick,
+                alive_count=current_alive,
+                message=commit_message,
+            )
+            commit_id = commit.commit_id
+        except Exception:
+            pass
+
         # Write lightweight metadata sidecar
-        cls._write_meta_sidecar(filepath, data, sha256_hex)
+        cls._write_meta_sidecar(filepath, data, sha256_hex, commit_id=commit_id)
 
         return filepath
 
@@ -783,6 +863,19 @@ class PersistenceManager:
                 result = _try_load(candidate)
                 if candidate != filepath:
                     print(f"✅ [LOAD FALLBACK] Successfully loaded from backup: {candidate}")
+
+                # Align Git lineage on load
+                try:
+                    loaded_tick = result.get("time", {}).get("tick", 0)
+                    meta_p = candidate + ".meta.json"
+                    cid = None
+                    if os.path.exists(meta_p):
+                        with open(meta_p, "r", encoding="utf-8") as mf:
+                            cid = json.load(mf).get("commit_id")
+                    git_save_manager.on_load_checkpoint(candidate, loaded_tick, cid)
+                except Exception:
+                    pass
+
                 return result
             except Exception as e:
                 last_error = e

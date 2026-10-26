@@ -82,6 +82,14 @@ class CombatSystem:
 
                     # 3. Human Tribal Defense & Divine Shield
                     elif target.entity_type == EntityType.HUMAN:
+                        if getattr(target, "in_shelter_id", None):
+                            # Minecraft Rule: Humans safely inside closed shelters are protected from predators!
+                            from project.civilization.settlement import world_settlement_mgr
+                            shelter = world_settlement_mgr.structures.get(target.in_shelter_id)
+                            if shelter and shelter.is_predator_proof:
+                                shelter.take_damage(4.0)
+                                predator.drain_stamina(10.0)
+                                continue  # Predator claw blocked by solid walls!
                         if target.custom_data.get("divine_blessing_active", False):
                             strike_damage *= 0.50  # Divine protection shield
                         # Counter-attack predator using human combat strength

@@ -99,11 +99,11 @@ class SaveSystem:
         return f"autosave_slot_{self._slot_index + 1}.dat"
 
     def _do_save(self, context: UpdateContext, label: str) -> None:
-        """Core save routine — serialises world state and writes to the next rotating slot."""
+        """Core save routine — serialises world state and writes into the active universe's isolated autosaves."""
         if not self._all_managers_ready():
             return
-        slot_name = self._next_slot_name()
         try:
+            from project.core.quantum_persistence import quantum_persistence
             data = PersistenceManager.serialize_state(
                 time_mgr     = self._time_mgr,
                 soil_mgr     = self._soil_mgr,
@@ -115,11 +115,12 @@ class SaveSystem:
                 ruins_mgr    = self._ruins_mgr,
                 miracles_mgr = self._miracles_mgr,
             )
-            saved_path  = PersistenceManager.save_to_file(slot_name, data)
+            saved_path = quantum_persistence.save_universe_autosave(data, context.tick, cause=label)
             self.last_saved_tick = context.tick
             alive_count = sum(1 for e in self._entities_list if e.is_alive)
+            univ = quantum_persistence.get_active_universe()
             print(
-                f"\n[AUTOSAVE/{label}] 💾 Slot {self._slot_index + 1} → {saved_path} "
+                f"\n[AUTOSAVE/{label}] 💾 Universe '{univ.world_name}' → {os.path.basename(saved_path)} "
                 f"(Tick {context.tick:,}, {alive_count} alive)"
             )
         except Exception as e:
@@ -133,11 +134,26 @@ class SaveSystem:
 
         alive_count = sum(1 for e in self._entities_list if e.is_alive)
 
-        # ── Extinction alarm: save immediately if population crashes ──
-        if 0 < alive_count < _EXTINCTION_ALARM:
+        # ── Extinction alarm: capture emergency black-box capsule if established population crashes ──
+        if context.tick > 50 and 0 < alive_count < _EXTINCTION_ALARM:
             if not self._extinction_saved:
-                print(f"\n⚠️  [EXTINCTION ALARM] Population critical ({alive_count} alive) — forcing autosave!")
-                self._do_save(context, "EXTINCTION")
+                print(f"\n🚨 [EXTINCTION ALARM] Population critical ({alive_count} alive) — capturing blackbox time capsule!")
+                try:
+                    from project.core.quantum_persistence import quantum_persistence
+                    data = PersistenceManager.serialize_state(
+                        time_mgr     = self._time_mgr,
+                        soil_mgr     = self._soil_mgr,
+                        water_mgr    = self._water_mgr,
+                        veg_mgr      = self._veg_mgr,
+                        res_mgr      = self._res_mgr,
+                        entities_list= self._entities_list,
+                        gemini_sys   = self._gemini_sys,
+                        ruins_mgr    = self._ruins_mgr,
+                        miracles_mgr = self._miracles_mgr,
+                    )
+                    quantum_persistence.capture_blackbox(data, cause="EXTINCTION_ALARM")
+                except Exception as ex:
+                    print(f"⚠️ [EXTINCTION RECORDER ERROR] {ex}")
                 self._extinction_saved = True
         else:
             self._extinction_saved = False   # reset when population recovers

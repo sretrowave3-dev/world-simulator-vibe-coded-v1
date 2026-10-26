@@ -22,6 +22,7 @@ except Exception:
 sys.path.append(os.path.abspath(os.path.dirname(__file__)))
 
 import random
+import math
 import time
 import threading
 from typing import List, Dict, Any, Tuple
@@ -103,21 +104,78 @@ from project.entities.fungus import Fungus
 
 from project.renderer.renderer import SimulationRenderer
 from project.core.persistence import PersistenceManager, SAVES_DIR
+from project.core.quantum_persistence import quantum_persistence
 
 
 def spawn_genesis_population(entities_list: List[Entity], world_w: float, world_h: float) -> None:
-    """Spawns diverse starting organisms across all 10 major taxonomic categories."""
+    """Spawns a vibrant, ecologically balanced starter colony in the 14,000m expanded world."""
     entities_list.clear()
-    entities_list.append(Plant(entity_id="genesis_plant_0", species_id="fern", pos_x=random.uniform(100, world_w - 100), pos_y=random.uniform(100, world_h - 100)))
-    entities_list.append(Bacteria(entity_id="genesis_bac_0", species_id="chemophile", pos_x=random.uniform(100, world_w - 100), pos_y=random.uniform(100, world_h - 100)))
-    entities_list.append(Herbivore(entity_id="genesis_herb_0", species_id="gazelle", pos_x=random.uniform(100, world_w - 100), pos_y=random.uniform(100, world_h - 100)))
-    entities_list.append(Predator(entity_id="genesis_pred_0", species_id="panther", pos_x=random.uniform(100, world_w - 100), pos_y=random.uniform(100, world_h - 100)))
-    entities_list.append(Human(entity_id="genesis_hum_0", species_id="homo_sapiens", pos_x=random.uniform(100, world_w - 100), pos_y=random.uniform(100, world_h - 100)))
-    entities_list.append(Avian(entity_id="genesis_avian_0", species_id="falcon", pos_x=random.uniform(100, world_w - 100), pos_y=random.uniform(100, world_h - 100)))
-    entities_list.append(Amphibian(entity_id="genesis_amph_0", species_id="axolotl", pos_x=random.uniform(100, world_w - 100), pos_y=random.uniform(100, world_h - 100)))
-    entities_list.append(Arthropod(entity_id="genesis_arth_0", species_id="pollinator_bee", pos_x=random.uniform(100, world_w - 100), pos_y=random.uniform(100, world_h - 100)))
-    entities_list.append(Reptile(entity_id="genesis_rept_0", species_id="viper", pos_x=random.uniform(100, world_w - 100), pos_y=random.uniform(100, world_h - 100)))
-    entities_list.append(Fungus(entity_id="genesis_fung_0", species_id="mycelium_morel", pos_x=random.uniform(100, world_w - 100), pos_y=random.uniform(100, world_h - 100)))
+    cx = world_w * 0.5
+    cy = world_h * 0.5
+
+    # 1. Starting Human Tribe (Clustered around fertile river valley center)
+    for i in range(14):
+        hx = max(100.0, min(world_w - 100.0, cx + random.uniform(-180, 180)))
+        hy = max(100.0, min(world_h - 100.0, cy + random.uniform(-180, 180)))
+        h = Human(entity_id=f"genesis_hum_{i}", species_id="homo_sapiens", pos_x=hx, pos_y=hy)
+        if i == 0:
+            h.add_to_inventory("wood", 4.0)
+            h.add_to_inventory("stone", 3.0)
+        elif i == 1:
+            h.add_to_inventory("wood", 3.0)
+        entities_list.append(h)
+
+    # Spawn initial communal campfire at tribal center
+    from project.civilization.settlement import world_settlement_mgr
+    world_settlement_mgr.spawn_structure("campfire", cx, cy, clan_id="genesis_tribe", tick=1)
+
+    # 2. Herbivore herds (deer and gazelles)
+    for i in range(20):
+        gx = max(100.0, min(world_w - 100.0, cx + random.uniform(-600, 600)))
+        gy = max(100.0, min(world_h - 100.0, cy + random.uniform(-600, 600)))
+        entities_list.append(Herbivore(entity_id=f"genesis_herb_{i}", species_id="gazelle", pos_x=gx, pos_y=gy))
+
+    # 3. Predators (panthers in perimeter wilderness)
+    for i in range(6):
+        px = max(100.0, min(world_w - 100.0, cx + random.choice([-1, 1]) * random.uniform(600, 1200)))
+        py = max(100.0, min(world_h - 100.0, cy + random.choice([-1, 1]) * random.uniform(600, 1200)))
+        entities_list.append(Predator(entity_id=f"genesis_pred_{i}", species_id="panther", pos_x=px, pos_y=py))
+
+    # 4. Living Ancient Forest & Groves around settlement
+    for i in range(28):
+        dist = random.uniform(40.0, 500.0)
+        ang = random.uniform(0, 2 * math.pi)
+        tx = max(100.0, min(world_w - 100.0, cx + math.cos(ang) * dist))
+        ty = max(100.0, min(world_h - 100.0, cy + math.sin(ang) * dist))
+        p = Plant(
+            entity_id=f"genesis_tree_{i}",
+            species_id="oak_tree" if i % 2 == 0 else "fruit_tree",
+            pos_x=tx,
+            pos_y=ty,
+            biomass_kg=random.uniform(50.0, 160.0),
+            energy=350.0,
+        )
+        entities_list.append(p)
+
+    # 5. Scattered Flora across the continent
+    for i in range(30):
+        fx = random.uniform(100, world_w - 100)
+        fy = random.uniform(100, world_h - 100)
+        entities_list.append(Plant(entity_id=f"genesis_plant_{i}", species_id="fern", pos_x=fx, pos_y=fy))
+
+    # 6. Avians, Amphibians, Arthropods, Reptiles, Fungi, Bacteria
+    for i in range(10):
+        entities_list.append(Avian(entity_id=f"genesis_avian_{i}", species_id="falcon", pos_x=random.uniform(100, world_w - 100), pos_y=random.uniform(100, world_h - 100)))
+    for i in range(10):
+        entities_list.append(Amphibian(entity_id=f"genesis_amph_{i}", species_id="axolotl", pos_x=random.uniform(100, world_w - 100), pos_y=random.uniform(100, world_h - 100)))
+    for i in range(12):
+        entities_list.append(Arthropod(entity_id=f"genesis_arth_{i}", species_id="pollinator_bee", pos_x=random.uniform(100, world_w - 100), pos_y=random.uniform(100, world_h - 100)))
+    for i in range(8):
+        entities_list.append(Reptile(entity_id=f"genesis_rept_{i}", species_id="viper", pos_x=random.uniform(100, world_w - 100), pos_y=random.uniform(100, world_h - 100)))
+    for i in range(10):
+        entities_list.append(Fungus(entity_id=f"genesis_fung_{i}", species_id="mycelium_morel", pos_x=random.uniform(100, world_w - 100), pos_y=random.uniform(100, world_h - 100)))
+    for i in range(10):
+        entities_list.append(Bacteria(entity_id=f"genesis_bac_{i}", species_id="chemophile", pos_x=random.uniform(100, world_w - 100), pos_y=random.uniform(100, world_h - 100)))
 
 
 def print_modern_help_menu() -> None:
@@ -125,26 +183,29 @@ def print_modern_help_menu() -> None:
     print("╔════════════════════════════════════════════════════════════════════════════════╗")
     print("║                     WORLD SIMULATOR COMMAND CONSOLE                            ║")
     print("╠════════════════════════════════════════════════════════════════════════════════╣")
-    print("║ 💾 SAVE & LOAD SYSTEM:                                                         ║")
-    print("║   save [name]              - Save world to saves/<name>.dat                    ║")
-    print("║   load [name]              - Load world from saves/<name>.dat                  ║")
-    print("║   saves                    - List all saved checkpoints & metadata             ║")
-    print("║   quicksave (or qs)        - Fast checkpoint to saves/quicksave.dat            ║")
-    print("║   quickload (or ql)        - Instant reload from saves/quicksave.dat           ║")
-    print("║   autosave [on|off|ticks]  - Configure background auto-save interval           ║")
+    print("║ 🌌 QUANTUM MULTI-UNIVERSE & TIME MACHINE (10x Smarter than Git):               ║")
+    print("║   worlds (or universes)    - List isolated world universes with demographic stats ║")
+    print("║   world switch <name|id>   - Switch active world universe and load its state      ║")
+    print("║   world new <name>         - Create fresh isolated universe sandbox & re-seed     ║")
+    print("║   rewind [delta|safe|disaster] - Time-travel back with timeline auto-forking      ║")
+    print("║   timeline (or history)    - Visual ASCII DAG of milestones & checkpoints         ║")
+    print("║   save [name] [message]    - Smart checkpoint with stale overwrite guard          ║")
+    print("║   load [name]              - Load universe checkpoint                             ║")
+    print("║   quicksave (or qs / F5)   - Isolated quicksave in active world                   ║")
+    print("║   quickload (or ql / F9)   - Instant universe reload                              ║")
+    print("║   autosave [on|off|ticks]  - Configure background auto-save interval              ║")
+    print("║   git status/branch/co/log - Lower-level discrete git DAG controls                ║")
     print("╠════════════════════════════════════════════════════════════════════════════════╣")
-    print("║ ⚡ CACHE & BRIDGE MEMORY:                                                      ║")
-    print("║   cache stats (or bridge)  - Display real-time bridge RAM & latency telemetry  ║")
-    print("║   cache flush              - Flush all memory bridges to cache/ disk storage   ║")
-    print("║   cache clear              - Purge in-memory bridge buffers                    ║")
+    print("║ 🌟 GEMINI COGNITION & MULTI-KEY ROUTING:                                       ║")
+    print("║   apikey <key>             - Add key to intelligent multi-key rotation pool    ║")
+    print("║   apikeys (or keys)        - Inspect health, latency & quotas of all keys      ║")
+    print("║   rmkey <index|key>        - Remove API key from pool                          ║")
+    print("║   offline                  - Force 100% offline mode (No pseudo affinity)      ║")
+    print("║   online                   - Reconnect to online Gemini routing pool           ║")
     print("╠════════════════════════════════════════════════════════════════════════════════╣")
-    print("║ 🛡️ HARDWARE SPEC PROTECTOR (PURE-C):                                           ║")
-    print("║   hardware (or specs/hw)   - Real-time CPU, RAM, & hardware safety status      ║")
-    print("║   protector <cpu> [ram]    - Configure safety limits (e.g. protector 90 4096)  ║")
-    print("║   resume protector         - Reset hardware safety tripwire and resume         ║")
-    print("╠════════════════════════════════════════════════════════════════════════════════╣")
-    print("║ 🌟 GEMINI COGNITION API:                                                       ║")
-    print("║   apikey <key>             - Register/update active Gemini API key dynamically ║")
+    print("║ 🔒 PRIVACY, TELEMETRY & SETUP:                                                 ║")
+    print("║   telemetry [on|off|preview] - Toggle anonymized diagnostic reporting          ║")
+    print("║   setup (or firstrun)      - Re-run first-time setup wizard on demand          ║")
     print("╠════════════════════════════════════════════════════════════════════════════════╣")
     print("║ 🎮 SIMULATION CONTROL:                                                         ║")
     print("║   pause                    - Pause backend simulation                          ║")
@@ -184,13 +245,43 @@ def print_modern_help_menu() -> None:
 
 
 def main() -> None:
-    world_w = 4096.0
-    world_h = 4096.0
+    from project.core.user_profile import user_profile_manager
+    from project.core.git_save_manager import git_save_manager
+    from project.core.telemetry_dispatcher import telemetry_dispatcher
+    from project.core.world_telemetry import world_telemetry_collector
+    from project.core.updater import update_manager
 
+    # Trigger First-Time Setup Wizard if no prior setup or user metadata exists
+    if user_profile_manager.is_first_run():
+        print("\n🌟 [FIRST-TIME SETUP] Initiating initial environment configuration wizard...")
+        try:
+            from project.renderer.setup_wizard import run_setup_wizard
+            user_profile = run_setup_wizard()
+        except Exception as we:
+            print(f"⚠️ [SETUP WIZARD] Fallback to default profile due to: {we}")
+            user_profile = user_profile_manager.get_profile()
+    else:
+        user_profile = user_profile_manager.get_profile()
+
+    display_cfg = user_profile.display
+    win_w = display_cfg.get("width", 1280)
+    win_h = display_cfg.get("height", 720)
+    gemini_cfg = user_profile.gemini
+    is_offline = gemini_cfg.get("is_offline", False) or (len(gemini_cfg.get("api_keys", [])) == 0)
+
+    world_w = 14336.0  # 12.25x expanded planetary continent
+    world_h = 14336.0
+
+    active_univ = quantum_persistence.get_active_universe()
     print("════════════════════════════════════════════════════════════════════════════════")
-    print("🌍 Advanced Neural Network World Simulator (v2.0 Architecture)")
+    print(f"🌍 Advanced Neural Network World Simulator (Architect: {user_profile.user_name})")
+    print(f"🌌 Active World:    \"{active_univ.world_name}\" [ID: {active_univ.universe_id}]")
+    print(f"🌿 Quantum Branch:  '{active_univ.active_branch}' | Node: {active_univ.head_commit_id or 'genesis'}")
     print(f"📁 Save Directory:  {SAVES_DIR}")
     print(f"⚡ Cache Directory: {CACHE_DIR}")
+    num_keys = len(gemini_cfg.get("api_keys", []))
+    cog_mode_str = "100% OFFLINE (Local Neural Core — No Pseudo Affinity)" if is_offline else f"ONLINE ({num_keys} Gemini Keys in Pool)"
+    print(f"🧠 Cognitive Mode:  {cog_mode_str}")
     telemetry = linux_optimizer.get_memory_telemetry()
     if telemetry.get("platform") == "linux":
         shm_str = " (tmpfs in RAM)" if CACHE_DIR.startswith("/dev/shm") else ""
@@ -200,7 +291,7 @@ def main() -> None:
 
     # 1. Spatial structures
     spatial_grid = SpatialHashGrid(cell_size=64.0)
-    pheromone_grid = PheromoneGrid(width=int(world_w // 16), height=int(world_h // 16), cell_size=16.0)
+    pheromone_grid = PheromoneGrid(width=int(world_w // 32), height=int(world_h // 32), cell_size=32.0)
 
     # Import world singletons early so SaveSystem and emergency saves can reference them
     from project.world.ancient_ruins import ancient_ruins_mgr
@@ -268,6 +359,9 @@ def main() -> None:
     learning_sys = LearningSystem(entities_list)
     scheduler.register_system(learning_sys)
     gemini_sys = GeminiSystem(entities_list)
+    gemini_sys.client.is_offline = is_offline
+    for k in gemini_cfg.get("api_keys", []):
+        gemini_sys.client.add_api_key(k)
     scheduler.register_system(gemini_sys)
     decision_sys.gemini_sys = gemini_sys
     social_sys = SocialSystem(entities_list)
@@ -302,10 +396,29 @@ def main() -> None:
     global_bgm.start(fade_in_ms=2500)
 
     # 6. Visual GUI manager
-    renderer = SimulationRenderer(width=1280, height=720, world_width=world_w, world_height=world_h)
+    renderer = SimulationRenderer(width=win_w, height=win_h, world_width=world_w, world_height=world_h)
+
+    # Dispatch active session launch ping & start background update check
+    try:
+        world_telemetry_collector.dispatch_heartbeat(status="session_start")
+    except Exception:
+        pass
+
+    def _bg_update_check() -> None:
+        try:
+            info = update_manager.check_for_updates()
+            if info.has_update:
+                renderer.update_info = info
+                print(f"\n✨ [UPDATE AVAILABLE] New update on GitHub: '{info.commit_message}' ({info.remote_commit})")
+                print("   👉 Type 'upgrade' in the terminal or click 'Update Now' in the top GUI banner.\n")
+        except Exception:
+            pass
+
+    threading.Thread(target=_bg_update_check, daemon=True, name="bg-updater").start()
+    renderer.is_offline = is_offline
     renderer.camera.pos_x = world_w / 2.0
     renderer.camera.pos_y = world_h / 2.0
-    renderer.camera.zoom = 1.0
+    renderer.camera.zoom = 1.6
 
     tick_count = 0
     running = True
@@ -338,7 +451,11 @@ def main() -> None:
                 cmd_args = ""
 
                 # Argument extraction
-                if " " in cmd_raw:
+                if ":" in cmd_raw and (" " not in cmd_raw or cmd_raw.index(":") < cmd_raw.index(" ")):
+                    parts = cmd_raw.split(":", 1)
+                    cmd_name = parts[0].strip().lower()
+                    cmd_args = parts[1].strip()
+                elif " " in cmd_raw:
                     parts = cmd_raw.split(" ", 1)
                     cmd_name = parts[0].strip().lower()
                     cmd_args = parts[1].strip()
@@ -396,12 +513,16 @@ def main() -> None:
                         print(f"║ Total GLIBC Trims:          {telemetry.get('trim_count', 0):>48d} ║")
                         print("╚════════════════════════════════════════════════════════════════════════════════╝")
 
-                # -------------------- SAVE & LOAD --------------------
+                # -------------------- QUANTUM SAVE & LOAD (MULTI-UNIVERSE PROTECTED) --------------------
                 elif cmd_name == "save":
                     try:
                         from project.world.ancient_ruins import ancient_ruins_mgr
                         from project.world.miracles import world_miracles_mgr
-                        save_name = cmd_args if cmd_args else "manual_save.dat"
+                        parts = cmd_args.split(None, 1)
+                        save_name = parts[0] if parts else "manual_save.dat"
+                        commit_msg = parts[1] if len(parts) > 1 else f"Manual checkpoint at Tick {tick_count:,}"
+                        if not save_name.endswith(".dat") and "." not in save_name:
+                            save_name = f"{save_name}.dat"
                         t0 = time.time()
                         data = PersistenceManager.serialize_state(
                             time_mgr=time_mgr,
@@ -414,17 +535,210 @@ def main() -> None:
                             ruins_mgr=ancient_ruins_mgr,
                             miracles_mgr=world_miracles_mgr,
                         )
-                        saved_path = PersistenceManager.save_to_file(save_name, data)
+                        saved_path = quantum_persistence.save_universe_checkpoint(
+                            data=data,
+                            name=save_name,
+                            message=commit_msg,
+                            cause="MANUAL"
+                        )
                         duration = (time.time() - t0) * 1000.0
                         alive_c = len([e for e in entities_list if e.is_alive])
                         file_sz = round(os.path.getsize(saved_path) / 1024.0, 1)
-                        msg = f"✅ [SAVE SUCCESS] Checkpoint saved: {saved_path} (Tick {tick_count:,}, {alive_c} alive, {file_sz} KB)"
+                        univ = quantum_persistence.get_active_universe()
+                        msg = f"✅ [SAVE SUCCESS] Checkpoint saved: {saved_path} (Universe '{univ.world_name}' | Tick {tick_count:,}, {alive_c} alive, {file_sz} KB | HEAD -> {univ.head_commit_id})"
                         print(msg)
                         renderer.console.log(msg)
                     except Exception as e:
                         err_msg = f"❌ [SAVE ERROR] Failed to save state: {e}"
                         print(err_msg)
                         renderer.console.log(err_msg)
+
+                # -------------------- QUANTUM MULTI-UNIVERSE TIMELINE & SANDBOX --------------------
+                elif cmd_name in ("universes", "worlds"):
+                    u_list = quantum_persistence.list_all_universes()
+                    print("\n╔═══════════════════════════════════════════════════════════════════════════════════════════════════════════╗")
+                    print("║                                 🌌 MULTI-UNIVERSE DIRECTORY (ISOLATED PLAYTHROUGHS)                       ║")
+                    print("╠═══════════════════════════════════════════════════════════════════════════════════════════════════════════╣")
+                    for u in u_list:
+                        marker = "🌟 [ACTIVE] " if u["is_active"] else "            "
+                        print(f"║ {marker}{u['name']:<28} (ID: {u['universe_id']:<24})             ║")
+                        print(f"║    Tick: {u['current_tick']:>8,d} | Peak Pop: {u['peak_population']:>4d} | Checkpoints: {u['checkpoints_count']:>3d} | Autosaves: {u['autosaves_count']:>3d} | Last: {u['last_played']} ║")
+                        print("╟───────────────────────────────────────────────────────────────────────────────────────────────────────────╢")
+                    print("╚═══════════════════════════════════════════════════════════════════════════════════════════════════════════╝")
+                    print("  Commands: world switch <name|id>   world new <name>   timeline   rewind [delta|safe|disaster]\n")
+                    renderer.console.log(f"🌌 {len(u_list)} Universes listed in terminal.")
+
+                elif cmd_name in ("world", "universe"):
+                    w_parts = cmd_args.strip().split(None, 1)
+                    sub_w = w_parts[0].lower() if w_parts else "status"
+                    sub_arg = w_parts[1].strip() if len(w_parts) > 1 else ""
+
+                    if sub_w in ("switch", "sw"):
+                        if not sub_arg:
+                            print("❌ Usage: world switch <name|universe_id>")
+                        else:
+                            switched = quantum_persistence.switch_universe(sub_arg)
+                            if switched:
+                                snaps = quantum_persistence.list_universe_snapshots(switched.universe_id)
+                                if snaps:
+                                    latest_p = snaps[0]["path"]
+                                    state = PersistenceManager.load_from_file(latest_p)
+                                    PersistenceManager.deserialize_state(
+                                        state_dict=state,
+                                        time_mgr=time_mgr,
+                                        soil_mgr=soil_mgr,
+                                        water_mgr=water_mgr,
+                                        veg_mgr=veg_mgr,
+                                        res_mgr=res_mgr,
+                                        entities_list=entities_list,
+                                        gemini_sys=gemini_sys,
+                                        ruins_mgr=ancient_ruins_mgr,
+                                        miracles_mgr=world_miracles_mgr,
+                                    )
+                                    tick_count = time_mgr.current_tick
+                                    msg = f"🌌 [UNIVERSE SWITCH] Switched to '{switched.world_name}' & loaded {os.path.basename(latest_p)} (Tick {tick_count:,})!"
+                                else:
+                                    msg = f"🌌 [UNIVERSE SWITCH] Switched to '{switched.world_name}' (Empty universe, ready for simulation)!"
+                                print(msg)
+                                renderer.console.log(msg)
+                            else:
+                                print(f"❌ Universe '{sub_arg}' not found. Type 'worlds' to list all.")
+
+                    elif sub_w in ("new", "create", "spawn"):
+                        w_name = sub_arg if sub_arg else f"Universe_{time.strftime('%Y%m%d_%H%M%S')}"
+                        new_u = quantum_persistence.create_universe(world_name=w_name)
+                        quantum_persistence.switch_universe(new_u.universe_id)
+                        time_mgr.current_tick = 0
+                        time_mgr.total_seconds = 0.0
+                        tick_count = 0
+                        spawn_genesis_population(entities_list, world_w, world_h)
+                        msg = f"🌌 [NEW UNIVERSE] Created isolated workspace '{new_u.world_name}' (ID: {new_u.universe_id}) & seeded genesis population!"
+                        print(msg)
+                        renderer.console.log(msg)
+
+                    else:
+                        active_u = quantum_persistence.get_active_universe()
+                        print(f"🌌 Active Universe: '{active_u.world_name}' [ID: {active_u.universe_id} | Tick: {active_u.current_tick:,} | Branch: {active_u.active_branch}]")
+                        renderer.console.log(f"Active World: {active_u.world_name}")
+
+                elif cmd_name == "rewind":
+                    try:
+                        from project.world.ancient_ruins import ancient_ruins_mgr
+                        from project.world.miracles import world_miracles_mgr
+                        r_target = cmd_args.strip() if cmd_args.strip() else "safe"
+                        target_file, state_data = quantum_persistence.rewind(r_target)
+                        PersistenceManager.deserialize_state(
+                            state_dict=state_data,
+                            time_mgr=time_mgr,
+                            soil_mgr=soil_mgr,
+                            water_mgr=water_mgr,
+                            veg_mgr=veg_mgr,
+                            res_mgr=res_mgr,
+                            entities_list=entities_list,
+                            gemini_sys=gemini_sys,
+                            ruins_mgr=ancient_ruins_mgr,
+                            miracles_mgr=world_miracles_mgr,
+                        )
+                        tick_count = time_mgr.current_tick
+                        alive_c = len([e for e in entities_list if e.is_alive])
+                        univ = quantum_persistence.get_active_universe()
+                        msg = f"⏳ [QUANTUM REWIND] Time-traveled to Tick {tick_count:,} ({alive_c} alive) in Universe '{univ.world_name}'! Auto-forked branch '{univ.active_branch}'."
+                        print(msg)
+                        renderer.console.log(msg)
+                    except Exception as re:
+                        err_msg = f"❌ [REWIND ERROR] Could not rewind: {re}"
+                        print(err_msg)
+                        renderer.console.log(err_msg)
+
+                # -------------------- GIT-LIKE VERSION CONTROL & TIMELINES --------------------
+                elif cmd_name == "git":
+                    subparts = cmd_args.strip().split(None, 1)
+                    sub_cmd = subparts[0].lower() if subparts else "status"
+                    sub_arg = subparts[1].strip() if len(subparts) > 1 else ""
+
+                    if sub_cmd == "status":
+                        st = git_save_manager.get_status(tick_count)
+                        print("╔══════════════════════════════════════════════════════════════════════════╗")
+                        print("║ 🌿 GIT SIMULATION REPOSITORY STATUS                                     ║")
+                        print("╠══════════════════════════════════════════════════════════════════════════╣")
+                        print(f"║ Active Branch:              {st['branch']:<44} ║")
+                        print(f"║ HEAD Commit:                {st['head']:<44} ║")
+                        print(f"║ Last Committed Tick:        {st['head_tick']:>44,d} ║")
+                        print(f"║ Current Simulation Tick:    {st['current_tick']:>44,d} ║")
+                        print(f"║ Uncommitted Ticks Delta:    {st['uncommitted_ticks']:>44,d} ║")
+                        print(f"║ Total Commits in DAG:       {st['total_commits']:>44d} ║")
+                        print(f"║ Total Evolutionary Branches:{st['total_branches']:>44d} ║")
+                        print("╚══════════════════════════════════════════════════════════════════════════╝")
+                        renderer.console.log(f"🌿 Branch: {st['branch']} | HEAD: {st['head']} | Uncommitted: {st['uncommitted_ticks']:,} ticks")
+
+                    elif sub_cmd in ("log", "history", "graph"):
+                        ascii_log = git_save_manager.generate_ascii_log()
+                        print(ascii_log)
+                        renderer.console.log("🌿 Git Log printed to terminal.")
+
+                    elif sub_cmd == "branch":
+                        if not sub_arg:
+                            print("🌿 Available Simulation Branches:")
+                            for b, cid in git_save_manager.branches.items():
+                                prefix = "* " if b == git_save_manager.active_branch else "  "
+                                print(f"{prefix}{b:<24} -> commit {cid or '(empty)'}")
+                        else:
+                            success = git_save_manager.create_branch(sub_arg)
+                            msg = f"🌿 Created & checked out new branch '{sub_arg}'" if success else f"❌ Branch '{sub_arg}' already exists."
+                            print(msg)
+                            renderer.console.log(msg)
+
+                    elif sub_cmd in ("checkout", "co"):
+                        if not sub_arg:
+                            print("❌ Usage: git checkout <branch_name | commit_id>")
+                        else:
+                            target_file = git_save_manager.switch_branch(sub_arg)
+                            if not target_file and sub_arg in git_save_manager.commits:
+                                target_file = git_save_manager.commits[sub_arg].file_path
+
+                            if target_file and os.path.exists(target_file):
+                                state = PersistenceManager.load_from_file(target_file)
+                                PersistenceManager.deserialize_state(
+                                    state_dict=state,
+                                    time_mgr=time_mgr,
+                                    soil_mgr=soil_mgr,
+                                    water_mgr=water_mgr,
+                                    veg_mgr=veg_mgr,
+                                    res_mgr=res_mgr,
+                                    entities_list=entities_list,
+                                    gemini_sys=gemini_sys,
+                                    ruins_mgr=ancient_ruins_mgr,
+                                    miracles_mgr=world_miracles_mgr,
+                                )
+                                tick_count = time_mgr.current_tick
+                                msg = f"✅ [CHECKOUT SUCCESS] Aligned timeline to '{sub_arg}' (Tick {tick_count:,})"
+                                print(msg)
+                                renderer.console.log(msg)
+                            else:
+                                print(f"❌ Branch or commit not found: {sub_arg}")
+
+                    elif sub_cmd == "commit":
+                        msg_text = sub_arg if sub_arg else "Manual Snapshot"
+                        data = PersistenceManager.serialize_state(
+                            time_mgr=time_mgr,
+                            soil_mgr=soil_mgr,
+                            water_mgr=water_mgr,
+                            veg_mgr=veg_mgr,
+                            res_mgr=res_mgr,
+                            entities_list=entities_list,
+                            gemini_sys=gemini_sys,
+                            ruins_mgr=ancient_ruins_mgr,
+                            miracles_mgr=world_miracles_mgr,
+                        )
+                        saved_path = PersistenceManager.save_to_file("manual_save.dat", data, commit_message=msg_text)
+                        msg = f"🌿 [GIT COMMIT] Snapshot committed: '{msg_text}' (HEAD: {git_save_manager.current_commit_id})"
+                        print(msg)
+                        renderer.console.log(msg)
+
+                elif cmd_name in ("history", "timeline", "dag"):
+                    dag_ascii = quantum_persistence.generate_timeline_ascii()
+                    print(dag_ascii)
+                    renderer.console.log("🌌 Quantum Timeline DAG logged to terminal.")
 
                 elif cmd_name == "load":
                     try:
@@ -434,7 +748,7 @@ def main() -> None:
                         if not load_name:
                             saves_list = PersistenceManager.list_saves()
                             if saves_list:
-                                load_name = saves_list[0]["name"]
+                                load_name = saves_list[0]["path"]
                             else:
                                 load_name = "manual_save.dat"
                         t0 = time.time()
@@ -454,7 +768,10 @@ def main() -> None:
                         tick_count = time_mgr.current_tick
                         duration = (time.time() - t0) * 1000.0
                         alive_c = len([e for e in entities_list if e.is_alive])
-                        msg = f"✅ [LOAD SUCCESS] Loaded {load_name} (Tick {tick_count:,}, {alive_c} alive in {duration:.1f}ms)"
+                        univ = quantum_persistence.get_active_universe()
+                        univ.current_tick = tick_count
+                        quantum_persistence._save_universe_meta(univ)
+                        msg = f"✅ [LOAD SUCCESS] Loaded {os.path.basename(load_name)} in Universe '{univ.world_name}' (Tick {tick_count:,}, {alive_c} alive in {duration:.1f}ms)"
                         print(msg)
                         renderer.console.log(msg)
                     except Exception as e:
@@ -462,59 +779,69 @@ def main() -> None:
                         print(err_msg)
                         renderer.console.log(err_msg)
 
-                elif cmd_name == "saves":
-                    saves_list = PersistenceManager.list_saves()
-                    if not saves_list:
-                        print("📂 No save files found in saves/")
-                        renderer.console.log("📂 No saves found.")
-                    else:
-                        lines = [
-                            "",
-                            "╔══════════════════════════════════════════════════════════════════════════╗",
-                            "║                       💾  SAVE BROWSER  v2.0                           ║",
-                            "╠═══╦════════════════════════╦════════╦═══════╦══════════╦═══════════════╣",
-                            "║ # ║ Name                   ║  Size  ║ Tick  ║  Alive   ║  Saved At     ║",
-                            "╠═══╬════════════════════════╬════════╬═══════╬══════════╬═══════════════╣",
-                        ]
-                        for i, s in enumerate(saves_list, 1):
-                            tick_s  = str(s.get("tick", "?"))
-                            alive_s = str(s.get("alive", "?"))
-                            sha_s   = s.get("sha256", "—")
-                            sha_tag = f"🔒 {sha_s[:8]}…" if sha_s and sha_s != "—" else "⚠️  legacy"
-                            lines.append(
-                                f"║{i:2d} ║ {s['name']:<22} ║ {s['size_kb']:5.1f}KB ║ {tick_s:>5} ║ {alive_s:>8} ║ {s['modified'][5:]} ║"
-                            )
-                            lines.append(f"║   ║   {sha_tag:<70}║")
-                        lines += [
-                            "╚═══╩════════════════════════╩════════╩═══════╩══════════╩═══════════════╝",
-                            "  Usage: load <name|#>   delete <name>",
-                            "",
-                        ]
-                        for l in lines:
-                            print(l)
-                        renderer.console.log(f"📂 {len(saves_list)} save(s) listed in terminal.")
+                elif cmd_name in ("saves", "list saves", "list"):
+                    try:
+                        saves_list = PersistenceManager.list_saves()
+                        if not saves_list:
+                            print("📂 No save files found in saves/")
+                            renderer.console.log("📂 No saves found.")
+                        else:
+                            lines = [
+                                "",
+                                "╔══════════════════════════════════════════════════════════════════════════╗",
+                                "║                       💾  SAVE BROWSER  v2.0                           ║",
+                                "╠═══╦════════════════════════╦════════╦═══════╦══════════╦═══════════════╣",
+                                "║ # ║ Name                   ║  Size  ║ Tick  ║  Alive   ║  Saved At     ║",
+                                "╠═══╬════════════════════════╬════════╬═══════╬══════════╬═══════════════╣",
+                            ]
+                            for i, s in enumerate(saves_list, 1):
+                                tick_s  = str(s.get("tick", "?"))
+                                alive_s = str(s.get("alive", "?"))
+                                sha_s   = s.get("sha256", "—")
+                                sha_tag = f"🔒 {sha_s[:8]}…" if sha_s and sha_s != "—" else "⚠️  legacy"
+                                mod_raw = str(s.get("modified", s.get("date_str", "—")))
+                                mod_s = mod_raw[5:] if len(mod_raw) >= 5 else mod_raw
+                                lines.append(
+                                    f"║{i:2d} ║ {s['name']:<22} ║ {s.get('size_kb', 0):5.1f}KB ║ {tick_s:>5} ║ {alive_s:>8} ║ {mod_s:<13} ║"
+                                )
+                                lines.append(f"║   ║   {sha_tag:<70}║")
+                            lines += [
+                                "╚═══╩════════════════════════╩════════╩═══════╩══════════╩═══════════════╝",
+                                "  Usage: load <name|#>   delete <name>",
+                                "",
+                            ]
+                            for l in lines:
+                                print(l)
+                            renderer.console.log(f"📂 {len(saves_list)} save(s) listed in terminal.")
+                    except Exception as se:
+                        err_msg = f"❌ [SAVES ERROR] Could not list saves: {se}"
+                        print(err_msg)
+                        renderer.console.log(err_msg)
 
                 elif cmd_name == "delete":
-                    del_name = cmd_args.strip()
-                    if not del_name:
-                        print("❌ Usage: delete <filename>")
-                    else:
-                        import glob as _glob
-                        base_path = PersistenceManager.resolve_save_path(del_name)
-                        removed = []
-                        for candidate in [base_path] + [f"{base_path}.bak{i}" for i in range(1, 4)] + [f"{base_path}.meta.json"]:
-                            if os.path.exists(candidate):
-                                try:
-                                    os.remove(candidate)
-                                    removed.append(os.path.basename(candidate))
-                                except Exception as de:
-                                    print(f"⚠️ Could not remove {candidate}: {de}")
-                        if removed:
-                            msg = f"🗑️  Deleted: {', '.join(removed)}"
-                            print(msg)
-                            renderer.console.log(msg)
+                    try:
+                        del_name = cmd_args.strip()
+                        if not del_name:
+                            print("❌ Usage: delete <filename>")
                         else:
-                            print(f"❌ No save files found matching: {del_name}")
+                            import glob as _glob
+                            base_path = PersistenceManager.resolve_save_path(del_name)
+                            removed = []
+                            for candidate in [base_path] + [f"{base_path}.bak{i}" for i in range(1, 4)] + [f"{base_path}.meta.json"]:
+                                if os.path.exists(candidate):
+                                    try:
+                                        os.remove(candidate)
+                                        removed.append(os.path.basename(candidate))
+                                    except Exception as de:
+                                        print(f"⚠️ Could not remove {candidate}: {de}")
+                            if removed:
+                                msg = f"🗑️  Deleted: {', '.join(removed)}"
+                                print(msg)
+                                renderer.console.log(msg)
+                            else:
+                                print(f"❌ No save files found matching: {del_name}")
+                    except Exception as de:
+                        print(f"❌ [DELETE ERROR] {de}")
 
                 elif cmd_name in ("affinity", "god"):
                     try:
@@ -534,18 +861,25 @@ def main() -> None:
                         m_type = m_parts[0].strip()
                         m_cx = float(m_parts[1].strip()) if len(m_parts) > 1 else renderer.camera.pos_x
                         m_cy = float(m_parts[2].strip()) if len(m_parts) > 2 else renderer.camera.pos_y
-                        if m_type == "Solar Eclipse":
-                            world_miracles_mgr.trigger_solar_eclipse(30.0)
-                        elif m_type == "Meteor Shower":
-                            world_miracles_mgr.trigger_meteor_stardust_shower(m_cx, m_cy, count=8)
-                        elif m_type == "Divine Rainstorm":
-                            world_miracles_mgr.trigger_divine_rainstorm(40.0, soil_mgr)
-                        elif m_type == "Bountiful Harvest":
-                            world_miracles_mgr.trigger_bountiful_harvest(entities_list, veg_mgr, m_cx, m_cy)
-                        elif m_type == "Epiphany Wave":
-                            world_miracles_mgr.trigger_epiphany_wave(entities_list, tick_count)
-                        elif m_type == "Purge Threats":
-                            world_miracles_mgr.trigger_purge_threats(entities_list, m_cx, m_cy)
+                        m_low = m_type.lower()
+                        msg = ""
+                        if "solar" in m_low or "eclipse" in m_low:
+                            msg = world_miracles_mgr.trigger_solar_eclipse(30.0)
+                        elif "meteor" in m_low or "shower" in m_low or "stardust" in m_low:
+                            msg = world_miracles_mgr.trigger_meteor_stardust_shower(m_cx, m_cy, count=8)
+                        elif "rain" in m_low or "storm" in m_low:
+                            msg = world_miracles_mgr.trigger_divine_rainstorm(40.0, soil_mgr)
+                        elif "harvest" in m_low or "bountiful" in m_low:
+                            msg = world_miracles_mgr.trigger_bountiful_harvest(entities_list, veg_mgr, m_cx, m_cy)
+                        elif "epiphany" in m_low or "wave" in m_low:
+                            msg = world_miracles_mgr.trigger_epiphany_wave(entities_list, tick_count)
+                        elif "purge" in m_low or "threat" in m_low:
+                            msg = world_miracles_mgr.trigger_purge_threats(entities_list, m_cx, m_cy)
+                        else:
+                            msg = f"Unknown miracle type: '{m_type}'. Available: Solar Eclipse, Meteor Shower, Divine Rainstorm, Bountiful Harvest, Epiphany Wave, Purge Threats."
+                            print(f"⚠️ {msg}")
+                        if msg:
+                            renderer.console.log(msg)
                     except Exception as me:
                         print(f"❌ [MIRACLE ERROR] {me}")
 
@@ -555,40 +889,35 @@ def main() -> None:
                         s_type = sp_parts[0].strip()
                         scx = float(sp_parts[1].strip()) if len(sp_parts) > 1 else renderer.camera.pos_x
                         scy = float(sp_parts[2].strip()) if len(sp_parts) > 2 else renderer.camera.pos_y
-                        new_id = f"spawn_{s_type.lower()}_{tick_count}"
-                        if s_type == "Human":
-                            entities_list.append(Human(entity_id=new_id, species_id="homo_sapiens", pos_x=scx, pos_y=scy))
-                        elif s_type == "Predator":
-                            entities_list.append(Predator(entity_id=new_id, species_id="panther", pos_x=scx, pos_y=scy))
-                        elif s_type == "Herbivore":
-                            entities_list.append(Herbivore(entity_id=new_id, species_id="deer", pos_x=scx, pos_y=scy))
-                        elif s_type == "Reptile":
-                            entities_list.append(Reptile(entity_id=new_id, species_id="viper", pos_x=scx, pos_y=scy))
-                        elif s_type == "Avian":
-                            entities_list.append(Avian(entity_id=new_id, species_id="hawk", pos_x=scx, pos_y=scy))
-                        elif s_type == "Amphibian":
-                            entities_list.append(Amphibian(entity_id=new_id, species_id="frog", pos_x=scx, pos_y=scy))
-                        elif s_type == "Plant":
-                            entities_list.append(Plant(entity_id=new_id, species_id="fern", pos_x=scx, pos_y=scy))
-                        elif s_type == "Fungus":
-                            entities_list.append(Fungus(entity_id=new_id, species_id="mycelium", pos_x=scx, pos_y=scy))
-                        elif s_type == "Bacteria":
-                            entities_list.append(Bacteria(entity_id=new_id, species_id="bacillus", pos_x=scx, pos_y=scy))
-                        print(f"🌱 Spawned {s_type} at ({scx:.1f}, {scy:.1f})")
+                        new_id = f"spawn_{s_type.lower()}_{tick_count}_{random.randint(100, 999)}"
+                        s_low = s_type.lower()
+                        new_ent = None
+                        if s_low == "human":
+                            new_ent = Human(entity_id=new_id, species_id="homo_sapiens", pos_x=scx, pos_y=scy)
+                        elif s_low == "predator":
+                            new_ent = Predator(entity_id=new_id, species_id="panther", pos_x=scx, pos_y=scy)
+                        elif s_low == "herbivore":
+                            new_ent = Herbivore(entity_id=new_id, species_id="deer", pos_x=scx, pos_y=scy)
+                        elif s_low == "reptile":
+                            new_ent = Reptile(entity_id=new_id, species_id="viper", pos_x=scx, pos_y=scy)
+                        elif s_low == "avian":
+                            new_ent = Avian(entity_id=new_id, species_id="hawk", pos_x=scx, pos_y=scy)
+                        elif s_low == "amphibian":
+                            new_ent = Amphibian(entity_id=new_id, species_id="frog", pos_x=scx, pos_y=scy)
+                        elif s_low == "plant":
+                            new_ent = Plant(entity_id=new_id, species_id="fern", pos_x=scx, pos_y=scy)
+                        elif s_low == "fungus":
+                            new_ent = Fungus(entity_id=new_id, species_id="mycelium", pos_x=scx, pos_y=scy)
+                        elif s_low == "bacteria":
+                            new_ent = Bacteria(entity_id=new_id, species_id="bacillus", pos_x=scx, pos_y=scy)
+                        
+                        if new_ent:
+                            entities_list.append(new_ent)
+                            msg = f"🌱 Spawned {s_type} at ({scx:.1f}, {scy:.1f})"
+                            print(msg)
+                            renderer.console.log(msg)
                     except Exception as se:
                         print(f"❌ [SPAWN ERROR] {se}")
-
-                elif cmd_name in ("saves", "list saves", "list"):
-                    saves_list = PersistenceManager.list_saves()
-                    print("╔════════════════════════════════════════════════════════════════════════════════╗")
-                    print(f"║ SAVED SIMULATION CHECKPOINTS ({len(saves_list)} Found in {SAVES_DIR})")
-                    print("╠════════════════════════════════════════════════════════════════════════════════╣")
-                    if not saves_list:
-                        print("║   No save files found yet. Type 'save <name>' to create one.                  ║")
-                    else:
-                        for i, s in enumerate(saves_list, 1):
-                            print(f"║ [{i}] {s['name']:<28} | {s['size_kb']:>6.1f} KB | {s['modified']} ║")
-                    print("╚════════════════════════════════════════════════════════════════════════════════╝")
 
                 elif cmd_name in ("quicksave", "qs"):
                     try:
@@ -605,8 +934,9 @@ def main() -> None:
                             ruins_mgr=ancient_ruins_mgr,
                             miracles_mgr=world_miracles_mgr,
                         )
-                        saved_p = PersistenceManager.save_to_file("quicksave.dat", data)
-                        msg = f"⚡ [QUICKSAVE] Fast checkpoint saved to {saved_p} (Tick {tick_count:,})"
+                        saved_p = quantum_persistence.save_quicksave(data)
+                        univ = quantum_persistence.get_active_universe()
+                        msg = f"⚡ [QUICKSAVE] Fast checkpoint saved for '{univ.world_name}': {saved_p} (Tick {tick_count:,})"
                         print(msg)
                         renderer.console.log(msg)
                     except Exception as e:
@@ -616,7 +946,7 @@ def main() -> None:
                     try:
                         from project.world.ancient_ruins import ancient_ruins_mgr
                         from project.world.miracles import world_miracles_mgr
-                        state = PersistenceManager.load_from_file("quicksave.dat")
+                        state = quantum_persistence.load_quicksave()
                         PersistenceManager.deserialize_state(
                             state_dict=state,
                             time_mgr=time_mgr,
@@ -630,7 +960,10 @@ def main() -> None:
                             miracles_mgr=world_miracles_mgr,
                         )
                         tick_count = time_mgr.current_tick
-                        msg = f"⚡ [QUICKLOAD] Restored quicksave.dat (Tick {tick_count:,}, {len(entities_list)} entities)"
+                        univ = quantum_persistence.get_active_universe()
+                        univ.current_tick = tick_count
+                        quantum_persistence._save_universe_meta(univ)
+                        msg = f"⚡ [QUICKLOAD] Restored quicksave for '{univ.world_name}' (Tick {tick_count:,}, {len(entities_list)} entities)"
                         print(msg)
                         renderer.console.log(msg)
                     except Exception as e:
@@ -711,15 +1044,101 @@ def main() -> None:
                     renderer.simulation_speed = 1.0
                     print("▶️ Resumed simulation and reset hardware safety tripwire.")
 
-                # -------------------- GEMINI AI API KEYS --------------------
+                # -------------------- GEMINI MULTI-KEY COGNITION ROUTER --------------------
                 elif cmd_name in ("apikey", "key", "setkey"):
                     if not cmd_args.strip():
                         curr_k = gemini_sys.client.get_current_key()
-                        print(f"🔑 Current Active API Key: {curr_k[:10] + '...' + curr_k[-4:] if curr_k else 'None (Running Offline Cognitive Engine)'}")
+                        print(f"🔑 Current Active Key: {curr_k[:10] + '...' + curr_k[-4:] if curr_k else 'None (Running Offline Cognitive Engine)'}")
                     else:
                         new_k = cmd_args.strip()
                         gemini_sys.client.add_api_key(new_k)
-                        print(f"✅ Registered new Gemini API key into active rotation: {new_k[:10]}...{new_k[-4:]}")
+                        user_profile_manager.add_gemini_key(new_k)
+                        gemini_sys.client.is_offline = False
+                        renderer.is_offline = False
+                        msg = f"✅ Registered API key ({new_k[:8]}...{new_k[-4:]}) into intelligent multi-key routing pool."
+                        print(msg)
+                        renderer.console.log(msg)
+
+                elif cmd_name in ("apikeys", "keys"):
+                    stats = gemini_sys.client.get_pool_status()
+                    print("╔════════════════════════════════════════════════════════════════════════════════╗")
+                    print("║ 🌟 GEMINI MULTI-KEY INTELLIGENT ROUTER POOL                                    ║")
+                    print("╠════╦════════════════╦════════════╦══════════╦════════════╦═════════════════════╣")
+                    print("║ #  ║ Key Mask       ║ Status     ║ Cooldown ║ Successes  ║ Avg Latency (EMA)   ║")
+                    print("╠════╬════════════════╬════════════╬══════════╬════════════╬═════════════════════╣")
+                    if not stats:
+                        print("║    ║ (Pool is empty — Currently running in 100% Offline Heuristic Mode)        ║")
+                    for i, s in enumerate(stats, 1):
+                        cd_str = f"{s['cooldown_s']:.1f}s" if s['cooldown_s'] > 0 else "Ready"
+                        print(f"║ {i:2d} ║ {s['masked_key']:<14} ║ {s['status']:<10} ║ {cd_str:>8} ║ {s['success_count']:>10d} ║ {s['avg_latency_ms']:>14.1f} ms ║")
+                    print("╚════╩════════════════╩════════════╩══════════╩════════════╩═════════════════════╝")
+                    renderer.console.log(f"🌟 {len(stats)} Gemini key(s) in multi-key rotation pool.")
+
+                elif cmd_name == "rmkey":
+                    target = cmd_args.strip()
+                    if not target:
+                        print("❌ Usage: rmkey <index|key>")
+                    else:
+                        idx = int(target) - 1 if target.isdigit() else target
+                        if gemini_sys.client.remove_api_key(idx):
+                            user_profile_manager.remove_gemini_key(idx)
+                            print(f"🗑️ Removed key from routing pool.")
+                            renderer.console.log(f"🗑️ Removed key from pool.")
+                        else:
+                            print(f"❌ Key '{target}' not found in pool.")
+
+                elif cmd_name == "offline":
+                    gemini_sys.client.is_offline = True
+                    renderer.is_offline = True
+                    user_profile_manager.set_offline_mode(True)
+                    msg = "🟢 [OFFLINE MODE] Forced local neural heuristics. Pseudo affinity meter disabled."
+                    print(msg)
+                    renderer.console.log(msg)
+
+                elif cmd_name == "online":
+                    if gemini_sys.client._keys_pool:
+                        gemini_sys.client.is_offline = False
+                        renderer.is_offline = False
+                        user_profile_manager.set_offline_mode(False)
+                        msg = f"🌟 [ONLINE MODE] Gemini deity routing active with {len(gemini_sys.client._keys_pool)} keys."
+                    else:
+                        msg = "⚠️ Cannot go online: No API keys configured. Use 'apikey <key>' to add one."
+                    print(msg)
+                    renderer.console.log(msg)
+
+                # -------------------- PRIVACY, TELEMETRY & SETUP --------------------
+                elif cmd_name == "telemetry":
+                    sub = cmd_args.strip().lower()
+                    prof = user_profile_manager.get_profile()
+                    if sub == "on":
+                        prof.privacy_and_telemetry["consent_given"] = True
+                        user_profile_manager.save_profile(prof)
+                        print("✅ Anonymized telemetry & crash diagnostics ENABLED (Opt-in).")
+                        renderer.console.log("Telemetry ENABLED (Opt-in).")
+                    elif sub == "off":
+                        prof.privacy_and_telemetry["consent_given"] = False
+                        user_profile_manager.save_profile(prof)
+                        print("🔒 Anonymized telemetry & crash diagnostics DISABLED.")
+                        renderer.console.log("Telemetry DISABLED.")
+                    elif sub == "preview":
+                        sample = telemetry_dispatcher.get_sample_payload()
+                        print("📋 Sample scrubbed telemetry payload:")
+                        print(json.dumps(sample, indent=2))
+                    else:
+                        st = "ENABLED" if prof.privacy_and_telemetry.get("consent_given") else "DISABLED"
+                        print(f"📊 Telemetry Status: {st} (Commands: telemetry on | telemetry off | telemetry preview)")
+
+                elif cmd_name in ("setup", "firstrun"):
+                    print("🌟 [SETUP WIZARD] Triggered manual environment configuration setup...")
+                    renderer.console.log("Setup wizard launched.")
+                    try:
+                        from project.renderer.setup_wizard import run_setup_wizard
+                        new_prof = run_setup_wizard()
+                        gemini_sys.client.is_offline = new_prof.gemini.get("is_offline", False)
+                        renderer.is_offline = gemini_sys.client.is_offline
+                        print(f"✅ Setup completed. Profile updated for '{new_prof.user_name}'.")
+                    except Exception as swe:
+                        print(f"❌ [SETUP ERROR] Could not run setup wizard: {swe}")
 
                 # -------------------- SIMULATION CONTROL --------------------
                 elif cmd_name == "pause":
@@ -868,51 +1287,57 @@ def main() -> None:
                     print("╚════════════════════════════════════════════════════════════════════════════════╝")
 
                 elif cmd_name == "bacterium status":
-                    selected_id = renderer.selected_entity_id
-                    if not selected_id:
-                        found = next((e for e in entities_list if e.is_alive and e.entity_type == EntityType.BACTERIA), None)
-                        if not found:
-                            found = next((e for e in entities_list if e.is_alive), None)
-                    else:
-                        found = next((e for e in entities_list if e.entity_id == selected_id), None)
+                    try:
+                        selected_id = renderer.selected_entity_id
+                        if not selected_id:
+                            found = next((e for e in entities_list if e.is_alive and e.entity_type == EntityType.BACTERIA), None)
+                            if not found:
+                                found = next((e for e in entities_list if e.is_alive), None)
+                        else:
+                            found = next((e for e in entities_list if e.entity_id == selected_id), None)
 
-                    if found:
-                        age = getattr(found, 'age_ticks', 0)
-                        energy = getattr(found, 'energy', 10.0)
-                        cd = found.custom_data
-                        role_title = cd.get("role_title", "Microbe")
-                        synapses = found.brain.total_synaptic_connections if found.brain else 0
-                        print("╔════════════════════════════════════════════════════════════════════════════════╗")
-                        print(f"║ BACTERIUM / ORGANISM STATUS: {found.entity_id[:35]:<48} ║")
-                        print("╠════════════════════════════════════════════════════════════════════════════════╣")
-                        print(f"║ Type: {found.entity_type.name:<12} | Role: {role_title:<22} | Synapses: {synapses:>6d} ║")
-                        print(f"║ Energy: {found.energy:>6.1f} / {found.max_energy:>5.1f} | Hydration: {found.hydration:>6.1f} / {found.max_hydration:>5.1f} | Age: {found.age_ticks:>8} ║")
-                        print(f"║ Generation: {getattr(found, 'generation', 1):>6d} | Fissions/Divisions: {getattr(reproduction_sys, 'division_event_count', 0):>6d}               ║")
-                        print("╠════════════════════════════════════════════════════════════════════════════════╣")
-                        print("║ Neuromodulator Hormones:                                                       ║")
-                        print(f"║   Dopamine:   {cd.get('dopamine', 0.0):>7.2f} | Serotonin:  {cd.get('serotonin', 0.0):>7.2f} | Stress:     {cd.get('stress', 0.0):>7.2f} ║")
-                        print(f"║   Fear:       {cd.get('fear', 0.0):>7.2f} | Curiosity:  {cd.get('curiosity', 0.0):>7.2f} | Confidence: {cd.get('confidence', 0.0):>7.2f} ║")
-                        print("╚════════════════════════════════════════════════════════════════════════════════╝")
-                    else:
-                        print("Error: No organism selected or found.")
+                        if found:
+                            age = getattr(found, 'age_ticks', 0)
+                            energy = getattr(found, 'energy', 10.0)
+                            cd = found.custom_data
+                            role_title = cd.get("role_title", "Microbe")
+                            synapses = found.brain.total_synaptic_connections if found.brain else 0
+                            print("╔════════════════════════════════════════════════════════════════════════════════╗")
+                            print(f"║ BACTERIUM / ORGANISM STATUS: {found.entity_id[:35]:<48} ║")
+                            print("╠════════════════════════════════════════════════════════════════════════════════╣")
+                            print(f"║ Type: {found.entity_type.name:<12} | Role: {role_title:<22} | Synapses: {synapses:>6d} ║")
+                            print(f"║ Energy: {found.energy:>6.1f} / {found.max_energy:>5.1f} | Hydration: {found.hydration:>6.1f} / {found.max_hydration:>5.1f} | Age: {found.age_ticks:>8} ║")
+                            print(f"║ Generation: {getattr(found, 'generation', 1):>6d} | Fissions/Divisions: {getattr(reproduction_sys, 'division_event_count', 0):>6d}               ║")
+                            print("╠════════════════════════════════════════════════════════════════════════════════╣")
+                            print("║ Neuromodulator Hormones:                                                       ║")
+                            print(f"║   Dopamine:   {cd.get('dopamine', 0.0):>7.2f} | Serotonin:  {cd.get('serotonin', 0.0):>7.2f} | Stress:     {cd.get('stress', 0.0):>7.2f} ║")
+                            print(f"║   Fear:       {cd.get('fear', 0.0):>7.2f} | Curiosity:  {cd.get('curiosity', 0.0):>7.2f} | Confidence: {cd.get('confidence', 0.0):>7.2f} ║")
+                            print("╚════════════════════════════════════════════════════════════════════════════════╝")
+                        else:
+                            print("Error: No organism selected or found.")
+                    except Exception as bse:
+                        print(f"❌ [BACTERIUM ERROR] {bse}")
 
                 elif cmd_name == "civilization integration":
-                    alive_humans = [e for e in entities_list if e.is_alive and e.entity_type == EntityType.HUMAN]
-                    leader = next((e for e in entities_list if e.is_alive and e.custom_data.get("emergent_role") == "LEADER"), None)
-                    leader_id = leader.entity_id if leader else "None"
-                    leader_con = leader.custom_data.get("consciousness_level", 0.0) * 100.0 if leader else 0.0
-                    leader_syn = leader.brain.total_synaptic_connections if leader and leader.brain else 0
-                    god_affinity = getattr(gemini_sys, "global_god_affinity", 10.0) if 'gemini_sys' in locals() else 10.0
+                    try:
+                        alive_humans = [e for e in entities_list if e.is_alive and e.entity_type == EntityType.HUMAN]
+                        leader = next((e for e in entities_list if e.is_alive and e.custom_data.get("emergent_role") == "LEADER"), None)
+                        leader_id = leader.entity_id if leader else "None"
+                        leader_con = leader.custom_data.get("consciousness_level", 0.0) * 100.0 if leader else 0.0
+                        leader_syn = leader.brain.total_synaptic_connections if leader and leader.brain else 0
+                        god_affinity = getattr(gemini_sys, "global_god_affinity", 10.0) if 'gemini_sys' in locals() else 10.0
 
-                    print("╔════════════════════════════════════════════════════════════════════════════════╗")
-                    print("║                 CIVILIZATION & GOD RESONANCE DASHBOARD                         ║")
-                    print("╠════════════════════════════════════════════════════════════════════════════════╣")
-                    print(f"║ Sovereign Leader:           {leader_id:<46} ║")
-                    print(f"║ Leader Consciousness:       {leader_con:>24.1f}%                          ║")
-                    print(f"║ Leader Neural Synapses:     {leader_syn:>25d}                          ║")
-                    print(f"║ Gemini Deity God Affinity:  {god_affinity:>24.1f}%                          ║")
-                    print(f"║ Sentient Tribe Population:  {len(alive_humans):>25d}                          ║")
-                    print("╚════════════════════════════════════════════════════════════════════════════════╝")
+                        print("╔════════════════════════════════════════════════════════════════════════════════╗")
+                        print("║                 CIVILIZATION & GOD RESONANCE DASHBOARD                         ║")
+                        print("╠════════════════════════════════════════════════════════════════════════════════╣")
+                        print(f"║ Sovereign Leader:           {leader_id:<46} ║")
+                        print(f"║ Leader Consciousness:       {leader_con:>24.1f}%                          ║")
+                        print(f"║ Leader Neural Synapses:     {leader_syn:>25d}                          ║")
+                        print(f"║ Gemini Deity God Affinity:  {god_affinity:>24.1f}%                          ║")
+                        print(f"║ Sentient Tribe Population:  {len(alive_humans):>25d}                          ║")
+                        print("╚════════════════════════════════════════════════════════════════════════════════╝")
+                    except Exception as cie:
+                        print(f"❌ [CIVILIZATION ERROR] {cie}")
 
                 elif cmd_name.startswith("feed human") or cmd_name == "feed":
                     try:
@@ -934,61 +1359,70 @@ def main() -> None:
                         print(f"Error training humans: {e}")
 
                 elif cmd_name == "inspect":
-                    target_id = cmd_args.strip()
-                    if not target_id:
-                        print("Error: Specify an entity ID (e.g., 'inspect genesis_bac_0')")
-                    else:
-                        found = next((e for e in entities_list if e.entity_id == target_id), None)
-                        if found:
-                            print(f"--- DETAILED INSPECTION: {found.entity_id} ---")
-                            print(f"Type: {found.entity_type.name} | Age: {getattr(found, 'age_ticks', 0)}")
-                            print(f"Position: ({found.pos_x:.2f}, {found.pos_y:.2f}) | Velocity: ({found.vel_x:.2f}, {found.vel_y:.2f})")
-                            print(f"Energy: {getattr(found, 'energy', 0):.2f}/{getattr(found, 'max_energy', 1)}")
-                            print(f"Hydration: {getattr(found, 'hydration', 0):.2f}/{getattr(found, 'max_hydration', 1)}")
-                            if found.brain:
-                                print(f"Neural Network: ACTIVE (Inputs: {found.brain.input_size}, Hidden: {found.brain.hidden_sizes}, Outputs: {found.brain.output_size})")
-                            else:
-                                print("Neural Network: None")
-                            print(f"Custom Data Keys: {list(found.custom_data.keys())}")
+                    try:
+                        target_id = cmd_args.strip()
+                        if not target_id:
+                            print("Error: Specify an entity ID (e.g., 'inspect genesis_bac_0')")
                         else:
-                            print(f"Entity '{target_id}' not found.")
+                            found = next((e for e in entities_list if e.entity_id == target_id), None)
+                            if found:
+                                print(f"--- DETAILED INSPECTION: {found.entity_id} ---")
+                                print(f"Type: {found.entity_type.name} | Age: {getattr(found, 'age_ticks', 0)}")
+                                print(f"Position: ({found.pos_x:.2f}, {found.pos_y:.2f}) | Velocity: ({found.vel_x:.2f}, {found.vel_y:.2f})")
+                                print(f"Energy: {getattr(found, 'energy', 0):.2f}/{getattr(found, 'max_energy', 1)}")
+                                print(f"Hydration: {getattr(found, 'hydration', 0):.2f}/{getattr(found, 'max_hydration', 1)}")
+                                if found.brain:
+                                    print(f"Neural Network: ACTIVE (Inputs: {found.brain.input_size}, Hidden: {found.brain.hidden_sizes}, Outputs: {found.brain.output_size})")
+                                else:
+                                    print("Neural Network: None")
+                                print(f"Custom Data Keys: {list(found.custom_data.keys())}")
+                            else:
+                                print(f"Entity '{target_id}' not found.")
+                    except Exception as ie:
+                        print(f"❌ [INSPECT ERROR] {ie}")
 
                 elif cmd_name == "kill":
-                    target = cmd_args.strip().upper()
-                    if not target:
-                        print("Error: Specify 'ALL' or species type (e.g., 'kill ALL', 'kill BACTERIA')")
-                    elif target == "ALL":
-                        entities_list.clear()
-                        print("💀 Purged all entities from the ecosystem.")
-                    else:
-                        to_remove = [e for e in entities_list if e.entity_type.name == target]
-                        for e in to_remove:
-                            entities_list.remove(e)
-                        print(f"💀 Purged {len(to_remove)} entities of type {target}.")
+                    try:
+                        target = cmd_args.strip().upper()
+                        if not target:
+                            print("Error: Specify 'ALL' or species type (e.g., 'kill ALL', 'kill BACTERIA')")
+                        elif target == "ALL":
+                            entities_list.clear()
+                            print("💀 Purged all entities from the ecosystem.")
+                        else:
+                            to_remove = [e for e in entities_list if e.entity_type.name == target]
+                            for e in to_remove:
+                                entities_list.remove(e)
+                            print(f"💀 Purged {len(to_remove)} entities of type {target}.")
+                    except Exception as ke:
+                        print(f"❌ [KILL ERROR] {ke}")
 
                 elif cmd_name in ("seeds", "seed log", "seed logs", "seed stats"):
-                    from project.world.seeds import world_seed_growth_mgr, seed_logger
-                    recent = seed_logger.get_recent_logs(10)
-                    print("╔════════════════════════════════════════════════════════════════════════════════╗")
-                    print(f"║ 🌰 PLANETARY SEED & FRUIT GROWTH LOGS (Total Abnormalities: {world_seed_growth_mgr.total_abnormal_mutations})")
-                    print("╠════════════════════════════════════════════════════════════════════════════════╣")
-                    print(f"║ Active Growing Seeds in Soil: {len(world_seed_growth_mgr.active_seeds):<5} | Total Germinated: {world_seed_growth_mgr.total_seeds_germinated:<6}   ║")
-                    print("╠════════════════════════════════════════════════════════════════════════════════╣")
-                    if not recent:
-                        print("║   No fruit seed discard events recorded yet. Organisms leave seeds after eating║")
-                    else:
-                        for entry in recent[-8:]:
-                            if entry.get("event") == "FRUIT_EATEN_SEEDS_DISCARDED":
-                                fruit_c = entry.get("fruit_consumed", "Fruit")
-                                eater = entry.get("eater_id", "Organism")
-                                s_cnt = entry.get("seeds_left_count", 1)
-                                loc = entry.get("location", {})
-                                print(f"║ Tick {entry.get('sim_tick', 0):<6} | {eater[:18]:<18} ate {fruit_c:<8} -> {s_cnt} seeds left at ({loc.get('x',0):.1f},{loc.get('y',0):.1f}) ║")
-                            elif entry.get("event") == "SEED_MATURED_TO_FLORA":
-                                s_name = entry.get("parent_fruit", "Flora")
-                                ab = entry.get("abnormality_trait", "Normal")
-                                print(f"║ Tick {entry.get('sim_tick', 0):<6} | 🌟 SEED MATURED: {s_name:<8} [{ab:<22}] -> Plant spawned!║")
-                    print("╚════════════════════════════════════════════════════════════════════════════════╝")
+                    try:
+                        from project.world.seeds import world_seed_growth_mgr, seed_logger
+                        recent = seed_logger.get_recent_logs(10)
+                        print("╔════════════════════════════════════════════════════════════════════════════════╗")
+                        print(f"║ 🌰 PLANETARY SEED & FRUIT GROWTH LOGS (Total Abnormalities: {world_seed_growth_mgr.total_abnormal_mutations})")
+                        print("╠════════════════════════════════════════════════════════════════════════════════╣")
+                        print(f"║ Active Growing Seeds in Soil: {len(world_seed_growth_mgr.active_seeds):<5} | Total Germinated: {world_seed_growth_mgr.total_seeds_germinated:<6}   ║")
+                        print("╠════════════════════════════════════════════════════════════════════════════════╣")
+                        if not recent:
+                            print("║   No fruit seed discard events recorded yet. Organisms leave seeds after eating║")
+                        else:
+                            for entry in recent[-8:]:
+                                if entry.get("event") == "FRUIT_EATEN_SEEDS_DISCARDED":
+                                    fruit_c = entry.get("fruit_consumed", "Fruit")
+                                    eater = entry.get("eater_id", "Organism")
+                                    s_cnt = entry.get("seeds_left_count", 1)
+                                    loc = entry.get("location", {})
+                                    print(f"║ Tick {entry.get('sim_tick', 0):<6} | {eater[:18]:<18} ate {fruit_c:<8} -> {s_cnt} seeds left at ({loc.get('x',0):.1f},{loc.get('y',0):.1f}) ║")
+                                elif entry.get("event") == "SEED_MATURED_TO_FLORA":
+                                    s_name = entry.get("parent_fruit", "Flora")
+                                    ab = entry.get("abnormality_trait", "Normal")
+                                    print(f"║ Tick {entry.get('sim_tick', 0):<6} | 🌟 SEED MATURED: {s_name:<8} [{ab:<22}] -> Plant spawned!║")
+                        print("╚════════════════════════════════════════════════════════════════════════════════╝")
+                    except Exception as se:
+                        print(f"❌ [SEEDS ERROR] {se}")
 
                 elif cmd_name == "food":
                     try:
@@ -1023,39 +1457,45 @@ def main() -> None:
                         print(f"Error spawning food: {e}")
 
                 elif cmd_name == "command" or cmd_name == "chat":
-                    avatar = next((e for e in entities_list if e.is_alive and e.custom_data.get("emergent_role") == "DEITY_AVATAR"), None)
-                    if avatar:
-                        print(f"\n⚡ Gemini God Avatar hears your command: '{cmd_args}'")
-                        print("⚡ The Deity's consciousness integrates your command into the simulation.")
-                        avatar.think(f"USER COMMAND RECEIVED: {cmd_args}", category="DIVINE", valence=1.0)
-                    else:
-                        print("Error: The Gemini God Avatar has not incarnated yet. Attain 100% God Affinity first.")
+                    try:
+                        avatar = next((e for e in entities_list if e.is_alive and e.custom_data.get("emergent_role") == "DEITY_AVATAR"), None)
+                        if avatar:
+                            print(f"\n⚡ Gemini God Avatar hears your command: '{cmd_args}'")
+                            print("⚡ The Deity's consciousness integrates your command into the simulation.")
+                            avatar.think(f"USER COMMAND RECEIVED: {cmd_args}", category="DIVINE", valence=1.0)
+                        else:
+                            print("Error: The Gemini God Avatar has not incarnated yet. Attain 100% God Affinity first.")
+                    except Exception as ce:
+                        print(f"❌ [COMMAND CHAT ERROR] {ce}")
                         
                 elif cmd_name == "spawn_god":
-                    from project.entities.gemini_god_avatar import GeminiGodAvatar
-                    from project.systems.gemini_system import GeminiSystem
-                    
-                    # Find gemini sys in scheduler
-                    _gemini_sys = None
-                    for sys in scheduler.registry.get_active_systems():
-                        if isinstance(sys, GeminiSystem):
-                            _gemini_sys = sys
-                            break
-                            
-                    if _gemini_sys:
-                        _gemini_sys.global_god_affinity = 100.0
-                        _gemini_sys.god_incarnated = True
-                        ax, ay = 500.0, 500.0
-                        avatar = GeminiGodAvatar(
-                            entity_id="gemini_deity_incarnate_cheat",
-                            species_id="homo_sapiens",
-                            pos_x=ax,
-                            pos_y=ay,
-                        )
-                        entities_list.append(avatar)
-                        print(f"⚡ [CHEAT] Spawning Gemini God Avatar at ({ax:.1f}, {ay:.1f})")
-                    else:
-                        print("Error: Gemini System not initialized.")
+                    try:
+                        from project.entities.gemini_god_avatar import GeminiGodAvatar
+                        from project.systems.gemini_system import GeminiSystem
+                        
+                        # Find gemini sys in scheduler
+                        _gemini_sys = None
+                        for sys in scheduler.registry.get_active_systems():
+                            if isinstance(sys, GeminiSystem):
+                                _gemini_sys = sys
+                                break
+                                
+                        if _gemini_sys:
+                            _gemini_sys.global_god_affinity = 100.0
+                            _gemini_sys.god_incarnated = True
+                            ax, ay = 500.0, 500.0
+                            avatar = GeminiGodAvatar(
+                                entity_id="gemini_deity_incarnate_cheat",
+                                species_id="homo_sapiens",
+                                pos_x=ax,
+                                pos_y=ay,
+                            )
+                            entities_list.append(avatar)
+                            print(f"⚡ [CHEAT] Spawning Gemini God Avatar at ({ax:.1f}, {ay:.1f})")
+                        else:
+                            print("Error: Gemini System not initialized.")
+                    except Exception as ge:
+                        print(f"❌ [SPAWN GOD ERROR] {ge}")
 
                 elif cmd_name == "spawn":
                     try:
@@ -1100,6 +1540,105 @@ def main() -> None:
                     except Exception as e:
                         print(f"Error spawning entity: {e}")
 
+                elif cmd_name in ("upgrade", "update"):
+                    parts = cmd_args.strip().split()
+                    sub_cmd = parts[0].lower() if parts else "apply"
+
+                    if sub_cmd == "check":
+                        print("🔍 Checking GitHub repository for updates...")
+                        info = update_manager.check_for_updates(force=True)
+                        renderer.update_info = info
+                        if info.has_update:
+                            print(f"\n✨ Update Available! Remote: [{info.remote_commit}], Local: [{info.current_commit}]")
+                            print(f"   Commit Message: {info.commit_message}")
+                            print(f"   Author: {info.author} | Date: {info.commit_date}")
+                            print("   👉 Type 'upgrade' to execute 3-step verification and install.\n")
+                        else:
+                            print(f"✅ Simulation is up to date (Commit: [{info.current_commit}]).\n")
+                    else:
+                        def run_upgrade():
+                            renderer.is_updating_ui = True
+                            print("\n════════════════════════════════════════════════════════════════════════")
+                            print("🚀 EXECUTING AUTONOMOUS SIMULATION UPGRADE & 3-STEP VERIFICATION")
+                            print("════════════════════════════════════════════════════════════════════════")
+
+                            def on_progress(status_msg, pct):
+                                renderer.update_status_text = status_msg
+                                print(f"[{int(pct * 100)}%] {status_msg}")
+
+                            ok, msg = update_manager.apply_update(progress_callback=on_progress)
+                            renderer.is_updating_ui = False
+                            if ok:
+                                renderer.update_info = None
+                                renderer.console.log("✅ Upgrade Succeeded! Restart to apply new mechanics.")
+                                print(f"\n🎉 {msg}\n")
+                            else:
+                                renderer.console.log(f"❌ Upgrade Failed: {msg}")
+                                print(f"\n❌ {msg}\n")
+
+                        threading.Thread(target=run_upgrade, daemon=True, name="upgrade-worker").start()
+
+                elif cmd_name.startswith("telemetry"):
+                    parts = cmd_args.strip().split()
+                    sub_cmd = parts[0].lower() if parts else "status"
+
+                    prof = user_profile_manager.get_profile()
+                    consent = prof.privacy_and_telemetry.get("consent_given", False)
+
+                    if sub_cmd == "status":
+                        print("\n════════════════════════════════════════════════════════════════")
+                        print("📡 SIMULATION TELEMETRY & RESEARCH HUB STATUS")
+                        print("════════════════════════════════════════════════════════════════")
+                        print(f"• User Consent Granted  : {'YES (Opt-In)' if consent else 'NO (Strictly Disabled)'}")
+                        print(f"• Telemetry Mode        : {prof.privacy_and_telemetry.get('telemetry_mode')}")
+                        print(f"• Anonymized Client ID  : {prof.privacy_and_telemetry.get('anonymized_client_id')}")
+                        print(f"• Session ID            : {world_telemetry_collector.session_id}")
+                        print(f"• Session Uptime        : {round(world_telemetry_collector.get_uptime_seconds() / 60.0, 1)} minutes")
+                        print(f"• World State Level     : {prof.privacy_and_telemetry.get('world_data_level', 'full').upper()}")
+                        print("════════════════════════════════════════════════════════════════\n")
+
+                    elif sub_cmd == "ping":
+                        if not consent:
+                            print("⚠️ Telemetry is currently disabled in your profile (No consent).")
+                        else:
+                            world_telemetry_collector.dispatch_heartbeat(
+                                tick=tick_count,
+                                entities_count=len([e for e in entities_list if e.is_alive]),
+                                fps=renderer.clock.get_fps(),
+                                status="manual_ping"
+                            )
+                            print("📡 Active user heartbeat dispatched successfully.")
+
+                    elif sub_cmd in ("send_world", "dump", "export"):
+                        if not consent:
+                            print("⚠️ Telemetry is currently disabled in your profile (No consent).")
+                        else:
+                            level = parts[1].upper() if len(parts) > 1 else None
+                            from project.world.ancient_ruins import ancient_ruins_mgr
+                            from project.world.miracles import world_miracles_mgr
+                            world_telemetry_collector.dispatch_world_state(
+                                entities_list=entities_list,
+                                time_mgr=time_mgr,
+                                weather_mgr=weather_mgr,
+                                soil_mgr=soil_mgr,
+                                water_mgr=water_mgr,
+                                veg_mgr=veg_mgr,
+                                res_mgr=res_mgr,
+                                ruins_mgr=ancient_ruins_mgr,
+                                miracles_mgr=world_miracles_mgr,
+                                force_level=level,
+                            )
+                            print(f"🌍 World state telemetry [{level or 'FULL'}] packaged and dispatched.")
+
+                    elif sub_cmd == "level":
+                        if len(parts) > 1 and parts[1].lower() in ("summary", "deep", "full"):
+                            new_lvl = parts[1].lower()
+                            prof.privacy_and_telemetry["world_data_level"] = new_lvl
+                            user_profile_manager.save_profile(prof)
+                            print(f"✅ World data sharing level updated to: '{new_lvl.upper()}'")
+                        else:
+                            print("Usage: telemetry level [summary | deep | full]")
+
                 elif cmd_name in ("exit", "quit"):
                     print("🚪 Initiating clean shutdown sequence...")
                     running = False
@@ -1126,6 +1665,28 @@ def main() -> None:
                     world_miracles_mgr.update(0.1, entities_list)
                     if tick_count % 5 == 0:
                         ancient_ruins_mgr.update_exploration(entities_list, tick_count)
+
+                    # Periodic Active User Heartbeat & Research World State Dispatch
+                    if tick_count > 0 and tick_count % 1800 == 0:
+                        try:
+                            world_telemetry_collector.dispatch_heartbeat(
+                                tick=tick_count,
+                                entities_count=len([e for e in entities_list if e.is_alive]),
+                                fps=renderer.clock.get_fps(),
+                            )
+                            world_telemetry_collector.dispatch_world_state(
+                                entities_list=entities_list,
+                                time_mgr=time_mgr,
+                                weather_mgr=weather_mgr,
+                                soil_mgr=soil_mgr,
+                                water_mgr=water_mgr,
+                                veg_mgr=veg_mgr,
+                                res_mgr=res_mgr,
+                                ruins_mgr=ancient_ruins_mgr,
+                                miracles_mgr=world_miracles_mgr,
+                            )
+                        except Exception:
+                            pass
                 except Exception as e:
                     print(f"CRASH HANDLER (Main loop): Exception in backend scheduler: {e}")
                     import traceback
@@ -1133,34 +1694,13 @@ def main() -> None:
                     renderer.simulation_speed = 0.0
 
                 # ---------------------------------------------------------
-                # ELASTIC ADAPTIVE SIMULATION CLOCK
                 # ---------------------------------------------------------
-                # Base average pace is ~2.0s per tick.
-                # When vital biological events, reproduction, cell divisions,
-                # active combats, or leader ascensions occur, the clock dynamically
-                # accelerates so program goals and evolutionary progress are never throttled!
-                alive = [e for e in entities_list if e.is_alive]
-                if not alive:
-                    base_delay = 1.0
-                elif len(pending_births) > 0:
-                    base_delay = 0.15  # Accelerated birth and division processing
-                else:
-                    # Measure real-time biological and evolutionary urgency
-                    repro_ready = sum(1 for e in alive if e.is_mature and e.energy > (e.max_energy * 0.55))
-                    repro_urgency = min(1.0, repro_ready / max(1, len(alive)))
-
-                    moving_count = sum(1 for e in alive if getattr(e, 'speed', 0.0) > 0.5)
-                    movement_urgency = min(1.0, moving_count / max(1, len(alive)))
-
-                    leader = next((e for e in alive if e.custom_data.get("emergent_role") == "LEADER"), None)
-                    divine_urgency = 0.35 if (leader and leader.custom_data.get("divine_blessing_active")) else 0.0
-
-                    activity_index = min(1.0, (repro_urgency * 0.45) + (movement_urgency * 0.35) + divine_urgency)
-
-                    # Dynamic scaling: 2.0s when calm/idle -> 0.25s during peak biological progress
-                    base_delay = 2.0 * (1.0 - (0.875 * activity_index))
-
-                actual_delay = max(0.016, base_delay / max(0.1, speed))
+                # HIGH-RESPONSIVENESS REAL-TIME SIMULATION CLOCK
+                # ---------------------------------------------------------
+                # Fluid, zero-latency execution: ~30 UPS base pace at 1x speed
+                # Seamlessly accelerates up to 150+ UPS at higher speed multipliers
+                base_delay = 0.032
+                actual_delay = max(0.002, base_delay / max(0.1, speed))
                 time.sleep(actual_delay)
             else:
                 time.sleep(0.1)
@@ -1174,16 +1714,13 @@ def main() -> None:
     term_thread.start()
 
     from project.world.biomes import BiomeType
-    class MockTile:
-        def __init__(self, height, biome):
-            self.height = height
-            self.biome = biome
+    from project.world.terrain import TerrainManager
+    terrain_mgr = TerrainManager(seed=42)
 
-    class MockTerrainManager:
-        def get_tile(self, x, y):
-            return MockTile(0.4, BiomeType.FOREST)
+    # Pre-warm terrain surface cache around genesis settlement for immediate 60 FPS
+    renderer.overlays.preload_chunks_around(world_w / 2.0, world_h / 2.0, 768.0, terrain_mgr, world_w, world_h)
 
-    mock_terrain = MockTerrainManager()
+    from project.world.ancient_ruins import ancient_ruins_mgr
 
     try:
         while running:
@@ -1194,11 +1731,10 @@ def main() -> None:
                     running = False
                     break
 
-                from project.world.ancient_ruins import ancient_ruins_mgr
-                timings = scheduler.get_performance_timings()
+                timings = scheduler.get_performance_timings() if (len(renderer.checkboxes) > 2 and renderer.checkboxes[2].checked) else {}
                 renderer.render(
                     entities_snapshot=snapshot,
-                    terrain_manager=mock_terrain,
+                    terrain_manager=terrain_mgr,
                     pheromone_grid=pheromone_grid,
                     system_timings=timings,
                     sim_tick=tick_count,
@@ -1223,6 +1759,14 @@ def main() -> None:
         debugger.global_exception_handler(type(e), e, sys.exc_info()[2])
     finally:
         print("Shutting down World Simulator...")
+        try:
+            world_telemetry_collector.dispatch_heartbeat(
+                tick=tick_count,
+                entities_count=len([e for e in entities_list if getattr(e, 'is_alive', False)]),
+                status="session_end"
+            )
+        except Exception:
+            pass
         global_bgm.stop(fade_out_ms=1500)
         bridge_hub.flush_all()
         renderer.close()

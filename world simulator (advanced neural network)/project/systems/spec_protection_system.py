@@ -63,7 +63,12 @@ class SpecProtectionSystem:
         telemetry = global_spec_protector.check_safety()
         self.last_telemetry = telemetry
 
-        if telemetry.is_danger_zone and not self.has_emergency_tripped:
+        if (
+            telemetry.is_danger_zone
+            and telemetry.danger_reason_code != 0
+            and context.tick > 30
+            and not self.has_emergency_tripped
+        ):
             self.has_emergency_tripped = True
             self.total_trips += 1
             self._handle_danger_trip(context, telemetry)

@@ -22,6 +22,8 @@ from project.security.vault import SecureKeyVault
 from project.security.sanitizer import PayloadSanitizer
 from project.security.audit import SecurityAuditLogger, SecuritySeverity
 
+WORKSPACE_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
+
 
 class SecuritySystem:
     """
@@ -46,7 +48,10 @@ class SecuritySystem:
         self.crypto = crypto or CryptoEngine()
         self.vault = vault or SecureKeyVault()
         self.audit_logger = audit_logger or SecurityAuditLogger()
-        self.audit_log_path = audit_log_path
+        if audit_log_path and not os.path.isabs(audit_log_path):
+            self.audit_log_path = os.path.join(WORKSPACE_DIR, audit_log_path)
+        else:
+            self.audit_log_path = audit_log_path
 
     @property
     def name(self) -> str:
@@ -66,7 +71,7 @@ class SecuritySystem:
 
     @property
     def is_critical(self) -> bool:
-        return True
+        return False
 
     def initialize(self, context: UpdateContext) -> None:
         self.audit_logger.log_event(
@@ -76,32 +81,41 @@ class SecuritySystem:
         )
 
     def update(self, context: UpdateContext) -> None:
-        # 1. Clean expired bans & idle rate limiters every 60 ticks (approx 1 sec)
-        if context.tick > 0 and context.tick % 60 == 0:
-            pruned_bans = self.firewall.clean_expired_bans()
-            self.rate_limiter.prune_idle_buckets()
-            self.ids.prune_clean_profiles()
-            if pruned_bans > 0:
-                self.audit_logger.log_event(
-                    severity=SecuritySeverity.INFO,
-                    event_type="BANS_PRUNED",
-                    details=f"Pruned {pruned_bans} expired dynamic ban(s)",
-                )
+        try:
+            # 1. Clean expired bans & idle rate limiters every 60 ticks (approx 1 sec)
+            if context.tick > 0 and context.tick % 60 == 0:
+                pruned_bans = self.firewall.clean_expired_bans()
+                self.rate_limiter.prune_idle_buckets()
+                self.ids.prune_clean_profiles()
+                if pruned_bans > 0:
+                    self.audit_logger.log_event(
+                        severity=SecuritySeverity.INFO,
+                        event_type="BANS_PRUNED",
+                        details=f"Pruned {pruned_bans} expired dynamic ban(s)",
+                    )
+        except Exception:
+            pass
 
         # 2. Flush audit logs every 600 ticks (approx 10 sec)
         if context.tick > 0 and context.tick % 600 == 0:
-            if os.path.dirname(self.audit_log_path):
-                os.makedirs(os.path.dirname(self.audit_log_path), exist_ok=True)
-            self.audit_logger.flush_to_jsonl(self.audit_log_path)
+            try:
+                if self.audit_log_path and os.path.dirname(self.audit_log_path):
+                    os.makedirs(os.path.dirname(self.audit_log_path), exist_ok=True)
+                self.audit_logger.flush_to_jsonl(self.audit_log_path)
+            except Exception:
+                pass
 
     def late_update(self, context: UpdateContext) -> None:
         pass
 
     def shutdown(self) -> None:
         # Flush remaining audit logs on shutdown
-        if os.path.dirname(self.audit_log_path):
-            os.makedirs(os.path.dirname(self.audit_log_path), exist_ok=True)
-        self.audit_logger.flush_to_jsonl(self.audit_log_path)
+        try:
+            if self.audit_log_path and os.path.dirname(self.audit_log_path):
+                os.makedirs(os.path.dirname(self.audit_log_path), exist_ok=True)
+            self.audit_logger.flush_to_jsonl(self.audit_log_path)
+        except Exception:
+            pass
 
     def process_inbound_request(
         self,

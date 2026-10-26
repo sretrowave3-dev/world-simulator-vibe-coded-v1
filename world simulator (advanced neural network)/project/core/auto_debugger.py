@@ -59,6 +59,15 @@ class AutoDebugger:
             except Exception:
                 pass
             self.dump_logs()
+            try:
+                from project.core.telemetry_dispatcher import telemetry_dispatcher
+                telemetry_dispatcher.record_crash(
+                    exc_type=exc_type.__name__,
+                    exc_message=str(exc_value),
+                    stack_trace="".join(traceback.format_exception(exc_type, exc_value, exc_traceback))
+                )
+            except Exception:
+                pass
 
     def _watchdog_loop(self):
         while self.running:
