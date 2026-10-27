@@ -30,6 +30,13 @@ from project.renderer.ui import Button, Checkbox, Console, Slider, Selector, get
 from project.world.terrain import TerrainManager
 from project.ai.pheromone import PheromoneGrid, PheromoneType
 from project.analytics.graphs import PopulationGraphRenderer
+from project.world.ancient_ruins import ancient_ruins_mgr
+from project.world.miracles import world_miracles_mgr
+from project.world.seeds import world_seed_growth_mgr, SeedAbnormality
+from project.civilization.settlement import world_settlement_mgr
+from project.core.quantum_persistence import quantum_persistence
+from project.core.git_save_manager import git_save_manager
+from project.core.gpu_manager import gpu_mgr
 
 _ENTITY_SPRITE_CACHE: Dict[Tuple[Tuple[int, int, int], int], pygame.Surface] = {}
 _SPECIES_COLOR_MAP = {
@@ -147,12 +154,17 @@ class SimulationRenderer:
         self.is_updating_ui: bool = False
         self.update_status_text: str = ""
 
-        # Determine offline mode from profile
+        # Determine offline mode and owner status from profile
         self.is_offline: bool = False
+        self.is_owner: bool = False
+        self.is_locked: bool = False
+        self.lockdown_reason: str = ""
+        self.adv_dev_mode: bool = False
         try:
             from project.core.user_profile import user_profile_manager
             prof = user_profile_manager.get_profile()
             self.is_offline = prof.gemini.get("is_offline", False) or (len(prof.gemini.get("api_keys", [])) == 0)
+            self.is_owner = bool(prof.credentials.get("is_owner", False))
         except Exception:
             pass
 
@@ -244,10 +256,19 @@ class SimulationRenderer:
         # Quantum Multi-Universe & Time Machine Action Buttons (Row 1 & Row 2)
         self.buttons.append(Button(10, 407, 80, 25, "💾 Save", lambda: self.command_queue.append("save manual_save.dat")))
         self.buttons.append(Button(95, 407, 80, 25, "📂 Load", lambda: self.command_queue.append("load")))
-        self.buttons.append(Button(180, 407, 80, 25, "🌿 History", lambda: self.command_queue.append("timeline")))
+        def toggle_adv_dev_btn():
+            self.adv_dev_mode = not getattr(self, "adv_dev_mode", False)
+            adv_b.text = "⚙️ DEV [ON]" if self.adv_dev_mode else "⚙️ ADV DEV"
+            self.command_queue.append("adv dev")
+
+        adv_b = Button(180, 407, 95, 25, "⚙️ ADV DEV", toggle_adv_dev_btn)
+        self.buttons.append(adv_b)
+
+        # Advanced Developer Row
+        self.buttons.append(Button(10, 437, 80, 25, "🌿 History", lambda: self.command_queue.append("timeline")))
         self.buttons.append(Button(10, 437, 80, 25, "🌐 Worlds", lambda: self.command_queue.append("universes")))
         self.buttons.append(Button(95, 437, 80, 25, "⏳ Rewind", lambda: self.command_queue.append("rewind safe")))
-        self.buttons.append(Button(180, 437, 80, 25, "🌌 New", lambda: self.command_queue.append("world new")))
+        self.buttons.append(Button(265, 437, 80, 25, "🌌 New", lambda: self.command_queue.append("world new")))
 
     def set_speed(self, speed: float) -> None:
         self.simulation_speed = speed
@@ -367,20 +388,29 @@ class SimulationRenderer:
 
             # UI components input handling
             ui_handled = False
-            for sel in self.selectors:
-                if sel.handle_event(event):
-                    ui_handled = True
-            for slider in self.sliders:
-                if slider.handle_event(event):
-                    ui_handled = True
-                    if slider.label.startswith("Gemini God Affinity"):
-                        self.command_queue.append(f"affinity:{slider.value}")
-            for btn in self.buttons:
-                if btn.handle_event(event):
-                    ui_handled = True
-            for cb in self.checkboxes:
-                if cb.handle_event(event):
-                    ui_handled = True
+            if getattr(self, "adv_dev_mode", False):
+                for sel in self.selectors:
+                    if sel.handle_event(event):
+                        ui_handled = True
+                for slider in self.sliders:
+                    if slider.handle_event(event):
+                        ui_handled = True
+                        if slider.label.startswith("Gemini God Affinity"):
+                            self.command_queue.append(f"affinity:{slider.value}")
+                for btn in self.buttons:
+                    if btn.handle_event(event):
+                        ui_handled = True
+                for cb in self.checkboxes:
+                    if cb.handle_event(event):
+                        ui_handled = True
+            else:
+                for btn in self.buttons:
+                    if btn.text in ("Pause", "1x Speed", "2x Speed", "5x Speed", "💾 Save", "📂 Load", "⚙️ ADV DEV", "⚙️ DEV [ON]"):
+                        if btn.handle_event(event):
+                            ui_handled = True
+                if len(self.checkboxes) > 1:
+                    if self.checkboxes[1].handle_event(event):
+                        ui_handled = True
             if ui_handled:
                 continue
 
@@ -464,13 +494,12 @@ class SimulationRenderer:
         if len(self.checkboxes) > 7:
             self.overlays.ultra_fast_mode = self.checkboxes[7].checked
 
-        self.screen.fill((24, 34, 28))
+        self.screen.fill((84, 168, 52))
 
         # Synchronize God Affinity slider with current simulation state if not dragging
         if len(self.sliders) >= 2 and not self.sliders[1].is_dragging and god_affinity is not None:
             self.sliders[1].value = god_affinity
 
-        from project.world.ancient_ruins import ancient_ruins_mgr
         active_ruins = ruins_manager or ancient_ruins_mgr
 
         # Update camera follow target
@@ -482,7 +511,7 @@ class SimulationRenderer:
 
         # 1. Draw environmental terrain tiles (Mountains, Rivers, Biomes)
         self.overlays.draw_terrain(
-            self.screen, self.camera, terrain_manager, self.checkboxes[0].checked, self.world_width, self.world_height
+            self.screen, self.camera, terrain_manager, self.checkboxes[0].checked, self.world_width, self.world_height, sim_tick
         )
 
         # 2. Draw tribal clan structures (Campfires, Timber Shelters, Altars)
@@ -534,9 +563,17 @@ class SimulationRenderer:
                 "ambient_tint_rgb": (255, 255, 255) if df > 0.4 else ((25, 30, 55)),
             }
 
-        # 4. Draw entities with multi-species color palette & fast frustum culling
-        min_wx, min_wy, max_wx, max_wy = self.camera.get_visible_world_bounds(margin=60.0)
+        # 4. Compute camera bounds & directional sunlight shadow projection vectors
         zoom = self.camera.zoom
+        min_wx, min_wy, max_wx, max_wy = self.camera.get_visible_world_bounds(margin=60.0)
+
+        sun_frac = sun_props.get("day_fraction", 0.5) if sun_props else 0.5
+        sun_df = sun_props.get("daylight_factor", 1.0) if sun_props else 1.0
+        sun_angle = (sun_frac - 0.5) * math.pi
+        sun_shadow_dx = int(math.sin(sun_angle) * (1.2 - sun_df * 0.4) * 6.0 * zoom)
+        sun_shadow_dy = int(math.cos(sun_angle) * 3.0 * zoom + 3.0 * zoom)
+
+        # Draw entities with multi-species color palette & fast frustum culling
 
         for entity in entities_snapshot:
             if not entity["is_alive"]:
@@ -702,7 +739,7 @@ class SimulationRenderer:
                 else:
                     hr = max(5, int(entity["radius"] * 3.5 * zoom))
                     # Soft ground shadow
-                    pygame.draw.ellipse(self.screen, (0, 0, 0, 75), (sx - hr, sy + hr // 3, hr * 2, max(3, hr // 2)))
+                    pygame.draw.ellipse(self.screen, (0, 0, 0, 75), (sx - hr + sun_shadow_dx, sy + hr // 3 + sun_shadow_dy, hr * 2, max(3, hr // 2)))
 
                     # Tunic Body
                     body_color = (215, 60, 45) if role == "LEADER" else (180, 130, 75)
@@ -777,7 +814,7 @@ class SimulationRenderer:
             elif etype == "PREDATOR" and not is_thermal:
                 pr = max(4, int(entity["radius"] * 3.0 * zoom))
                 # Sleek dark panther/wolf silhouette
-                pygame.draw.ellipse(self.screen, (0, 0, 0, 80), (sx - pr, sy + pr // 3, pr * 2, max(3, pr // 2)))
+                pygame.draw.ellipse(self.screen, (0, 0, 0, 80), (sx - pr + sun_shadow_dx, sy + pr // 3 + sun_shadow_dy, pr * 2, max(3, pr // 2)))
                 pygame.draw.circle(self.screen, (38, 40, 48), (sx, sy), pr)
                 # Piercing amber eyes
                 heading = entity.get("heading", 0.0)
@@ -787,7 +824,7 @@ class SimulationRenderer:
             elif etype == "HERBIVORE" and not is_thermal:
                 hr_sz = max(4, int(entity["radius"] * 2.8 * zoom))
                 # Warm chestnut gazelle/deer body
-                pygame.draw.ellipse(self.screen, (0, 0, 0, 70), (sx - hr_sz, sy + hr_sz // 3, hr_sz * 2, max(3, hr_sz // 2)))
+                pygame.draw.ellipse(self.screen, (0, 0, 0, 70), (sx - hr_sz + sun_shadow_dx, sy + hr_sz // 3 + sun_shadow_dy, hr_sz * 2, max(3, hr_sz // 2)))
                 pygame.draw.circle(self.screen, (185, 125, 65), (sx, sy), hr_sz)
                 pygame.draw.circle(self.screen, (230, 205, 175), (sx, sy), max(1, hr_sz // 2))
             else:
@@ -823,11 +860,9 @@ class SimulationRenderer:
         # -------------------------------------------------------------
         # 4. Celestial Stardust & Live Discarded Growing Seeds
         # -------------------------------------------------------------
-        from project.world.miracles import world_miracles_mgr
         self.overlays.draw_stardust_deposits(self.screen, self.camera, world_miracles_mgr, sim_tick)
 
         # 4b. Draw Live Discarded Growing Seeds
-        from project.world.seeds import world_seed_growth_mgr
         self.overlays.draw_discarded_seeds(self.screen, self.camera, world_seed_growth_mgr, sim_tick)
 
 
@@ -841,14 +876,21 @@ class SimulationRenderer:
             self.screen.blit(self._thermal_tint_surf, (0, 0))
 
         # 5. Draw UI overlays & HUD
-        for btn in self.buttons:
-            btn.draw(self.screen, self.font)
-        for cb in self.checkboxes:
-            cb.draw(self.screen, self.font)
-        for slider in self.sliders:
-            slider.draw(self.screen, self.font)
-        for sel in self.selectors:
-            sel.draw(self.screen, self.font)
+        if getattr(self, "adv_dev_mode", False):
+            for btn in self.buttons:
+                btn.draw(self.screen, self.font)
+            for cb in self.checkboxes:
+                cb.draw(self.screen, self.font)
+            for slider in self.sliders:
+                slider.draw(self.screen, self.font)
+            for sel in self.selectors:
+                sel.draw(self.screen, self.font)
+        else:
+            for btn in self.buttons:
+                if btn.text in ("Pause", "1x Speed", "2x Speed", "5x Speed", "💾 Save", "📂 Load", "⚙️ ADV DEV", "⚙️ DEV [ON]"):
+                    btn.draw(self.screen, self.font)
+            if len(self.checkboxes) > 1:
+                self.checkboxes[1].draw(self.screen, self.font)
 
         # Gemini God Resonance Banner & Solar Status (Top Center)
         from project.renderer.ui import get_cached_text
@@ -869,14 +911,12 @@ class SimulationRenderer:
 
         # Quantum Universe & Timeline HUD Info (Bottom-Left)
         try:
-            from project.core.quantum_persistence import quantum_persistence
             univ = quantum_persistence.get_active_universe()
             hud_info = f"🌐 World: \"{univ.world_name}\" | Branch: {univ.active_branch} (HEAD: {univ.head_commit_id or 'genesis'})"
             hud_surf = get_cached_text(self.font, hud_info, (140, 185, 230))
             self.screen.blit(hud_surf, (10, self.height - 22))
         except Exception:
             try:
-                from project.core.git_save_manager import git_save_manager
                 git_info = f"🌿 Branch: {git_save_manager.active_branch} (HEAD: {git_save_manager.current_commit_id or 'genesis'})"
                 git_surf = get_cached_text(self.font, git_info, (140, 170, 210))
                 self.screen.blit(git_surf, (10, self.height - 22))
@@ -885,8 +925,7 @@ class SimulationRenderer:
 
         # Minimap (Top Right)
         if self.checkboxes[1].checked:
-            from project.civilization.settlement import world_settlement_mgr
-            self.minimap.draw(self.screen, self.camera, entities_snapshot, structures_snapshot=list(world_settlement_mgr.structures.values()))
+            self.minimap.draw(self.screen, self.camera, entities_snapshot, structures_snapshot=world_settlement_mgr.get_all_structures_snapshot() if hasattr(world_settlement_mgr, 'get_all_structures_snapshot') else list(world_settlement_mgr.structures.values()))
 
         # Inspector Panel (Right Dock)
         selected_snap = None
@@ -910,8 +949,8 @@ class SimulationRenderer:
         if selected_snap and selected_snap.get("ai_metrics"):
             self.brain_visualizer.draw(self.screen, self.font, selected_snap["ai_metrics"])
 
-        # Diagnostic timings panel & population graph (Left Dock)
-        if self.checkboxes[2].checked:
+        # Diagnostic timings panel & population graph (Left Dock - Advanced Developer Mode)
+        if getattr(self, "adv_dev_mode", False) and len(self.checkboxes) > 2 and self.checkboxes[2].checked:
             DebugRenderer.draw_diagnostics(
                 self.screen,
                 self.font,
@@ -922,14 +961,23 @@ class SimulationRenderer:
             if stats_history:
                 self.pop_graph.draw_graph(self.screen, self.font, stats_history)
 
-        # Remote Upgrade Notification Pill (Top Center)
-        if (hasattr(self, "update_info") and self.update_info and getattr(self.update_info, "has_update", False)) or getattr(self, "is_updating_ui", False):
-            self._draw_update_banner()
+        # Remote Upgrade Notification Pill (Top Center) - Suppressed for Owner
+        if not getattr(self, "is_owner", False):
+            if (hasattr(self, "update_info") and self.update_info and getattr(self.update_info, "has_update", False)) or getattr(self, "is_updating_ui", False):
+                self._draw_update_banner()
+
+        # Anti-Tampering Security Lockdown Overlay
+        if getattr(self, "is_locked", False):
+            self._draw_lockdown_screen()
+
+        # Cinematic Atmospheric Vignette
+        self.overlays.draw_vignette(self.screen)
 
         pygame.display.flip()
-        self.clock.tick(60)
-        # Cooperative sleep to yield CPU slice to OS (drops idle/render CPU from 100% to < 15%)
-        time.sleep(0.001)
+        # Enforce Dedicated GPU & CPU safety (60 FPS clamp, thermal throttling, OS cooperative yield)
+        gpu_mgr.enforce_frame_safety(self.clock)
+        vram_est = (len(self.overlays._chunk_cache) * 32 * 32 * 4 + len(self.overlays._scaled_chunk_cache) * 128 * 128 * 4) / (1024 * 1024)
+        gpu_mgr.update_vram_usage(vram_est)
 
 
     def _draw_update_banner(self) -> None:
@@ -976,5 +1024,39 @@ class SimulationRenderer:
             ty = btn_y + (btn_h - btn_txt.get_height()) // 2
             self.screen.blit(btn_txt, (tx, ty))
 
+    def _draw_lockdown_screen(self) -> None:
+        """Renders red warning overlay when anti-tamper lockdown is triggered."""
+        overlay = pygame.Surface((self.width, self.height), pygame.SRCALPHA)
+        overlay.fill((30, 8, 12, 230))
+        self.screen.blit(overlay, (0, 0))
+
+        cx = self.width // 2
+        cy = self.height // 2
+        box_w = min(840, self.width - 40)
+        box_h = 240
+        rect = pygame.Rect(cx - box_w // 2, cy - box_h // 2, box_w, box_h)
+        pygame.draw.rect(self.screen, (22, 16, 20), rect, border_radius=12)
+        pygame.draw.rect(self.screen, (248, 81, 73), rect, 2, border_radius=12)
+
+        title = self.font.render("🚨 CRITICAL SECURITY ALERT: SIMULATOR LOCKED DOWN", True, (248, 81, 73))
+        self.screen.blit(title, (rect.x + 24, rect.y + 20))
+
+        sub = self.font.render("Unauthorized modification of protected security subsystem files detected.", True, (230, 237, 243))
+        self.screen.blit(sub, (rect.x + 24, rect.y + 60))
+
+        act1 = self.font.render("⛔ Online Connection: SEVERED (GitHub push and cloud sync terminated)", True, (255, 123, 114))
+        self.screen.blit(act1, (rect.x + 24, rect.y + 100))
+
+        act2 = self.font.render("🔒 Program Execution: FROZEN (Simulation halted)", True, (255, 123, 114))
+        self.screen.blit(act2, (rect.x + 24, rect.y + 130))
+
+        act3 = self.font.render("📡 Emergency breach telemetry dispatched to repository Owner.", True, (139, 148, 158))
+        self.screen.blit(act3, (rect.x + 24, rect.y + 160))
+
+        ft = self.font.render("Contact repository owner (sretrowave3-dev) or run on authorized workstation.", True, (139, 148, 158))
+        self.screen.blit(ft, (rect.x + 24, rect.y + 195))
+
     def close(self) -> None:
+        if hasattr(self, "overlays") and hasattr(self.overlays, "close"):
+            self.overlays.close()
         pygame.quit()

@@ -53,7 +53,7 @@ class WorldTimeManager:
         self.ticks_per_second = ticks_per_second
 
         self.current_tick: int = 0
-        self.total_seconds: float = 0.0
+        self.total_seconds: float = self.seconds_per_day * 0.35  # Start at morning sunshine
 
     def tick(self, dt: float) -> None:
         self.current_tick += 1

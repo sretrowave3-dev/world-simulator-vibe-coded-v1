@@ -6,7 +6,7 @@ Multi-Tier Cognitive Memory Engine for ALife Organisms & PyTorch-Accelerated Dee
 Features:
 - Base OrganismMemory: Sensory buffer, Short-Term Memory, and Long-Term Episodic Memory with Ebbinghaus forgetting.
 - HumanCognitiveMemory: PyTorch-powered Differentiable Autoencoder Memory with >= 50 MB Preallocated Tensor Buffers,
-  Multi-Head Associative Key-Value Attention Retrieval, Intrinsic Curiosity Loss, and Online Self-Learning Optimizer.
+  Multi-Head Associative Key-Value Attention Retrieval, Intrinsic Curiosity Loss, and GPU-Accelerated Online Self-Learning Optimizer.
 """
 
 from __future__ import annotations
@@ -24,6 +24,14 @@ try:
     TORCH_AVAILABLE = True
 except ImportError:
     TORCH_AVAILABLE = False
+    torch = None  # type: ignore
+    nn = None  # type: ignore
+    optim = None  # type: ignore
+
+try:
+    from project.core.gpu_manager import gpu_mgr
+except ImportError:
+    gpu_mgr = None
 
 
 class MemoryType(Enum):
@@ -202,7 +210,7 @@ if TORCH_AVAILABLE:
 class HumanCognitiveMemory(OrganismMemory):
     """
     High-Capacity Sentient Adaptive Neural Memory System specifically engineered for the Human species.
-    Powered by PyTorch (or vectorized fallback) with >= 51.5 MB Preallocated Tensors for deep experience replay,
+    Powered by PyTorch (GPU CUDA accelerated) with >= 51.5 MB Preallocated Tensors for deep experience replay,
     spatial topological cognitive mapping, associative concept embeddings, and self-learning gradient optimization.
     """
 
@@ -211,6 +219,7 @@ class HumanCognitiveMemory(OrganismMemory):
         replay_capacity: int = 102400,  # 102,400 experiences x 128 dims x 4 bytes = 50.0 MB
         feature_dim: int = 128,
         spatial_resolution: int = 512,  # 512x512 grid x 4 bytes = 1.0 MB
+        device: Optional[Any] = None,
     ) -> None:
         super().__init__(short_term_capacity=100, long_term_capacity=500, forgetting_rate=0.0001)
 
@@ -218,17 +227,29 @@ class HumanCognitiveMemory(OrganismMemory):
         self.feature_dim = feature_dim
         self.spatial_resolution = spatial_resolution
 
-        # -------------------------------------------------------------
-        # 1. 50.0 MB Preallocated Experience Replay Tensor
-        # -------------------------------------------------------------
+        self.device = None
         if TORCH_AVAILABLE:
+            if device is not None:
+                self.device = device
+            elif gpu_mgr is not None:
+                self.device = gpu_mgr.get_torch_device()
+            else:
+                self.device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
+
             self.experience_replay_matrix = torch.zeros((self.replay_capacity, self.feature_dim), dtype=torch.float32)
             self.experience_reward_vector = torch.zeros(self.replay_capacity, dtype=torch.float32)
             self.spatial_cognitive_grid = torch.zeros((self.spatial_resolution, self.spatial_resolution), dtype=torch.float32)
             self.concept_associative_matrix = torch.randn((256, self.feature_dim), dtype=torch.float32) * 0.1
 
-            # Differentiable Neural Autoencoder Model & Optimizer
+            # Differentiable Neural Autoencoder Model & Optimizer on target device (CUDA GPU / CPU)
             self.neural_model = MemoryAutoEncoder(in_dim=self.feature_dim, latent_dim=32)
+            if self.device is not None:
+                try:
+                    self.neural_model.to(self.device)
+                except Exception:
+                    self.device = torch.device("cpu")
+                    self.neural_model.to(self.device)
+
             self.optimizer = optim.Adam(self.neural_model.parameters(), lr=0.004, weight_decay=1e-5)
         else:
             self.experience_replay_matrix = np.zeros((self.replay_capacity, self.feature_dim), dtype=np.float32)
@@ -256,6 +277,17 @@ class HumanCognitiveMemory(OrganismMemory):
         for idx, concept in enumerate(default_concepts):
             self.concept_dictionary[concept] = idx
 
+    def to_device(self, new_device: Any) -> None:
+        """Transfers neural memory models to a new device."""
+        if not TORCH_AVAILABLE or self.neural_model is None:
+            return
+        try:
+            self.device = new_device
+            self.neural_model.to(new_device)
+            self.optimizer = optim.Adam(self.neural_model.parameters(), lr=0.004, weight_decay=1e-5)
+        except Exception:
+            pass
+
     @property
     def memory_size_mb(self) -> float:
         """Computes exact total RAM allocated by Human cognitive buffers."""
@@ -280,7 +312,7 @@ class HumanCognitiveMemory(OrganismMemory):
     ) -> None:
         """Stores a high-dimensional experience into the 50 MB circular replay buffer."""
         entry = np.zeros(self.feature_dim, dtype=np.float32)
-        
+
         # Pack sensory inputs
         s_len = min(48, len(sensory_vector))
         if s_len > 0:
@@ -319,7 +351,7 @@ class HumanCognitiveMemory(OrganismMemory):
             return np.zeros((batch_size, self.feature_dim), dtype=np.float32), np.zeros(batch_size, dtype=np.float32)
 
         indices = np.random.randint(0, self.experience_count, size=min(batch_size, self.experience_count))
-        
+
         if TORCH_AVAILABLE and isinstance(self.experience_replay_matrix, torch.Tensor):
             idx_tensor = torch.from_numpy(indices)
             batch_exp = self.experience_replay_matrix[idx_tensor]
@@ -327,85 +359,108 @@ class HumanCognitiveMemory(OrganismMemory):
         else:
             batch_exp = self.experience_replay_matrix[indices]
             batch_rewards = self.experience_reward_vector[indices]
-            
+
         return batch_exp, batch_rewards
 
     def self_learn_step(self, batch_size: int = 32) -> float:
         """
-        Executes an adaptive self-supervised PyTorch backpropagation step.
+        Executes an adaptive self-supervised PyTorch backpropagation step on GPU.
         Minimizes sensory reconstruction loss and trains the value prediction head.
         """
         if not TORCH_AVAILABLE or self.neural_model is None or self.experience_count < 8:
             return 0.0
 
-        batch_exp, batch_rew = self.sample_batch(batch_size=batch_size)
-        if not isinstance(batch_exp, torch.Tensor):
-            batch_exp = torch.tensor(batch_exp, dtype=torch.float32)
-            batch_rew = torch.tensor(batch_rew, dtype=torch.float32)
+        try:
+            batch_exp, batch_rew = self.sample_batch(batch_size=batch_size)
+            if not isinstance(batch_exp, torch.Tensor):
+                batch_exp = torch.tensor(batch_exp, dtype=torch.float32)
+                batch_rew = torch.tensor(batch_rew, dtype=torch.float32)
 
-        self.optimizer.zero_grad()
-        z, x_rec, v_pred = self.neural_model(batch_exp)
+            if self.device is not None:
+                batch_exp = batch_exp.to(self.device)
+                batch_rew = batch_rew.to(self.device)
 
-        # 1. Self-Supervised Reconstruction Loss (Learning compact environmental representations)
-        recon_loss = nn.functional.mse_loss(x_rec, batch_exp)
+            self.optimizer.zero_grad()
+            z, x_rec, v_pred = self.neural_model(batch_exp)
 
-        # 2. Value Regression Loss (Learning outcome values)
-        val_loss = nn.functional.mse_loss(v_pred.squeeze(-1), batch_rew.squeeze(-1))
+            # 1. Self-Supervised Reconstruction Loss (Learning compact environmental representations)
+            recon_loss = nn.functional.mse_loss(x_rec, batch_exp)
 
-        total_loss = recon_loss + 0.5 * val_loss
-        total_loss.backward()
-        self.optimizer.step()
+            # 2. Value Regression Loss (Learning outcome values)
+            val_loss = nn.functional.mse_loss(v_pred.squeeze(-1), batch_rew.squeeze(-1))
 
-        self.latest_loss = float(total_loss.detach().item())
-        self.self_training_cycles += 1
-        return self.latest_loss
+            total_loss = recon_loss + 0.5 * val_loss
+            total_loss.backward()
+            self.optimizer.step()
+
+            self.latest_loss = float(total_loss.detach().item())
+            self.self_training_cycles += 1
+            return self.latest_loss
+        except Exception:
+            return 0.0
 
     def compute_intrinsic_curiosity(self, sensory_vector: List[float]) -> float:
         """
-        Calculates intrinsic curiosity prediction error.
+        Calculates intrinsic curiosity prediction error on GPU.
         Novel, unexpected, or unlearned sensory patterns yield high curiosity rewards.
         """
         if not TORCH_AVAILABLE or self.neural_model is None:
             return 0.2
 
-        with torch.no_grad():
-            inp = np.zeros(self.feature_dim, dtype=np.float32)
-            s_len = min(48, len(sensory_vector))
-            inp[:s_len] = sensory_vector[:s_len]
-            inp_t = torch.from_numpy(inp).unsqueeze(0)
-            
-            _, x_rec, _ = self.neural_model(inp_t)
-            error = float(nn.functional.mse_loss(x_rec, inp_t).item())
-            return min(1.0, error * 2.0)
+        try:
+            with torch.no_grad():
+                inp = np.zeros(self.feature_dim, dtype=np.float32)
+                s_len = min(48, len(sensory_vector))
+                inp[:s_len] = sensory_vector[:s_len]
+                inp_t = torch.from_numpy(inp).unsqueeze(0)
+                if self.device is not None:
+                    inp_t = inp_t.to(self.device)
+
+                _, x_rec, _ = self.neural_model(inp_t)
+                error = float(nn.functional.mse_loss(x_rec, inp_t).item())
+                return min(1.0, error * 2.0)
+        except Exception:
+            return 0.2
 
     def associative_attention_recall(self, query_vector: List[float], top_k: int = 5) -> Tuple[List[int], float]:
         """
-        Differentiable Associative Attention Query:
+        Differentiable Associative Attention Query on GPU:
         Retrieves the top-k most relevant past experiences based on scaled dot-product attention.
         """
         if self.experience_count == 0 or not TORCH_AVAILABLE or self.neural_model is None:
             return [], 0.0
 
-        with torch.no_grad():
-            q_arr = np.zeros(self.feature_dim, dtype=np.float32)
-            q_arr[:min(48, len(query_vector))] = query_vector[:min(48, len(query_vector))]
-            q_t = torch.from_numpy(q_arr).unsqueeze(0)
+        try:
+            with torch.no_grad():
+                q_arr = np.zeros(self.feature_dim, dtype=np.float32)
+                q_arr[:min(48, len(query_vector))] = query_vector[:min(48, len(query_vector))]
+                q_t = torch.from_numpy(q_arr).unsqueeze(0)
+                if self.device is not None:
+                    q_t = q_t.to(self.device)
 
-            # Sample subset for rapid lookup
-            n_candidates = min(500, self.experience_count)
-            candidates = self.experience_replay_matrix[:n_candidates]
+                # Sample subset for rapid lookup
+                n_candidates = min(500, self.experience_count)
+                candidates = self.experience_replay_matrix[:n_candidates]
+                if self.device is not None:
+                    candidates = candidates.to(self.device)
 
-            q_proj = self.neural_model.query_proj(q_t)  # (1, 32)
-            k_proj = self.neural_model.key_proj(candidates)  # (N, 32)
+                q_proj = self.neural_model.query_proj(q_t)  # (1, 32)
+                k_proj = self.neural_model.key_proj(candidates)  # (N, 32)
 
-            # Scaled Dot-Product Attention Scores
-            scores = torch.matmul(q_proj, k_proj.T) / math.sqrt(32.0)
-            attn_weights = torch.softmax(scores, dim=-1).squeeze(0)
+                # Scaled Dot-Product Attention Scores
+                scores = torch.matmul(q_proj, k_proj.T) / math.sqrt(32.0)
+                attn_weights = torch.softmax(scores, dim=-1).squeeze(0)
 
-            top_scores, top_indices = torch.topk(attn_weights, k=min(top_k, n_candidates))
-            expected_val = float(torch.sum(self.experience_reward_vector[top_indices] * top_scores).item())
+                top_scores, top_indices = torch.topk(attn_weights, k=min(top_k, n_candidates))
+                rewards = self.experience_reward_vector[top_indices.cpu()] if hasattr(top_indices, "cpu") else self.experience_reward_vector[top_indices]
+                if hasattr(rewards, "to") and self.device is not None:
+                    rewards = rewards.to(self.device)
+                expected_val = float(torch.sum(rewards * top_scores).item())
 
-            return top_indices.tolist(), expected_val
+                ret_indices = top_indices.cpu().tolist() if hasattr(top_indices, "cpu") else top_indices.tolist()
+                return ret_indices, expected_val
+        except Exception:
+            return [], 0.0
 
     def mark_spatial_poi(self, world_x: float, world_y: float, world_width: float, world_height: float, weight: float = 1.0) -> None:
         """Updates spatial topological memory map at coordinate."""

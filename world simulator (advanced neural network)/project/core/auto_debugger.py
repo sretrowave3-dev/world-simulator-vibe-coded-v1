@@ -32,14 +32,15 @@ class AutoDebugger:
         self.crash_logs = []
         self._lock = threading.Lock()
 
-    def start(self):
+    def start(self, verbose: bool = False):
         # Override global exception hook
         sys.excepthook = self.global_exception_handler
         self.thread.start()
-        try:
-            print("[AUTO-DEBUGGER] Parallel Watchdog & Crash Handler ACTIVE.")
-        except Exception:
-            pass
+        if verbose:
+            try:
+                print("[AUTO-DEBUGGER] Parallel Watchdog & Crash Handler ACTIVE.")
+            except Exception:
+                pass
 
     def global_exception_handler(self, exc_type, exc_value, exc_traceback):
         if issubclass(exc_type, KeyboardInterrupt):

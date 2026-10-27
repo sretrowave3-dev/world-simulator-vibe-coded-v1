@@ -95,6 +95,11 @@ class CombatSystem:
                         # Counter-attack predator using human combat strength
                         human_counter = getattr(target, "combat_power", 20.0) * 0.9
                         predator.take_damage(human_counter, reason="HUMAN_COUNTERATTACK", tick=context.tick)
+                        try:
+                            from project.core.activity_chronicler import activity_chronicler
+                            activity_chronicler.record_hunt(predator.species_id, "human", (predator.pos_x, predator.pos_y), counterattack=True)
+                        except Exception:
+                            pass
                         predator.drain_stamina(10.0)
 
                     # Drain combat stamina
@@ -109,6 +114,11 @@ class CombatSystem:
                         meat_calories = min(150.0, target.mass_kg * 6.5)
                         predator.gain_energy(meat_calories)
                         predator.quench_thirst(15.0)
+                        try:
+                            from project.core.activity_chronicler import activity_chronicler
+                            activity_chronicler.record_hunt(predator.species_id, target.species_id, (predator.pos_x, predator.pos_y), counterattack=False)
+                        except Exception:
+                            pass
                     else:
                         predator.gain_energy(10.0)
 

@@ -10,6 +10,7 @@ occupancy tracking, and nocturnal predator immunity for sheltered inhabitants.
 from __future__ import annotations
 
 import math
+import threading
 from dataclasses import dataclass, field
 from enum import Enum, auto
 from typing import Dict, List, Optional, Tuple, Set
@@ -81,6 +82,11 @@ class SettlementManager:
     def __init__(self) -> None:
         self.structures: Dict[str, WorldStructure] = {}
         self._next_id: int = 1
+        self._lock = threading.Lock()
+
+    def get_all_structures_snapshot(self) -> List[WorldStructure]:
+        with self._lock:
+            return list(self.structures.values())
 
     def spawn_structure(
         self,
@@ -167,7 +173,8 @@ class SettlementManager:
             comfort_rating=comfort,
             is_predator_proof=pred_proof,
         )
-        self.structures[sid] = st
+        with self._lock:
+            self.structures[sid] = st
         return st
 
     def get_nearby_structures(self, x: float, y: float, radius: float = 100.0) -> List[WorldStructure]:

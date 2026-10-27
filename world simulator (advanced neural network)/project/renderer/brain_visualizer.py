@@ -25,13 +25,20 @@ class BrainVisualizer:
             - ``net_sizes``: List[int] layer sizes (including working memory)
             - ``net_outputs``: List[List[float]] current neuron activations per layer
             - ``net_weights``: List[List[List[float]]] weight matrices per layer
+            - ``device``: Optional[str] device name (e.g. 'cuda:0' or 'cpu')
+            - ``total_learning_steps``: Optional[int] count of backprop cycles
         """
         # Background container
         pygame.draw.rect(surface, (15, 15, 20), self.rect)
         pygame.draw.rect(surface, (0, 255, 255), self.rect, 2)
 
-        # Header
-        title = get_cached_text(font, "LIVE NEURAL GRAPH VISUALIZER", (0, 255, 255))
+        # Header with PyTorch Acceleration & Self-Learning Telemetry
+        dev_tag = str(ai_metrics.get("device", "CPU")).upper()
+        steps = ai_metrics.get("total_learning_steps", 0)
+        title_str = f"LIVE NEURAL GRAPH VISUALIZER [{dev_tag}]"
+        if steps > 0:
+            title_str += f" | Self-Learn Steps: {steps}"
+        title = get_cached_text(font, title_str, (0, 255, 255))
         surface.blit(title, (self.rect.x + 10, self.rect.y + 10))
 
         net_sizes: List[int] = ai_metrics.get("net_sizes", [])

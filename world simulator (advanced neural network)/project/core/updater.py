@@ -58,6 +58,8 @@ VERSION_FILE = os.path.join(WORKSPACE_DIR, "VERSION")
 # Files and folders that MUST NEVER be overwritten or deleted during updates
 PROTECTED_PATTERNS = [
     "user_profile.json",
+    ".owner_machine.json",
+    ".security_manifest.enc",
     ".env",
     "saves",
     "git_saves",
@@ -80,6 +82,9 @@ class UpdateInfo:
     commit_date: str = ""
     checked_at: float = field(default_factory=time.time)
     error_message: Optional[str] = None
+    ahead_count: int = 0
+    behind_count: int = 0
+    sync_status: str = "SYNCHRONIZED"  # "SYNCHRONIZED", "AHEAD", "BEHIND", "DIVERGED", "UNKNOWN"
 
 
 class SecurityVerificationError(Exception):
@@ -228,31 +233,49 @@ class UpdateManager:
         self.is_updating: bool = False
         self._last_check_time: float = 0.0
 
-    def get_current_commit(self) -> str:
-        """Determines the current local commit hash."""
-        # 1. Check .current_commit file
-        if os.path.exists(CURRENT_COMMIT_FILE):
-            try:
-                with open(CURRENT_COMMIT_FILE, "r", encoding="utf-8") as f:
-                    val = f.read().strip()
-                    if val:
-                        return val
-            except Exception:
-                pass
+    def _find_git_root(self) -> Optional[str]:
+        """Discovers the true git root directory by walking up from workspace_dir."""
+        cur = os.path.abspath(self.workspace_dir)
+        for _ in range(5):
+            if os.path.exists(os.path.join(cur, ".git")):
+                return cur
+            parent = os.path.dirname(cur)
+            if parent == cur:
+                break
+            cur = parent
+        return None
 
-        # 2. Check git rev-parse if .git exists
-        git_dir = os.path.join(self.workspace_dir, ".git")
-        if os.path.exists(git_dir):
+    def get_current_commit(self) -> str:
+        """Determines the current local commit hash accurately."""
+        # 1. Check git rev-parse if git repo exists
+        git_root = self._find_git_root()
+        if git_root:
             try:
                 res = subprocess.run(
                     ["git", "rev-parse", "HEAD"],
-                    cwd=self.workspace_dir,
+                    cwd=git_root,
                     capture_output=True,
                     text=True,
                     timeout=3.0,
                 )
                 if res.returncode == 0:
                     val = res.stdout.strip()
+                    if val:
+                        # Keep .current_commit in sync
+                        try:
+                            with open(CURRENT_COMMIT_FILE, "w", encoding="utf-8") as cf:
+                                cf.write(val)
+                        except Exception:
+                            pass
+                        return val
+            except Exception:
+                pass
+
+        # 2. Check .current_commit file
+        if os.path.exists(CURRENT_COMMIT_FILE):
+            try:
+                with open(CURRENT_COMMIT_FILE, "r", encoding="utf-8") as f:
+                    val = f.read().strip()
                     if val:
                         return val
             except Exception:
@@ -264,14 +287,19 @@ class UpdateManager:
                 with open(VERSION_FILE, "r", encoding="utf-8") as f:
                     val = f.read().strip()
                     if val:
+                        if "-" in val:
+                            return val.split("-")[-1]
                         return val
             except Exception:
                 pass
 
-        return "bb676c1"  # Default baseline commit
+        return "b306ab7"
 
     def check_for_updates(self, force: bool = False) -> UpdateInfo:
-        """Queries GitHub for remote changes and compares against local commit."""
+        """
+        Queries GitHub and compares commits with true Git-like ahead/behind analysis.
+        Correctly recognizes when local is ahead, behind, or synchronized.
+        """
         now = time.time()
         if not force and self.cached_info is not None and (now - self._last_check_time) < 1800.0:
             return self.cached_info
@@ -283,7 +311,7 @@ class UpdateManager:
             req = urllib.request.Request(
                 GITHUB_API_COMMITS_URL,
                 headers={
-                    "User-Agent": "WorldSimulator-Updater/2.1",
+                    "User-Agent": "WorldSimulator-Updater/2.2",
                     "Accept": "application/vnd.github.v3+json",
                 },
             )
@@ -301,11 +329,106 @@ class UpdateManager:
             info.author = author
             info.commit_date = commit_date
 
-            # Compare commits
-            if remote_sha and not remote_sha.startswith(current_commit):
-                info.has_update = True
-            else:
+            # Accurate Ahead / Behind Detection
+            git_root = self._find_git_root()
+            git_compared = False
+
+            # Case 1: Exact match between local HEAD and remote commit
+            if remote_sha and (current_commit.startswith(remote_sha[:7]) or remote_sha.startswith(current_commit[:7])):
+                info.sync_status = "SYNCHRONIZED"
                 info.has_update = False
+                info.ahead_count = 0
+                info.behind_count = 0
+                git_compared = True
+
+            # Case 2: Git repository analysis if remote SHA is known to local git
+            elif git_root and remote_sha:
+                try:
+                    # Check if git knows the remote sha
+                    cat_res = subprocess.run(
+                        ["git", "cat-file", "-e", remote_sha],
+                        cwd=git_root,
+                        capture_output=True,
+                        timeout=2.0,
+                    )
+                    if cat_res.returncode == 0:
+                        res = subprocess.run(
+                            ["git", "rev-list", "--left-right", "--count", f"{remote_sha}...HEAD"],
+                            cwd=git_root,
+                            capture_output=True,
+                            text=True,
+                            timeout=4.0,
+                        )
+                        if res.returncode == 0:
+                            parts = res.stdout.strip().split()
+                            if len(parts) == 2:
+                                behind = int(parts[0])
+                                ahead = int(parts[1])
+                                info.behind_count = behind
+                                info.ahead_count = ahead
+
+                                if behind == 0 and ahead == 0:
+                                    info.sync_status = "SYNCHRONIZED"
+                                    info.has_update = False
+                                elif behind > 0 and ahead == 0:
+                                    info.sync_status = "BEHIND"
+                                    info.has_update = True
+                                elif ahead > 0 and behind == 0:
+                                    info.sync_status = "AHEAD"
+                                    info.has_update = False
+                                else:
+                                    info.sync_status = "DIVERGED"
+                                    info.has_update = True
+                                git_compared = True
+                except Exception:
+                    pass
+
+            if not git_compared:
+                # Case 3: Compare via GitHub compare API or fallback
+                try:
+                    compare_url = f"https://api.github.com/repos/{GITHUB_REPO}/compare/{current_commit}...{remote_sha}"
+                    comp_req = urllib.request.Request(
+                        compare_url,
+                        headers={"User-Agent": "WorldSimulator-Updater/2.2", "Accept": "application/vnd.github.v3+json"}
+                    )
+                    with urllib.request.urlopen(comp_req, timeout=6.0) as comp_resp:
+                        comp_data = json.loads(comp_resp.read().decode("utf-8"))
+                    status = comp_data.get("status", "")
+                    ahead_by = int(comp_data.get("ahead_by", 0))  # remote ahead of base
+                    behind_by = int(comp_data.get("behind_by", 0)) # remote behind base (local ahead)
+                    info.behind_count = ahead_by
+                    info.ahead_count = behind_by
+
+                    if status == "identical":
+                        info.sync_status = "SYNCHRONIZED"
+                        info.has_update = False
+                    elif status == "ahead" or ahead_by > 0:
+                        info.sync_status = "BEHIND"
+                        info.has_update = True
+                    elif status == "behind" or behind_by > 0:
+                        info.sync_status = "AHEAD"
+                        info.has_update = False
+                    elif status == "diverged":
+                        info.sync_status = "DIVERGED"
+                        info.has_update = True
+                    else:
+                        # Non-standard or mocked compare payload: fall back to SHA difference
+                        if remote_sha and not remote_sha.startswith(current_commit[:7]):
+                            info.sync_status = "BEHIND"
+                            info.has_update = True
+                            info.behind_count = max(1, ahead_by)
+                        else:
+                            info.sync_status = "SYNCHRONIZED"
+                            info.has_update = False
+                except Exception:
+                    # Safe fallback when compare endpoint is unreachable or mocked
+                    if remote_sha and not remote_sha.startswith(current_commit[:7]):
+                        info.sync_status = "BEHIND"
+                        info.has_update = True
+                        info.behind_count = 1
+                    else:
+                        info.sync_status = "SYNCHRONIZED"
+                        info.has_update = False
 
         except urllib.error.URLError as ue:
             info.error_message = f"Network unavailable: {ue.reason}"

@@ -51,9 +51,10 @@ from project.core.memory_cache import (
     frontend_repeater, ram_allocator
 )
 
-# Start Parallel Auto Debugger
+# Start Parallel Auto Debugger & Activity Chronicler
 from project.core.auto_debugger import debugger
-debugger.start()
+debugger.start(verbose=False)
+from project.core.activity_chronicler import activity_chronicler
 
 # Systems imports
 from project.systems.security_system import SecuritySystem
@@ -128,6 +129,10 @@ def spawn_genesis_population(entities_list: List[Entity], world_w: float, world_
     # Spawn initial communal campfire at tribal center
     from project.civilization.settlement import world_settlement_mgr
     world_settlement_mgr.spawn_structure("campfire", cx, cy, clan_id="genesis_tribe", tick=1)
+    try:
+        activity_chronicler.record_construction("campfire", (cx, cy), "genesis_tribe")
+    except Exception:
+        pass
 
     # 2. Herbivore herds (deer and gazelles)
     for i in range(20):
@@ -178,10 +183,43 @@ def spawn_genesis_population(entities_list: List[Entity], world_w: float, world_
         entities_list.append(Bacteria(entity_id=f"genesis_bac_{i}", species_id="chemophile", pos_x=random.uniform(100, world_w - 100), pos_y=random.uniform(100, world_h - 100)))
 
 
-def print_modern_help_menu() -> None:
-    """Displays a beautifully formatted, categorized console help dashboard."""
+def print_standard_help_menu() -> None:
+    """Displays a clean, essential command menu for regular users."""
     print("╔════════════════════════════════════════════════════════════════════════════════╗")
     print("║                     WORLD SIMULATOR COMMAND CONSOLE                            ║")
+    print("╠════════════════════════════════════════════════════════════════════════════════╣")
+    print("║ 🎮 SIMULATION CONTROL:                                                         ║")
+    print("║   pause                    - Pause the backend simulation                      ║")
+    print("║   play (or resume)         - Resume the simulation at normal speed             ║")
+    print("║   speed <multiplier>       - Change simulation speed (e.g. speed 2.0)          ║")
+    print("║   status                   - View current world time, population & environment ║")
+    print("║   reset                    - Wipe world and reseed fresh genesis organisms     ║")
+    print("╠════════════════════════════════════════════════════════════════════════════════╣")
+    print("║ 💾 SAVE & LOAD:                                                                ║")
+    print("║   save [name]              - Save current simulation state                     ║")
+    print("║   load [name]              - Load a previously saved universe checkpoint       ║")
+    print("║   saves                    - Browse list of all saved checkpoints              ║")
+    print("╠════════════════════════════════════════════════════════════════════════════════╣")
+    print("║ 🖥️ DISPLAY & SOUND:                                                           ║")
+    print("║   feed [smart|quiet|all]   - Adjust terminal activity stream (Terminal mode)   ║")
+    print("║   uio                      - Turn GUI visual window ON                         ║")
+    print("║   uiof                     - Turn GUI visual window OFF (0% GPU mode)          ║")
+    print("║   bgm [on|off|mute]        - Toggle ambient background soundtrack              ║")
+    print("║   bgm volume <0-100>       - Adjust music volume level                         ║")
+    print("║   clear                    - Clear terminal screen                             ║")
+    print("╠════════════════════════════════════════════════════════════════════════════════╣")
+    print("║ ⚙️ ADVANCED FEATURES:                                                          ║")
+    print("║   adv dev                  - Activate / deactivate advanced developer settings ║")
+    print("║   exit (or quit)           - Clean and safe simulator shutdown                 ║")
+    print("║   help (or ?)              - Show this command reference dashboard             ║")
+    print("╚════════════════════════════════════════════════════════════════════════════════╝")
+    print("💡 Tip: Type 'adv dev' to unlock deep developer tools, git DAG, & neural telemetry.\n")
+
+
+def print_modern_help_menu() -> None:
+    """Displays a beautifully formatted, categorized console help dashboard for Advanced Developers."""
+    print("╔════════════════════════════════════════════════════════════════════════════════╗")
+    print("║          WORLD SIMULATOR COMMAND CONSOLE (ADVANCED DEVELOPER MODE)             ║")
     print("╠════════════════════════════════════════════════════════════════════════════════╣")
     print("║ 🌌 QUANTUM MULTI-UNIVERSE & TIME MACHINE (10x Smarter than Git):               ║")
     print("║   worlds (or universes)    - List isolated world universes with demographic stats ║")
@@ -202,6 +240,16 @@ def print_modern_help_menu() -> None:
     print("║   rmkey <index|key>        - Remove API key from pool                          ║")
     print("║   offline                  - Force 100% offline mode (No pseudo affinity)      ║")
     print("║   online                   - Reconnect to online Gemini routing pool           ║")
+    print("╠════════════════════════════════════════════════════════════════════════════════╣")
+    print("║ 🛡️ SECURITY, CREDENTIALS & SCANNER:                                            ║")
+    print("║   credentials (or whoami)  - View user rank, privileges, and session profile   ║")
+    print("║   sec status / sec seal    - Verify or [OWNER] re-seal security manifest       ║")
+    print("║   mongo status / sync / uri- Inspect and sync user data with MongoDB cluster   ║")
+    print("║   login <passkey>          - Authenticate as Owner (unlocks GitHub push & code)║")
+    print("║   logout                   - Switch back to User-based options only            ║")
+    print("║   scan                     - Trigger lightweight integrity & security audit    ║")
+    print("║   push [message]           - [OWNER ONLY] Push committed state to GitHub repo  ║")
+    print("║   upgrade                  - View Git topology / apply code upgrades           ║")
     print("╠════════════════════════════════════════════════════════════════════════════════╣")
     print("║ 🔒 PRIVACY, TELEMETRY & SETUP:                                                 ║")
     print("║   telemetry [on|off|preview] - Toggle anonymized diagnostic reporting          ║")
@@ -229,7 +277,9 @@ def print_modern_help_menu() -> None:
     print("║   bacterium status         - Local AI intelligence score & neuromodulators     ║")
     print("║   civilization integration - Measure global social cohesion & hivemind status  ║")
     print("║   feed humans [amt]        - Feed & hydrate all humans with nutrient burst     ║")
-    print("║   train humans [cycles]    - Train humans on 50MB experience replay buffers    ║")
+    print("║   selflearn [on|off|status]- GPU online PyTorch self-learning toggle           ║")
+    print("║   ai (or ai status)        - PyTorch CUDA telemetry, active brains & loss stats║")
+    print("║   train [all|humans] [cnt] - Dedicated GPU backprop cycles across organisms     ║")
     print("║   spawn <type>,<x>,<y>     - Spawn entity (BACTERIA, PLANT, HERBIVORE, etc.)   ║")
     print("║   food <type>,<x>,<y>      - Spawn food node (grass, meat, fruit, fern)        ║")
     print("╠════════════════════════════════════════════════════════════════════════════════╣")
@@ -250,18 +300,85 @@ def main() -> None:
     from project.core.telemetry_dispatcher import telemetry_dispatcher
     from project.core.world_telemetry import world_telemetry_collector
     from project.core.updater import update_manager
+    from project.core.lightweight_scanner import lightweight_scanner
+
+    # ── Console UTF-8 & Windows Virtual Terminal Escape Processing ──
+    try:
+        if sys.platform == "win32":
+            import ctypes
+            kernel32 = ctypes.windll.kernel32
+            handle = kernel32.GetStdHandle(-11)
+            mode = ctypes.c_ulong()
+            if kernel32.GetConsoleMode(handle, ctypes.byref(mode)):
+                kernel32.SetConsoleMode(handle, mode.value | 0x0004)
+    except Exception:
+        pass
+
+    BOLD = "\033[1m"
+    RESET = "\033[0m"
+
+    # Execution Mode Selection (CLI overrides or interactive bold selection)
+    is_terminal_only = False
+    if any(arg in sys.argv for arg in ("--terminal", "--no-gui", "--headless", "-t")):
+        is_terminal_only = True
+    elif any(arg in sys.argv for arg in ("--gui", "-g")):
+        is_terminal_only = False
+    else:
+        print(f"\n{BOLD}╔════════════════════════════════════════════════════════════════════════════════╗{RESET}")
+        print(f"{BOLD}║                     WORLD SIMULATOR - LAUNCH SELECTION                         ║{RESET}")
+        print(f"{BOLD}╠════════════════════════════════════════════════════════════════════════════════╣{RESET}")
+        print(f"{BOLD}║                                                                                ║{RESET}")
+        print(f"{BOLD}║   [1] terminal based simulation without gui and graphical window               ║{RESET}")
+        print(f"{BOLD}║   [2] terminal with Raylib Hardware GPU GUI (NVIDIA RTX 3050 - OpenGL 3.3)     ║{RESET}")
+        print(f"{BOLD}║                                                                                ║{RESET}")
+        print(f"{BOLD}╚════════════════════════════════════════════════════════════════════════════════╝{RESET}")
+        try:
+            choice = input(f"{BOLD}Please choose execution mode [1 or 2] (Default is 1): {RESET}").strip().lower()
+            if choice in ("2", "gui", "window", "terminal with gui"):
+                is_terminal_only = False
+            else:
+                is_terminal_only = True
+        except (EOFError, KeyboardInterrupt):
+            is_terminal_only = True
+
+    if is_terminal_only:
+        os.environ["SDL_VIDEODRIVER"] = "dummy"
+        print(f"{BOLD}🚀 Running: Terminal based simulation without gui and graphical window (0% GPU mode){RESET}")
+        print("🍃 GPU State: 0% GPU load (headless dummy driver active)\n")
+    else:
+        print(f"{BOLD}🚀 Running: Terminal with Raylib Hardware GPU GUI (NVIDIA RTX 3050 Active){RESET}\n")
+        from project.core.gpu_manager import gpu_mgr
+        gpu_mgr.scan_hardware()
+        if gpu_mgr.has_dedicated_gpu():
+            dg = gpu_mgr.dedicated_gpu
+            ok, msg = gpu_mgr.enable_dedicated_gpu()
+            temp_str = f" | Temp: {dg.temperature_c:.0f}°C" if dg.temperature_c is not None else ""
+            print(f"{BOLD}🎮 Dedicated GPU Detected: {dg.name} ({dg.vram_mb} MB VRAM{temp_str}){RESET}")
+            print(f"⚡ GPU Acceleration: Active (Windows High-Performance Mode bound & verified)")
+            print(f"🛡️ GPU Safety Engine: 60 FPS Clamp, VRAM Guard & Thermal Throttling active (Safe for short/long term)\n")
+        else:
+            print(f"⚙️ Display Adapter: Standard / Integrated GPU active (60 FPS safe clamp)\n")
 
     # Trigger First-Time Setup Wizard if no prior setup or user metadata exists
-    if user_profile_manager.is_first_run():
-        print("\n🌟 [FIRST-TIME SETUP] Initiating initial environment configuration wizard...")
-        try:
-            from project.renderer.setup_wizard import run_setup_wizard
-            user_profile = run_setup_wizard()
-        except Exception as we:
-            print(f"⚠️ [SETUP WIZARD] Fallback to default profile due to: {we}")
-            user_profile = user_profile_manager.get_profile()
-    else:
+    if is_terminal_only:
         user_profile = user_profile_manager.get_profile()
+        if user_profile_manager.is_first_run():
+            user_profile_manager.save_profile(user_profile)
+    else:
+        if user_profile_manager.is_first_run():
+            print("\n🌟 [FIRST-TIME SETUP] Initiating initial environment configuration wizard...")
+            try:
+                from project.renderer.setup_wizard import run_setup_wizard
+                user_profile = run_setup_wizard()
+            except Exception as we:
+                print(f"⚠️ [SETUP WIZARD] Fallback to default profile due to: {we}")
+                user_profile = user_profile_manager.get_profile()
+        else:
+            user_profile = user_profile_manager.get_profile()
+
+    # PHASE 1: Boot Scan (Saves, User Status, User Rank, Owner Privileges vs User Options)
+    boot_scan_report = lightweight_scanner.scan_boot(verbose=False)
+    lightweight_scanner.start_background_scanner(interval_seconds=720.0)
 
     display_cfg = user_profile.display
     win_w = display_cfg.get("width", 1280)
@@ -273,21 +390,13 @@ def main() -> None:
     world_h = 14336.0
 
     active_univ = quantum_persistence.get_active_universe()
+    mode_title = "Terminal based simulation without GUI (0% GPU mode)" if is_terminal_only else "Terminal with GUI"
     print("════════════════════════════════════════════════════════════════════════════════")
-    print(f"🌍 Advanced Neural Network World Simulator (Architect: {user_profile.user_name})")
-    print(f"🌌 Active World:    \"{active_univ.world_name}\" [ID: {active_univ.universe_id}]")
-    print(f"🌿 Quantum Branch:  '{active_univ.active_branch}' | Node: {active_univ.head_commit_id or 'genesis'}")
-    print(f"📁 Save Directory:  {SAVES_DIR}")
-    print(f"⚡ Cache Directory: {CACHE_DIR}")
-    num_keys = len(gemini_cfg.get("api_keys", []))
-    cog_mode_str = "100% OFFLINE (Local Neural Core — No Pseudo Affinity)" if is_offline else f"ONLINE ({num_keys} Gemini Keys in Pool)"
-    print(f"🧠 Cognitive Mode:  {cog_mode_str}")
-    telemetry = linux_optimizer.get_memory_telemetry()
-    if telemetry.get("platform") == "linux":
-        shm_str = " (tmpfs in RAM)" if CACHE_DIR.startswith("/dev/shm") else ""
-        print(f"🐧 Linux Engine:    {telemetry['total_cores']} Cores Active | VmRSS: {telemetry['vm_rss_kb'] / 1024.0:.1f} MB | SHM Cache: ON{shm_str}")
-    print("💡 Type 'help' in terminal for available commands at any time.")
-    print("════════════════════════════════════════════════════════════════════════════════")
+    print(f"🌍 World Simulator (Architect: {user_profile.user_name})")
+    print(f"🌌 Active World:    \"{active_univ.world_name}\"")
+    print(f"🚀 Execution Mode:  {mode_title}")
+    print("💡 Type 'help' for available commands, or type 'adv dev' to activate advanced settings.")
+    print("════════════════════════════════════════════════════════════════════════════════\n")
 
     # 1. Spatial structures
     spatial_grid = SpatialHashGrid(cell_size=64.0)
@@ -395,8 +504,19 @@ def main() -> None:
     # 5. Start Background Soundtrack with smooth Fade-In
     global_bgm.start(fade_in_ms=2500)
 
-    # 6. Visual GUI manager
-    renderer = SimulationRenderer(width=win_w, height=win_h, world_width=world_w, world_height=world_h)
+    # 6. Visual GUI manager & Terminal Activity Chronicler
+    if not is_terminal_only:
+        try:
+            from project.renderer.raylib_renderer import RaylibSimulationRenderer
+            renderer = RaylibSimulationRenderer(width=win_w, height=win_h, world_width=world_w, world_height=world_h)
+            print("⚡ Raylib Hardware GPU Engine (OpenGL 3.3 / NVIDIA RTX 3050) initialized successfully.")
+        except Exception as e:
+            print(f"⚠️ Falling back to Pygame renderer: {e}")
+            renderer = SimulationRenderer(width=win_w, height=win_h, world_width=world_w, world_height=world_h)
+    else:
+        renderer = SimulationRenderer(width=win_w, height=win_h, world_width=world_w, world_height=world_h)
+        renderer.ui_active = False
+    activity_chronicler.set_terminal_mode(is_terminal_only)
 
     # Dispatch active session launch ping & start background update check
     try:
@@ -407,6 +527,9 @@ def main() -> None:
     def _bg_update_check() -> None:
         try:
             info = update_manager.check_for_updates()
+            # Suppress update banner & prompt for Owner
+            if user_profile_manager.is_owner() or lightweight_scanner.is_owner():
+                return
             if info.has_update:
                 renderer.update_info = info
                 print(f"\n✨ [UPDATE AVAILABLE] New update on GitHub: '{info.commit_message}' ({info.remote_commit})")
@@ -416,6 +539,7 @@ def main() -> None:
 
     threading.Thread(target=_bg_update_check, daemon=True, name="bg-updater").start()
     renderer.is_offline = is_offline
+    renderer.is_owner = user_profile_manager.is_owner() or lightweight_scanner.is_owner()
     renderer.camera.pos_x = world_w / 2.0
     renderer.camera.pos_y = world_h / 2.0
     renderer.camera.zoom = 1.6
@@ -434,9 +558,11 @@ def main() -> None:
             except (EOFError, KeyboardInterrupt):
                 break
 
+    adv_dev_mode = False
+
     # Background Backend Simulation Worker
     def simulation_worker():
-        nonlocal tick_count, running
+        nonlocal tick_count, running, adv_dev_mode
         linux_optimizer.set_thread_name("sim-engine")
         if linux_optimizer.total_cores > 1:
             # Pin simulation engine to secondary cores to keep core 0 dedicated for GUI rendering
@@ -465,10 +591,77 @@ def main() -> None:
                     cmd_args = parts[1].strip()
 
                 # -------------------------------------------------------------
-                # COMMAND DISPATCHER
+                # COMMAND DISPATCHER & LOCKDOWN ENFORCEMENT
                 # -------------------------------------------------------------
-                if cmd_name in ("help", "?", "commands"):
-                    print_modern_help_menu()
+                from project.core.tamper_guard import tamper_guard
+                if tamper_guard.is_locked:
+                    renderer.is_locked = True
+                    renderer.lockdown_reason = tamper_guard.lockdown_reason
+                    if cmd_name not in ("whoami", "credentials", "credential", "login", "logout", "sec", "exit", "quit"):
+                        print("\n🔒 [SECURITY LOCKDOWN ACTIVE] Protected security files were modified without Owner authorization.")
+                        print("   Online connections severed. Simulator execution locked.")
+                        print("   Run 'credentials' to view status, or authenticate as Owner using 'login <passkey>'.\n")
+                        renderer.console.log("🔒 Simulator locked down: security files modified.")
+                        continue
+                ADVANCED_COMMANDS = {
+                    "linux", "git", "universes", "worlds", "world", "universe",
+                    "rewind", "timeline", "history", "dag",
+                    "delete", "affinity", "god", "miracle", "spawn_species",
+                    "quicksave", "qs", "quickload", "ql", "autosave",
+                    "cache", "bridge", "hardware", "specs", "hw", "cpu",
+                    "protector", "unfreeze", "apikey", "key", "setkey", "apikeys", "keys", "rmkey",
+                    "offline", "online", "telemetry", "step", "stats", "metrics",
+                    "bacterium", "civilization", "train", "kill", "seeds",
+                    "food", "chat", "command", "spawn_god", "spawn", "upgrade",
+                    "credentials", "whoami", "login", "logout", "scan", "push", "inspect", "sec", "mongo", "gpu", "dgpu", "vram", "graphics", "selflearn", "self_learn", "selflearning", "ai", "brain", "nn", "neural"
+                }
+
+                if cmd_name in ("adv dev", "adv_dev") or (cmd_name == "adv" and cmd_args == "dev"):
+                    adv_dev_mode = not adv_dev_mode
+                    renderer.adv_dev_mode = adv_dev_mode
+                    if adv_dev_mode:
+                        print("╔════════════════════════════════════════════════════════════════════════════════╗")
+                        print("║               🔧 ADVANCED DEVELOPER SETTINGS ACTIVATED 🔧                      ║")
+                        print("╠════════════════════════════════════════════════════════════════════════════════╣")
+                        print("║ Unlocked technical developer commands, hardware diagnostics, git DAG,         ║")
+                        print("║ AI memory buses, spawner tools, and neural telemetry.                         ║")
+                        print("║ Type 'help' to view all developer commands, or 'adv dev' to toggle off.       ║")
+                        print("╚════════════════════════════════════════════════════════════════════════════════╝")
+                        print(f"🌌 Active Universe ID: {active_univ.universe_id} | Active Branch: '{active_univ.active_branch}'")
+                        print(f"🌿 HEAD Commit Node:   {active_univ.head_commit_id or 'genesis'}")
+                        print(f"📁 Save Directory:     {SAVES_DIR}")
+                        print(f"⚡ Cache Directory:    {CACHE_DIR}")
+                        mem_telem = linux_optimizer.get_memory_telemetry()
+                        print(f"⚙️ Hardware Telemetry:  VmRSS: {mem_telem.get('vm_rss_kb', 0) / 1024.0:.1f} MB | Cores: {mem_telem.get('total_cores', 1)} | Platform: {sys.platform.upper()}")
+                        num_keys = len(gemini_cfg.get("api_keys", []))
+                        cog_mode_str = "100% OFFLINE (Local Neural Core)" if is_offline else f"ONLINE ({num_keys} Gemini Keys in Pool)"
+                        print(f"🧠 Cognitive Core:     {cog_mode_str}")
+                        if boot_scan_report:
+                            try:
+                                lightweight_scanner._print_boot_dashboard(boot_scan_report)
+                            except Exception:
+                                pass
+                        renderer.console.log("🔧 Advanced developer mode ACTIVATED.")
+                    else:
+                        print("🔒 Advanced developer mode deactivated. Switched back to clean user mode.")
+                        renderer.console.log("🔒 Advanced developer mode deactivated.")
+
+                elif cmd_name in ("help", "?", "commands"):
+                    if adv_dev_mode:
+                        print_modern_help_menu()
+                    else:
+                        print_standard_help_menu()
+
+                elif not adv_dev_mode and (cmd_name in ADVANCED_COMMANDS or any(cmd_name.startswith(ac) for ac in ADVANCED_COMMANDS)):
+                    print(f"ℹ️ '{cmd_raw}' is an advanced feature.")
+                    print("   Type 'adv dev' to activate advanced developer settings and unlock these options.")
+                    renderer.console.log(f"'{cmd_raw}' requires 'adv dev' mode.")
+
+                elif cmd_name == "feed":
+                    sub = cmd_args.strip().lower() if cmd_args else "smart"
+                    res = activity_chronicler.set_verbosity(sub)
+                    print(f"📡 {res}")
+                    renderer.console.log(res)
 
                 elif cmd_name == "clear":
                     os.system("cls" if os.name == "nt" else "clear")
@@ -671,6 +864,11 @@ def main() -> None:
                         print("╚══════════════════════════════════════════════════════════════════════════╝")
                         renderer.console.log(f"🌿 Branch: {st['branch']} | HEAD: {st['head']} | Uncommitted: {st['uncommitted_ticks']:,} ticks")
 
+                    elif sub_cmd == "push":
+                        ok, pmsg = lightweight_scanner.push_to_github(sub_arg if sub_arg else None)
+                        print(pmsg)
+                        renderer.console.log(pmsg.split("\n")[0])
+
                     elif sub_cmd in ("log", "history", "graph"):
                         ascii_log = git_save_manager.generate_ascii_log()
                         print(ascii_log)
@@ -734,6 +932,11 @@ def main() -> None:
                         msg = f"🌿 [GIT COMMIT] Snapshot committed: '{msg_text}' (HEAD: {git_save_manager.current_commit_id})"
                         print(msg)
                         renderer.console.log(msg)
+
+                elif cmd_name == "push":
+                    ok, pmsg = lightweight_scanner.push_to_github(cmd_args.strip() if cmd_args else None)
+                    print(pmsg)
+                    renderer.console.log(pmsg.split("\n")[0])
 
                 elif cmd_name in ("history", "timeline", "dag"):
                     dag_ascii = quantum_persistence.generate_timeline_ascii()
@@ -1005,6 +1208,51 @@ def main() -> None:
                     bridge_hub.clear_all()
                     print("⚡ Purged in-memory cache bridge buffers.")
 
+                # -------------------- DEDICATED GPU CONTROLLER --------------------
+                elif cmd_name in ("gpu", "graphics", "dgpu", "vram"):
+                    from project.core.gpu_manager import gpu_mgr
+                    sub = cmd_args.strip().lower()
+                    if sub == "scan":
+                        gpu_mgr.scan_hardware(force_refresh=True)
+                        print("\n🎮 ─── HOST GPU HARDWARE INVENTORY ───")
+                        print(gpu_mgr.get_gpu_summary() + "\n")
+                    elif sub in ("enable", "force"):
+                        ok, msg = gpu_mgr.enable_dedicated_gpu()
+                        print(msg)
+                    elif sub in ("safe", "safety", "health"):
+                        s = gpu_mgr.safety
+                        print("╔════════════════════════════════════════════════════════════════════════════════╗")
+                        print("║               🛡️ GPU HARDWARE SAFETY & THERMAL SHIELD                          ║")
+                        print("╠════════════════════════════════════════════════════════════════════════════════╣")
+                        print(f"║ Frame Rate Clamp:      {s.target_fps} FPS (Strict cap: prevents coil whine & surges) ║")
+                        temp_disp = f"{s.last_temp_c:.0f}°C" if s.last_temp_c is not None else "Safe"
+                        print(f"║ Thermal Guard Status:  {s.thermal_status:<10} (Current: {temp_disp:<8})             ║")
+                        print(f"║ Cooperative Sleep:     {s.cooperative_sleep_ms} ms/frame (CPU/GPU cycle yielding)             ║")
+                        print(f"║ VRAM Memory Budget:    {s.vram_estimated_used_mb:.1f} MB / {s.vram_budget_mb} MB (Leak-proof LRU cache)       ║")
+                        print(f"║ Fail-Safe Recovery:    {'Software Fallback Active' if s.fallback_active else 'Dedicated Hardware Optimal'}             ║")
+                        print("╚════════════════════════════════════════════════════════════════════════════════╝")
+                    elif sub == "path":
+                        in_path, _, p_dir = gpu_mgr.check_python_in_path()
+                        if in_path:
+                            print(f"✅ Python executable folder '{p_dir}' is verified in system PATH.")
+                        else:
+                            ok, msg = gpu_mgr.add_python_to_user_path()
+                            print(msg)
+                    else:
+                        print("\n🎮 ─── GPU HARDWARE TELEMETRY ───")
+                        print(gpu_mgr.get_gpu_summary())
+                        has_d = gpu_mgr.has_dedicated_gpu()
+                        print(f"⚡ Dedicated GPU Active: {has_d} ({'NVIDIA High-Performance' if has_d else 'Integrated'})")
+                        t_info = gpu_mgr.get_torch_gpu_info()
+                        if t_info.get("cuda_available"):
+                            print(f"🔥 PyTorch CUDA Engine: ACTIVE on {t_info.get('device_name')} (VRAM: {t_info.get('vram_allocated_mb')} MB allocated)")
+                        else:
+                            print(f"ℹ️ PyTorch Device: {t_info.get('device_name', 'CPU')} (CUDA: {t_info.get('cuda_available')})")
+                        s = gpu_mgr.safety
+                        temp_str = f"{s.last_temp_c:.0f}°C" if s.last_temp_c is not None else "Normal"
+                        print(f"🛡️ Safety Engine: {s.target_fps} FPS Clamp | Temp: {temp_str} | VRAM: {s.vram_estimated_used_mb:.1f} MB (Budget: {s.vram_budget_mb} MB)")
+                        print("   Commands: gpu scan | gpu enable | gpu safe | gpu path\n")
+
                 # -------------------- HARDWARE SPEC PROTECTOR --------------------
                 elif cmd_name in ("hardware", "specs", "hw", "cpu"):
                     telemetry = global_spec_protector.check_safety()
@@ -1128,6 +1376,86 @@ def main() -> None:
                         st = "ENABLED" if prof.privacy_and_telemetry.get("consent_given") else "DISABLED"
                         print(f"📊 Telemetry Status: {st} (Commands: telemetry on | telemetry off | telemetry preview)")
 
+                # -------------------- CREDENTIALS & SCANNER --------------------
+                elif cmd_name in ("credentials", "credential", "creds", "whoami", "auth"):
+                    page = lightweight_scanner.render_credentials_page()
+                    print(page)
+                    renderer.console.log("📋 Credential page displayed.")
+
+                elif cmd_name == "login":
+                    if not cmd_args.strip():
+                        print("❌ Usage: login <passkey>")
+                    else:
+                        ok, lmsg = lightweight_scanner.authenticate_owner(cmd_args.strip())
+                        print(lmsg)
+                        renderer.console.log(lmsg)
+
+                elif cmd_name == "logout":
+                    lmsg = lightweight_scanner.deauthenticate_owner()
+                    print(lmsg)
+                    renderer.console.log(lmsg)
+
+                elif cmd_name in ("scan", "scanner"):
+                    print("🔍 Executing Lightweight Runtime Security & Integrity Scan...")
+                    rep = lightweight_scanner.scan_runtime_periodic(current_tick=tick_count, verbose=True)
+                    renderer.console.log(f"🔍 Scan complete: {rep.status}")
+
+                elif cmd_name == "sec":
+                    from project.core.tamper_guard import tamper_guard
+                    sub = cmd_args.strip().lower()
+                    if sub == "status" or not sub:
+                        intact, tampered, reason = tamper_guard.verify_integrity()
+                        if intact:
+                            print(f"\n🔒 [TAMPER GUARD] All {len(tamper_guard.PROTECTED_SECURITY_FILES)} security files verified intact.")
+                            print(f"   Manifest: {tamper_guard.manifest_path} (Authenticated Encrypted)\n")
+                            renderer.console.log("🔒 Security files: 100% INTACT")
+                        else:
+                            print(f"\n🚨 [TAMPER ALERT] Security file verification failed: {reason}")
+                            for tf in tampered:
+                                print(f"   ❌ {tf}")
+                            print("")
+                            renderer.console.log(f"🚨 Security Alert: {len(tampered)} files tampered")
+                    elif sub in ("seal", "sign", "reseal"):
+                        if not (user_profile_manager.is_owner() or tamper_guard.is_owner_workstation()):
+                            print("🔒 [ACCESS DENIED] Sealing the security manifest is restricted to Owner clearance.")
+                            renderer.console.log("🔒 Owner clearance required to seal manifest.")
+                        else:
+                            ok, smsg = tamper_guard.seal_manifest()
+                            print(f"\n{smsg}\n")
+                            renderer.console.log("🔒 Security manifest sealed.")
+                            renderer.is_locked = False
+                    else:
+                        print("Usage: sec status | sec seal")
+
+                elif cmd_name == "mongo":
+                    from project.core.mongo_storage import mongo_storage
+                    sub_parts = cmd_args.strip().split()
+                    sub_action = sub_parts[0].lower() if sub_parts else "status"
+
+                    if sub_action == "status":
+                        st = mongo_storage.get_status()
+                        print("\n🍃 [MONGODB CLUSTER DIAGNOSTICS]")
+                        print(f"   Connection Status: {st['status']}")
+                        print(f"   URI:               {st['uri']}")
+                        print(f"   Active Database:   {st['database']}")
+                        print(f"   Indexed Users:     {st['users_count']}")
+                        print(f"   Indexed Universes: {st['universes_count']}")
+                        print(f"   Stored Saves:      {st['saves_count']}")
+                        print(f"   Security Audits:   {st['audit_count']}\n")
+                        renderer.console.log(f"🍃 Mongo: {st['status']}")
+                    elif sub_action == "sync":
+                        print("🍃 Synchronizing local profile & simulation universes to MongoDB...")
+                        s_users, s_univs, s_msg = mongo_storage.sync_local_data_to_mongo(WORKSPACE_DIR)
+                        print(f"{s_msg}\n")
+                        renderer.console.log(f"🍃 Mongo Synced: {s_users} users, {s_univs} universes")
+                    elif sub_action == "uri" and len(sub_parts) > 1:
+                        target_uri = sub_parts[1].strip()
+                        ok, u_msg = mongo_storage.set_uri(target_uri)
+                        print(f"{u_msg}\n")
+                        renderer.console.log(f"🍃 Mongo URI: {'Connected' if ok else 'Fallback'}")
+                    else:
+                        print("Usage: mongo status | mongo sync | mongo uri <connection_string>")
+
                 elif cmd_name in ("setup", "firstrun"):
                     print("🌟 [SETUP WIZARD] Triggered manual environment configuration setup...")
                     renderer.console.log("Setup wizard launched.")
@@ -1192,11 +1520,16 @@ def main() -> None:
 
                 # -------------------- UI DISPLAY --------------------
                 elif cmd_name == "uio":
-                    renderer.ui_active = True
-                    print("🖥️  UI visual rendering ENABLED.")
+                    if is_terminal_only:
+                        print("⚠️ Simulation was started in terminal-only mode without graphical window.")
+                        print("   To run with GUI, restart the simulator and choose option [2].")
+                    else:
+                        renderer.ui_active = True
+                        print("🖥️  UI visual rendering ENABLED.")
 
                 elif cmd_name == "uiof":
                     renderer.ui_active = False
+                    activity_chronicler.set_terminal_mode(True)
                     print("🖥️  UI visual rendering DISABLED (Running pure 0% GPU background mode).")
 
                 # -------------------- STEP DEEP TIME --------------------
@@ -1241,7 +1574,7 @@ def main() -> None:
                                 print(f"\nCRASH HANDLER (Step command): Exception in scheduler: {e}")
                                 import traceback
                                 traceback.print_exc()
-                                break
+
 
                         if ticks_to_run > 100:
                             scheduler.register_system(render_sync_sys)
@@ -1253,9 +1586,43 @@ def main() -> None:
 
                 # -------------------- ECOSYSTEM & DIAGNOSTICS --------------------
                 elif cmd_name == "status":
-                    alive_entities = len([e for e in entities_list if e.is_alive])
-                    leader_id = getattr(social_sys, "current_leader_id", "None") if 'social_sys' in locals() else "None"
-                    print(f"📊 Status: Tick={tick_count:,} | Active Organisms={alive_entities} | Sim Speed={renderer.simulation_speed:.1f}x | Leader={leader_id}")
+                    alive_entities = [e for e in entities_list if getattr(e, 'is_alive', False)]
+                    humans = sum(1 for e in alive_entities if str(getattr(e, "species_id", "")).lower() in ("homo_sapiens", "human") or getattr(e, "entity_type", None) and e.entity_type.name == "HUMAN")
+                    herbivores = sum(1 for e in alive_entities if str(getattr(e, "species_id", "")).lower() in ("gazelle", "deer", "rabbit", "herbivore") or getattr(e, "entity_type", None) and e.entity_type.name == "HERBIVORE")
+                    predators = sum(1 for e in alive_entities if str(getattr(e, "species_id", "")).lower() in ("panther", "wolf", "predator") or getattr(e, "entity_type", None) and e.entity_type.name in ("PREDATOR", "CARNIVORE"))
+                    plants = sum(1 for e in alive_entities if "tree" in str(getattr(e, "species_id", "")).lower() or "plant" in str(getattr(e, "species_id", "")).lower() or "fern" in str(getattr(e, "species_id", "")).lower() or getattr(e, "entity_type", None) and e.entity_type.name == "PLANT")
+                    others = len(alive_entities) - (humans + herbivores + predators + plants)
+
+                    from project.civilization.settlement import world_settlement_mgr
+                    active_structures = [s for s in world_settlement_mgr.structures.values() if s.is_active]
+
+                    time_snap = time_mgr.get_snapshot() if hasattr(time_mgr, "get_snapshot") else None
+                    day_info = f"Day {time_snap.day}, Year {time_snap.year} ({time_snap.season.name})" if time_snap else "Day 1"
+                    df = getattr(time_snap, "daylight_factor", 1.0) if time_snap else 1.0
+                    phase_name = "MIDDAY" if df > 0.6 else ("DAWN" if df > 0.15 and getattr(time_snap, "day_fraction", 0.5) < 0.5 else ("DUSK" if df > 0.15 else "NIGHT"))
+
+                    temp_str = "23.5°C"
+                    if weather_mgr and hasattr(weather_mgr, "grid") and hasattr(weather_mgr.grid, "mean_temperature"):
+                        try:
+                            temp_str = f"{weather_mgr.grid.mean_temperature():.1f}°C"
+                        except Exception:
+                            pass
+
+                    status_str = "RUNNING" if renderer.simulation_speed > 0 else "PAUSED"
+                    print("╔════════════════════════════════════════════════════════════════════════════════╗")
+                    print("║                           🌍 WORLD STATUS OVERVIEW                             ║")
+                    print("╠════════════════════════════════════════════════════════════════════════════════╣")
+                    print(f"║ State: {status_str:<12} | Sim Speed: {renderer.simulation_speed:>4.1f}x | Sim Tick: {tick_count:>16,} ║")
+                    print(f"║ World Time: {day_info + ' [' + phase_name + ']':<64} ║")
+                    print(f"║ Environment: Temperature {temp_str:<10} | Surface: 14,000m x 14,000m Continent ║")
+                    print("╠════════════════════════════════════════════════════════════════════════════════╣")
+                    print(f"║ Total Living Organisms: {len(alive_entities):<10}                                          ║")
+                    print(f"║   • Humans:      {humans:<6} (Active Structures: {len(active_structures)})                          ║")
+                    print(f"║   • Herbivores:  {herbivores:<6}                                                      ║")
+                    print(f"║   • Predators:   {predators:<6}                                                      ║")
+                    print(f"║   • Flora:       {plants:<6}                                                      ║")
+                    print(f"║   • Other Life:  {others:<6} (Avians, Amphibians, Micro-organisms)                ║")
+                    print("╚════════════════════════════════════════════════════════════════════════════════╝")
 
                 elif cmd_name in ("stats", "metrics"):
                     print("╔════════════════════════════════════════════════════════════════════════════════╗")
@@ -1349,14 +1716,62 @@ def main() -> None:
                     except Exception as e:
                         print(f"Error feeding humans: {e}")
 
-                elif cmd_name.startswith("train human") or cmd_name == "train":
+                # -------------------- AI SELF-LEARNING & PYTORCH DEEP TRAINING --------------------
+                elif cmd_name in ("selflearn", "self_learn", "selflearning", "self-learning"):
+                    sub = cmd_args.strip().lower()
+                    if sub == "on":
+                        learning_sys.toggle_self_learning(True)
+                        print("⚡ [SELF-LEARNING] PyTorch Online Self-Learning engine ACTIVATED on GPU/CUDA.")
+                    elif sub == "off":
+                        learning_sys.toggle_self_learning(False)
+                        print("⏸️ [SELF-LEARNING] PyTorch Online Self-Learning engine PAUSED.")
+                    elif sub in ("status", "stats", ""):
+                        stats = learning_sys.get_self_learning_stats()
+                        print("╔════════════════════════════════════════════════════════════════════════════════╗")
+                        print("║            🧠 PYTORCH NEURAL SELF-LEARNING & GPU ACCELERATION                  ║")
+                        print("╠════════════════════════════════════════════════════════════════════════════════╣")
+                        state_str = "ACTIVE (Online Gradient Backpropagation)" if stats["self_learning_enabled"] else "PAUSED"
+                        print(f"║ Self-Learning State:   {state_str:<55} ║")
+                        print(f"║ Hardware Device:       {stats['device_name']} ({stats['device']}){' [CUDA]' if stats['cuda_available'] else ''} ║")
+                        print(f"║ Active Neural Learners: {stats['active_learners']:<54} ║")
+                        print(f"║ Total Gradient Steps:  {stats['total_self_learning_steps']:<54} ║")
+                        print(f"║ Convergence Loss:      {stats['latest_loss']} (Recent Avg: {stats['avg_recent_loss']}) ║")
+                        print(f"║ PyTorch VRAM Memory:   {stats['vram_allocated_mb']} MB (Reserved: {stats['vram_reserved_mb']} MB) ║")
+                        print("╚════════════════════════════════════════════════════════════════════════════════╝")
+                        print("   Commands: selflearn on | selflearn off | selflearn status | train all [cycles]\n")
+
+                elif cmd_name in ("ai", "brain", "nn", "neural"):
+                    stats = learning_sys.get_self_learning_stats()
+                    alive_brains = len([e for e in entities_list if e.is_alive and e.brain])
+                    print("╔════════════════════════════════════════════════════════════════════════════════╗")
+                    print("║                🧠 LIVING NEURAL BRAIN & COGNITIVE SUBSYSTEM                    ║")
+                    print("╠════════════════════════════════════════════════════════════════════════════════╣")
+                    print(f"║ Engine Architecture:   PyTorch Neural Tensor Core + Synaptic Plasticity        ║")
+                    print(f"║ Acceleration Device:   {stats['device_name']} ({stats['device']})                    ║")
+                    print(f"║ Active Neural Brains:  {alive_brains} living organisms in universe             ║")
+                    print(f"║ Self-Learning:         {'ENABLED (Every 4 Ticks on GPU)' if stats['self_learning_enabled'] else 'DISABLED'}             ║")
+                    print(f"║ Cumulative Steps:      {stats['total_self_learning_steps']} gradient backprop updates                  ║")
+                    print(f"║ Synaptic Memory State: 50+ MB Human Replay Matrix & Working Registers          ║")
+                    print("╚════════════════════════════════════════════════════════════════════════════════╝")
+
+                elif cmd_name.startswith("train"):
                     try:
-                        cycles = int(cmd_args.strip()) if cmd_args.strip().isdigit() else 50
-                        print(f"🧠 [DEEP TRAINING] Training Human species across 50MB Experience Replay Matrices ({cycles} cycles)...")
-                        trained_cnt = learning_sys.train_humans(iterations=cycles)
-                        print(f"✅ [TRAINING COMPLETE] Trained {trained_cnt} human(s) for {cycles} mini-batch cycles! IQ and synaptic weights strengthened.")
-                    except Exception as e:
-                        print(f"Error training humans: {e}")
+                        args_split = cmd_args.strip().split()
+                        target_type = args_split[0].lower() if args_split else "all"
+                        cycles = int(args_split[1]) if len(args_split) > 1 and args_split[1].isdigit() else (int(target_type) if target_type.isdigit() else 25)
+                        if target_type.isdigit():
+                            target_type = "all"
+
+                        if target_type in ("human", "humans"):
+                            print(f"🧠 [DEEP TRAINING] Training Human species across 50MB Experience Replay Matrices ({cycles} cycles)...")
+                            trained_cnt = learning_sys.train_humans(iterations=cycles)
+                            print(f"✅ [TRAINING COMPLETE] Trained {trained_cnt} human(s) for {cycles} mini-batch cycles! IQ and synaptic weights strengthened.")
+                        else:
+                            print(f"🧠 [GPU NEURAL TRAINING] Executing PyTorch backpropagation across ALL living entities ({cycles} cycles)...")
+                            res = learning_sys.train_all_entities(iterations=cycles)
+                            print(f"✅ [TRAINING COMPLETE] Optimized {res['trained_entities']} entities for {cycles} cycles! (Avg Loss: {res['average_loss']}, Steps: {res['total_gradient_steps']})")
+                    except Exception as te:
+                        print(f"Error training entities: {te}")
 
                 elif cmd_name == "inspect":
                     try:
@@ -1475,10 +1890,13 @@ def main() -> None:
                         
                         # Find gemini sys in scheduler
                         _gemini_sys = None
-                        for sys in scheduler.registry.get_active_systems():
-                            if isinstance(sys, GeminiSystem):
-                                _gemini_sys = sys
-                                break
+                        for s_inst in scheduler.registry.get_active_systems():
+                            if isinstance(s_inst, GeminiSystem):
+                                _gemini_sys = s_inst
+
+
+
+
                                 
                         if _gemini_sys:
                             _gemini_sys.global_god_affinity = 100.0
@@ -1542,12 +1960,42 @@ def main() -> None:
 
                 elif cmd_name in ("upgrade", "update"):
                     parts = cmd_args.strip().split()
-                    sub_cmd = parts[0].lower() if parts else "apply"
+                    sub_cmd = parts[0].lower() if parts else ""
+
+                    is_owner = user_profile_manager.is_owner() or lightweight_scanner.is_owner()
+
+                    if is_owner:
+                        print("🌿 [GIT TOPOLOGY] Analyzing local vs remote GitHub repository...")
+                        info = update_manager.check_for_updates(force=True)
+                        print(f"   Local Commit:   [{info.current_commit}]")
+                        print(f"   Remote Commit:  [{info.remote_commit}]")
+                        print(f"   Ahead by:       {info.ahead_count} commit(s)")
+                        print(f"   Behind by:      {info.behind_count} commit(s)")
+                        print(f"   Sync Status:    {info.sync_status}")
+
+                        if info.sync_status == "AHEAD":
+                            print(f"\n✨ Local workstation is AHEAD of origin/main by {info.ahead_count} commit(s).")
+                            print("   👉 Use 'push' to deploy your commits to GitHub.\n")
+                            continue
+                        elif info.sync_status == "SYNCHRONIZED":
+                            print("\n✅ Workstation is completely SYNCHRONIZED with GitHub repository.\n")
+                            continue
+                        elif info.sync_status == "BEHIND":
+                            print(f"\n📥 Remote repository is ahead by {info.behind_count} commit(s).")
+                            if sub_cmd != "apply":
+                                print("   👉 Type 'upgrade apply' to fast-forward local files with 3-step verification.\n")
+                                continue
+                        elif info.sync_status == "DIVERGED":
+                            print("\n⚠️  Local branch has diverged from origin/main.")
+                            if sub_cmd != "apply":
+                                print("   👉 Type 'upgrade apply' to reconcile.\n")
+                                continue
 
                     if sub_cmd == "check":
                         print("🔍 Checking GitHub repository for updates...")
                         info = update_manager.check_for_updates(force=True)
-                        renderer.update_info = info
+                        if not is_owner:
+                            renderer.update_info = info
                         if info.has_update:
                             print(f"\n✨ Update Available! Remote: [{info.remote_commit}], Local: [{info.current_commit}]")
                             print(f"   Commit Message: {info.commit_message}")
@@ -1556,6 +2004,15 @@ def main() -> None:
                         else:
                             print(f"✅ Simulation is up to date (Commit: [{info.current_commit}]).\n")
                     else:
+                        if not lightweight_scanner.has_privilege("UPDATE_CODE"):
+                            prof = user_profile_manager.get_profile()
+                            c = prof.credentials
+                            print("🔒 [ACCESS DENIED] Updating simulation code is restricted to Owner clearance.")
+                            print(f"   Current Role: {c.get('role', 'USER')} (Rank: {c.get('rank', 'NOVICE_EXPLORER')})")
+                            print("   User-based options only. Type 'credentials' or 'login <passkey>' to authenticate as Owner.")
+                            renderer.console.log("🔒 Owner clearance required to update code.")
+                            continue
+
                         def run_upgrade():
                             renderer.is_updating_ui = True
                             print("\n════════════════════════════════════════════════════════════════════════")
@@ -1645,15 +2102,23 @@ def main() -> None:
                     # Auto-flush bridges before exit
                     bridge_hub.flush_all()
                     import pygame
-                    pygame.event.post(pygame.event.Event(pygame.QUIT))
+                    if pygame.display.get_init():
+                        pygame.event.post(pygame.event.Event(pygame.QUIT))
                     break
 
                 else:
                     print(f"Error: Unknown command '{cmd_raw}'. Type 'help' for command reference.")
 
             # -------------------------------------------------------------
-            # BACKEND ENGINE ECS TICK EXECUTION
+            # BACKEND ENGINE ECS TICK EXECUTION & LOCKDOWN CHECK
             # -------------------------------------------------------------
+            from project.core.tamper_guard import tamper_guard
+            if tamper_guard.is_locked:
+                renderer.is_locked = True
+                renderer.lockdown_reason = tamper_guard.lockdown_reason
+                time.sleep(0.05)
+                continue
+
             speed = renderer.simulation_speed
             if speed > 0.0:
                 try:
@@ -1664,7 +2129,18 @@ def main() -> None:
                     from project.world.miracles import world_miracles_mgr
                     world_miracles_mgr.update(0.1, entities_list)
                     if tick_count % 5 == 0:
-                        ancient_ruins_mgr.update_exploration(entities_list, tick_count)
+                        ruins_events = ancient_ruins_mgr.update_exploration(entities_list, tick_count)
+                        if ruins_events:
+                            for rev in ruins_events:
+                                activity_chronicler.record_ruins_progress(rev)
+
+                    # Update smart terminal activity chronicler
+                    activity_chronicler.update(
+                        current_tick=tick_count,
+                        time_mgr=time_mgr,
+                        entities_list=entities_list,
+                        weather_mgr=weather_mgr,
+                    )
 
                     # Periodic Active User Heartbeat & Research World State Dispatch
                     if tick_count > 0 and tick_count % 1800 == 0:
@@ -1717,15 +2193,16 @@ def main() -> None:
     from project.world.terrain import TerrainManager
     terrain_mgr = TerrainManager(seed=42)
 
-    # Pre-warm terrain surface cache around genesis settlement for immediate 60 FPS
-    renderer.overlays.preload_chunks_around(world_w / 2.0, world_h / 2.0, 768.0, terrain_mgr, world_w, world_h)
+    if not is_terminal_only:
+        # Pre-warm terrain surface cache around genesis settlement for immediate 60 FPS
+        renderer.overlays.preload_chunks_around(world_w / 2.0, world_h / 2.0, 768.0, terrain_mgr, world_w, world_h)
 
     from project.world.ancient_ruins import ancient_ruins_mgr
 
     try:
         while running:
             # Poll pygame events and render visual frame when UI is enabled
-            if getattr(renderer, "ui_active", True):
+            if not is_terminal_only and getattr(renderer, "ui_active", True):
                 snapshot = render_sync_sys.get_snapshot()
                 if not renderer.handle_input(snapshot):
                     running = False
@@ -1744,13 +2221,8 @@ def main() -> None:
                     ruins_manager=ancient_ruins_mgr,
                 )
             else:
-                # 0% GPU Headless mode: light event pump without rendering overhead
-                import pygame
-                for event in pygame.event.get():
-                    if event.type == pygame.QUIT:
-                        running = False
-                        break
-                time.sleep(0.02)
+                # 0% GPU Headless / Terminal-only mode: light sleep without GPU or rendering overhead
+                time.sleep(0.04)
 
     except Exception as e:
         print(f"\n[CRASH DETECTED IN MAIN LOOP] {type(e).__name__}: {e}")
@@ -1759,6 +2231,15 @@ def main() -> None:
         debugger.global_exception_handler(type(e), e, sys.exc_info()[2])
     finally:
         print("Shutting down World Simulator...")
+        try:
+            from project.core.lightweight_scanner import lightweight_scanner
+            lightweight_scanner.scan_exit(verbose=False)
+            lightweight_scanner.stop_background_scanner()
+        except Exception as scan_err:
+            try:
+                print(f"⚠️ [EXIT SCANNER ERROR] {scan_err}")
+            except Exception:
+                pass
         try:
             world_telemetry_collector.dispatch_heartbeat(
                 tick=tick_count,

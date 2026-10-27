@@ -129,6 +129,11 @@ class BirthSystem:
             if child is not None:
                 child.birth_tick = context.tick
                 self._entities_list.append(child)
+                try:
+                    from project.core.activity_chronicler import activity_chronicler
+                    activity_chronicler.record_birth(getattr(child, "species_id", ent_type.name), ent_type.name)
+                except Exception:
+                    pass
 
         self._pending_births.clear()
 

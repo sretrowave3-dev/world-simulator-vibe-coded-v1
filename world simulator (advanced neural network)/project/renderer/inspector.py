@@ -46,7 +46,6 @@ class Inspector:
         )
 
         if not selected_entity_snapshot:
-            # Draw placeholder message
             ph_surface = get_cached_text(font, "Click an entity to inspect", (120, 120, 140))
             surface.blit(ph_surface, (self.rect.x + 15, self.rect.y + 50))
             return
@@ -64,7 +63,7 @@ class Inspector:
         dop = selected_entity_snapshot.get("dopamine", 0.0)
         fear = selected_entity_snapshot.get("fear", 0.0)
         cur = selected_entity_snapshot.get("curiosity", 0.0)
-        
+
         labels = [
             f"ID: {eid[:18]}",
             f"Type: {etype} | Mode: {act}",
@@ -97,11 +96,11 @@ class Inspector:
                 val_clamped = max(0.0, min(1.0, float(value)))
                 lbl_surface = get_cached_text(font, f"{need_name.capitalize()}: {val_clamped * 100.0:.1f}%", text_color)
                 surface.blit(lbl_surface, (self.rect.x + 15, curr_y))
-                
+
                 # Render need progress bar with dynamic color gradient
                 bar_rect = pygame.Rect(self.rect.x + 15, curr_y + 16, self.rect.width - 30, 5)
                 pygame.draw.rect(surface, (40, 40, 50), bar_rect)
-                
+
                 fill_w = int((self.rect.width - 30) * val_clamped)
                 if val_clamped < 0.35:
                     fill_color = (60, 210, 80)
@@ -119,28 +118,28 @@ class Inspector:
         if ai_metrics and isinstance(ai_metrics, dict):
             pygame.draw.line(surface, (80, 80, 100), (self.rect.x + 10, curr_y + 6), (self.rect.x + self.rect.width - 10, curr_y + 6), 1)
             curr_y += 14
-            
+
             header_surface = get_cached_text(font, "Psychological AI Matrix:", (0, 255, 255))
             surface.blit(header_surface, (self.rect.x + 10, curr_y))
             curr_y += 20
-            
+
             ai_score = ai_metrics.get("intelligence_score", 0.0)
             lbl = get_cached_text(font, f"Cognitive Potential: {ai_score:.1f}", text_color)
             surface.blit(lbl, (self.rect.x + 15, curr_y))
             curr_y += 18
-            
+
             plasticity = ai_metrics.get("plasticity", 1.0)
             lbl = get_cached_text(font, f"Synaptic Plasticity: {plasticity:.2f}", text_color)
             surface.blit(lbl, (self.rect.x + 15, curr_y))
             curr_y += 18
-            
+
             # Working Memory Vector Visualization
             mem = ai_metrics.get("working_memory", [])
             if mem:
                 lbl = get_cached_text(font, "Recurrent Memory:", text_color)
                 surface.blit(lbl, (self.rect.x + 15, curr_y))
                 curr_y += 18
-                
+
                 mem_w = (self.rect.width - 40) // max(1, len(mem))
                 for i, val in enumerate(mem):
                     cell_rect = pygame.Rect(self.rect.x + 15 + i * (mem_w + 2), curr_y, mem_w, 12)
@@ -148,7 +147,18 @@ class Inspector:
                     pygame.draw.rect(surface, (intensity, intensity, 255 - intensity), cell_rect)
                     pygame.draw.rect(surface, (100, 100, 100), cell_rect, 1)
                 curr_y += 20
-            
+
             reward = ai_metrics.get("last_reward", 0.0)
             lbl = get_cached_text(font, f"Hebbian Signal: {reward:+.2f}", text_color)
+            surface.blit(lbl, (self.rect.x + 15, curr_y))
+            curr_y += 18
+
+            dev_str = str(ai_metrics.get("device", "cpu")).upper()
+            steps = ai_metrics.get("total_learning_steps", 0)
+            loss_val = ai_metrics.get("latest_loss", 0.0)
+            lbl = get_cached_text(font, f"Neural Device: {dev_str}", (100, 255, 100) if "CUDA" in dev_str else (180, 180, 220))
+            surface.blit(lbl, (self.rect.x + 15, curr_y))
+            curr_y += 18
+
+            lbl = get_cached_text(font, f"Self-Learn: {steps} steps (L: {loss_val:.4f})", (0, 255, 200))
             surface.blit(lbl, (self.rect.x + 15, curr_y))

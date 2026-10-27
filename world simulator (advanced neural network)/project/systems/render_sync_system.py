@@ -50,7 +50,7 @@ class RenderSyncSystem:
         for e in self._entities_list:
             if not e.is_alive:
                 continue
-                
+
             needs_obj = e.custom_data.get("needs")
             if needs_obj and hasattr(needs_obj, "to_dict"):
                 needs_dict = needs_obj.to_dict()
@@ -97,15 +97,14 @@ class RenderSyncSystem:
                 "needs": needs_dict,
                 "ai_metrics": None
             }
-            
+
             # Deep clone active psychological parameters for Inspector UI rendering
             if e.brain:
-                # Calculate active intelligence score based on genetics and current energy
                 age = getattr(e, 'age_ticks', 0)
                 energy = getattr(e, 'energy', 10.0)
                 brain_mut = getattr(e, 'genes', {}).get("brain_plasticity", 1.0)
                 ai_score = (age * 0.1) + (energy * 0.5) * brain_mut
-                
+
                 # Direct zero-copy references for high-speed 60FPS synchronization
                 snap_data["ai_metrics"] = {
                     "intelligence_score": ai_score,
@@ -115,28 +114,31 @@ class RenderSyncSystem:
                     "net_sizes": list(e.brain.layer_sizes),
                     "net_outputs": e.brain.layer_outputs or [],
                     "net_weights": e.brain.weights,
+                    "total_learning_steps": getattr(e.brain, "total_learning_steps", 0),
+                    "latest_loss": getattr(e.brain, "latest_loss", 0.0),
+                    "device": str(getattr(e.brain, "device", "cpu")),
                 }
-                
+
             new_snap.append(snap_data)
-        
+
         with self.snapshot_lock:
             self._render_snapshot = new_snap
-            
+
         import time
         from project.core.memory_cache import frontend_repeater
-        
+
         # Save snap into JSON RAM Cache for instantaneous decoupled access
         frontend_repeater.push_backend(self._render_snapshot)
 
     def get_snapshot(self) -> List[Dict]:
         """Returns the synchronized state for visual rendering."""
         from project.core.memory_cache import frontend_repeater
-        
+
         # Pull from JSON RAM repeater with zero ping
         cached = frontend_repeater.pull_frontend()
         if cached:
             return cached
-            
+
         with self.snapshot_lock:
             return self._render_snapshot.copy()
 

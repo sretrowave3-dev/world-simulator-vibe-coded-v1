@@ -64,6 +64,11 @@ class DeathSystem:
             # Remove from active list
             if entity in self._entities_list:
                 self._entities_list.remove(entity)
+                try:
+                    from project.core.activity_chronicler import activity_chronicler
+                    activity_chronicler.record_death(getattr(entity, "species_id", entity.entity_type.name), entity.custom_data.get("death_reason", "natural"))
+                except Exception:
+                    pass
 
     def late_update(self, context: UpdateContext) -> None:
         pass

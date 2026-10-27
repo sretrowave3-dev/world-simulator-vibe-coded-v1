@@ -9,12 +9,22 @@ cleanly to user_profile.json.
 from __future__ import annotations
 
 import os
+import sys
 import json
 import time
 import uuid
 from pathlib import Path
 from dataclasses import dataclass, field, asdict
 from typing import Dict, Any, List, Optional
+
+# Safe UTF-8 reconfiguration for Windows console
+try:
+    if hasattr(sys.stdout, "reconfigure"):
+        sys.stdout.reconfigure(encoding="utf-8", errors="replace")
+    if hasattr(sys.stderr, "reconfigure"):
+        sys.stderr.reconfigure(encoding="utf-8", errors="replace")
+except Exception:
+    pass
 
 PROFILE_FILE_NAME = "user_profile.json"
 WORKSPACE_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
@@ -69,6 +79,21 @@ class UserProfile:
         "ignored_commit": "",
     })
 
+    # Scanner & Security Credentials
+    credentials: Dict[str, Any] = field(default_factory=lambda: {
+        "role": "USER",
+        "rank": "NOVICE_EXPLORER",
+        "is_owner": False,
+        "privileges": ["SIMULATE", "SAVE_LOAD", "REWIND", "VIEW_STATS", "SWITCH_WORLD"],
+        "auth_token": "",
+        "session_id": "",
+        "last_boot_scan": 0.0,
+        "last_periodic_scan": 0.0,
+        "last_exit_scan": 0.0,
+        "total_scans_performed": 0,
+        "integrity_status": "SECURE",
+    })
+
 
 class UserProfileManager:
     """Manages reading, writing, and validating user_profile.json."""
@@ -115,14 +140,33 @@ class UserProfileManager:
                 privacy_and_telemetry=raw_data.get("privacy_and_telemetry", {}),
                 gemini=raw_data.get("gemini", {}),
                 git_save=raw_data.get("git_save", {}),
+                updates=raw_data.get("updates", {}),
+                credentials=raw_data.get("credentials", {}),
             )
             # Ensure defaults for missing sub-keys
             if "anonymized_client_id" not in prof.privacy_and_telemetry:
                 prof.privacy_and_telemetry["anonymized_client_id"] = f"anon_{uuid.uuid4().hex[:12]}"
+            if not prof.credentials:
+                prof.credentials = {
+                    "role": "USER",
+                    "rank": "NOVICE_EXPLORER",
+                    "is_owner": False,
+                    "privileges": ["SIMULATE", "SAVE_LOAD", "REWIND", "VIEW_STATS", "SWITCH_WORLD"],
+                    "auth_token": "",
+                    "session_id": "",
+                    "last_boot_scan": 0.0,
+                    "last_periodic_scan": 0.0,
+                    "last_exit_scan": 0.0,
+                    "total_scans_performed": 0,
+                    "integrity_status": "SECURE",
+                }
             self._profile = prof
             return prof
         except Exception as e:
-            print(f"[USER PROFILE] Warning loading {self.profile_path}: {e}. Initializing clean defaults.")
+            try:
+                print(f"[USER PROFILE] Warning loading {self.profile_path}: {e}. Initializing clean defaults.")
+            except Exception:
+                pass
             return UserProfile()
 
     def save_profile(self, profile: Optional[UserProfile] = None) -> str:
@@ -159,8 +203,14 @@ class UserProfileManager:
         if "git_save" in setup_data:
             prof.git_save.update(setup_data["git_save"])
 
+        if "credentials" in setup_data:
+            prof.credentials.update(setup_data["credentials"])
+
         self.save_profile(prof)
-        print(f"✅ [FIRST-TIME SETUP] Profile configured successfully for '{prof.user_name}'. Saved to {self.profile_path}")
+        try:
+            print(f"✅ [FIRST-TIME SETUP] Profile configured successfully for '{prof.user_name}'. Saved to {self.profile_path}")
+        except Exception:
+            print(f"[FIRST-TIME SETUP] Profile configured successfully for '{prof.user_name}'. Saved to {self.profile_path}")
         return prof
 
     def add_gemini_key(self, key: str) -> None:
@@ -199,6 +249,21 @@ class UserProfileManager:
         prof = self.get_profile()
         prof.gemini["is_offline"] = is_offline
         self.save_profile()
+
+    def is_owner(self) -> bool:
+        """Returns True if the current user profile has Owner credentials."""
+        prof = self.get_profile()
+        return bool(prof.credentials.get("is_owner", False))
+
+    def get_rank(self) -> str:
+        """Returns the current user rank."""
+        prof = self.get_profile()
+        return str(prof.credentials.get("rank", "NOVICE_EXPLORER"))
+
+    def get_privileges(self) -> List[str]:
+        """Returns list of privileges granted to the current user."""
+        prof = self.get_profile()
+        return list(prof.credentials.get("privileges", []))
 
 
 # Singleton instance

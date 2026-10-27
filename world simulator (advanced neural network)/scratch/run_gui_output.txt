@@ -1,0 +1,23 @@
+pygame-ce 2.5.8 (SDL 2.32.10, Python 3.14.9)
+
+[1m╔════════════════════════════════════════════════════════════════════════════════╗[0m
+[1m║                     WORLD SIMULATOR - LAUNCH SELECTION                         ║[0m
+[1m╠════════════════════════════════════════════════════════════════════════════════╣[0m
+[1m║                                                                                ║[0m
+[1m║   [1] terminal based simulation without gui and graphical window               ║[0m
+[1m║   [2] terminal with Raylib Hardware GPU GUI (NVIDIA RTX 3050 - OpenGL 3.3)     ║[0m
+[1m║                                                                                ║[0m
+[1m╚════════════════════════════════════════════════════════════════════════════════╝[0m
+[1mPlease choose execution mode [1 or 2] (Default is 1): [0m[1m🚀 Running: Terminal with Raylib Hardware GPU GUI (NVIDIA RTX 3050 Active)[0m
+
+[1m🎮 Dedicated GPU Detected: NVIDIA GeForce RTX 3050 6GB Laptop GPU (6144 MB VRAM | Temp: 56°C)[0m
+⚡ GPU Acceleration: Active (Windows High-Performance Mode bound & verified)
+🛡️ GPU Safety Engine: 60 FPS Clamp, VRAM Guard & Thermal Throttling active (Safe for short/long term)
+
+════════════════════════════════════════════════════════════════════════════════
+🌍 World Simulator (Architect: sretrowave3-dev)
+🌌 Active World:    "dawn of a civilization"
+🚀 Execution Mode:  Terminal with GUI
+💡 Type 'help' for available commands, or type 'adv dev' to activate advanced settings.
+════════════════════════════════════════════════════════════════════════════════
+

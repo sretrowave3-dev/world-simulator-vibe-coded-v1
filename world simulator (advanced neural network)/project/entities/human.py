@@ -283,6 +283,17 @@ class Human(Entity):
             self.custom_data["dopamine"] = 1.0
             self.custom_data["stress"] = 0.0
             thought_prefix = "Eureka! Discovered" if is_new_discovery else "Constructed"
+            try:
+                from project.core.activity_chronicler import activity_chronicler
+                clan_name = (self.tribe_id or "Genesis Tribe").replace("_", " ").title()
+                if is_new_discovery:
+                    activity_chronicler.record_tech_discovery(recipe.name, recipe.tier.name, clan_name)
+                if recipe.output_type == "structure":
+                    activity_chronicler.record_construction(recipe.output_item, (self.pos_x, self.pos_y), self.tribe_id or "genesis_tribe")
+                else:
+                    activity_chronicler.record_craft(recipe.name, recipe.output_type, clan_name)
+            except Exception:
+                pass
             self.think(
                 f"{thought_prefix} a {recipe.name}! {recipe.description}",
                 category="CREATION",
